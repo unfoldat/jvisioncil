@@ -19,6 +19,7 @@ collections:
       - { name: title, label: 제목, widget: string }
       - { name: date, label: 날짜, widget: datetime, date_format: 'YYYY-MM-DD', time_format: false }
       - { name: org, label: 기관 태그, widget: list, min: 1 }
+      - { name: pinned, label: 상단 고정 ([공지]), widget: boolean, default: false }
       - name: url
         label: 원문 주소 (남의 소식일 때만)
         widget: string

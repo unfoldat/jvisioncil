@@ -16,6 +16,8 @@ const notices = defineCollection({
         message: '기관 메인 홈페이지가 아니라 이 소식이 있는 정확한 글 주소를 넣으세요.',
       })
       .optional(),
+    // 목록 최상단 고정 + [공지] 표시. 날짜 정렬 자체는 안 바꾼다(이전글/다음글은 pinned 무관하게 날짜순).
+    pinned: z.boolean().default(false),
   }),
 });
 

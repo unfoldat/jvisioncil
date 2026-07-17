@@ -7,7 +7,12 @@ interface Props {
   empty: string;
 }
 const { notices, empty } = Astro.props;
-const items = notices.map((notice) => ({ ...noticeLink(notice), date: notice.data.date }));
+// 정렬은 호출부(lib/notices.ts의 sortForList)에서 끝내고 넘어온다 — 여기서는 순서를 안 바꾼다.
+const items = notices.map((notice) => ({
+  ...noticeLink(notice),
+  date: notice.data.date,
+  pinned: notice.data.pinned,
+}));
 const iso = (d: Date) => d.toISOString().slice(0, 10);
 ---
 
@@ -17,6 +22,7 @@ const iso = (d: Date) => d.toISOString().slice(0, 10);
   <ul class="notice-list">
     {items.map((item) => (
       <li>
+        {item.pinned && <strong class="pinned-badge">[공지]</strong>}
         {item.external ? (
           <a href={item.href} target="_blank" rel="noopener">{item.label}</a>
         ) : (
@@ -42,5 +48,8 @@ const iso = (d: Date) => d.toISOString().slice(0, 10);
     align-items: center;
     min-height: 44px;
     padding: 0.4rem 0.2rem;
+  }
+  .pinned-badge {
+    margin-right: 0.3rem;
   }
 </style>

@@ -2,10 +2,11 @@
 import { getCollection } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import NoticeList from '../../components/NoticeList.astro';
-import { byDateDesc, orgCounts, 태그경로 } from '../../lib/notices';
+import { sortForList, orgCounts, 태그경로 } from '../../lib/notices';
 import { PHONE } from '../../config';
 
-const notices = (await getCollection('notices')).sort(byDateDesc);
+// 기본 정렬 최신순, 고정(pinned) 글만 예외적으로 최상단 (§7 — 목록 정렬 기본값 확인).
+const notices = sortForList(await getCollection('notices'));
 
 // 스펙 §3.3 — 필터 행은 글 2건 이상 기관만 (태그 남발 = 알림판 방지).
 const filterOrgs = [...orgCounts(notices)]
