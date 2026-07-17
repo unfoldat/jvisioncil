@@ -25,5 +25,5 @@ npx wrangler deploy
 2. Cloudflare 대시보드 → Workers & Pages → `jvisioncil-cms-auth` → Settings → Variables and Secrets
    - `GITHUB_CLIENT_ID` = Client ID (평문)
    - `GITHUB_CLIENT_SECRET` = Client Secret (**Encrypt** 클릭)
-   - `ALLOWED_DOMAINS` = `jvision.cartosheaf.com` (평문, 권장 — 같은 Cloudflare 계정의 다른 사이트가 이 인증기를 도용하지 못하게 제한)
+   - `ALLOWED_DOMAINS` = `jvisioncil.pages.dev` (평문, 권장 — 같은 Cloudflare 계정의 다른 사이트가 이 인증기를 도용하지 못하게 제한)
    - Save and deploy
