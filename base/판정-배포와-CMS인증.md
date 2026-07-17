@@ -9,7 +9,9 @@
 - pages.dev 기본 주소가 아니라 cartosheaf 서브도메인을 쓴다. (독수리 지정)
 - astro.config `site` = `https://jvision.cartosheaf.com`
 - 연습 기간 동안 전 페이지 `<meta name="robots" content="noindex">` — 연습 주소 색인 시 실도메인이 중복 콘텐츠로 취급됨.
-- 실도메인(jvisioncil.or.kr) 전환 = ① Pages custom domain 추가 ② astro.config `site` 변경 ③ noindex 제거. 이 3개가 전부이며 코드 수정이 필요하면 설계가 틀린 것이다. noindex 제거는 별도 커밋.
+- meta는 HTML에만 붙는다. 기부금 PDF 등 비HTML까지 덮기 위해 `public/_headers`로 `X-Robots-Tag: noindex, nofollow`를 전 경로에 적용한다.
+- robots.txt로 `Disallow: /`는 하지 않는다 — 크롤러가 아예 안 들어오면 noindex 지시를 읽지 못해, 외부 링크가 있을 경우 주소만 검색결과에 뜰 수 있다. "크롤링 허용 + noindex 응답"이 색인을 확실히 막는 조합.
+- 실도메인(jvisioncil.or.kr) 전환 = ① Pages custom domain 추가 ② astro.config `site` 변경 ③ noindex 제거(`config.ts`의 `NOINDEX` = false + `public/_headers` 삭제, 한 커밋). 이 3개가 전부이며 코드 수정이 필요하면 설계가 틀린 것이다.
 
 ## CMS 인증 — GitHub OAuth (PAT 아님)
 

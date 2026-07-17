@@ -1,0 +1,4 @@
+# 연습 배포(jvision.cartosheaf.com) 전용 — 실도메인 전환 시 이 파일을 지운다.
+# meta 태그는 HTML에만 붙는다. PDF 등 비HTML 파일까지 덮으려면 헤더가 필요하다.
+/*
+  X-Robots-Tag: noindex, nofollow
