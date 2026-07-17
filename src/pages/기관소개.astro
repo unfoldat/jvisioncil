@@ -1,0 +1,27 @@
+---
+// 글은 나중, 지금은 그릇만 (§6).
+import { getCollection } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { PHONE } from '../config';
+
+const orgs = (await getCollection('network-orgs')).sort((a, b) => a.id.localeCompare(b.id));
+
+// §4 — 항상: 전화. 추가: 센터장 소개(예약), 소식.
+const links = [
+  { label: `전화 상담: ${PHONE.display}`, href: `tel:${PHONE.tel}` },
+  { label: '소식', href: '/소식/' },
+];
+---
+
+<BaseLayout pageName="기관소개" breadcrumb={[{ label: '홈', href: '/' }]} links={links}>
+  <p>어디로 가야 할지 알려드립니다.</p>
+
+  <h2>함께하는 기관</h2>
+  <ul>
+    {orgs.map((org) => (
+      <li>
+        {org.data.url ? <a href={org.data.url}>{org.data.name}</a> : org.data.name}
+      </li>
+    ))}
+  </ul>
+</BaseLayout>

@@ -1,0 +1,17 @@
+---
+// 글은 나중, 지금은 그릇만 (§6). 말단 = 전화 (§1).
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { PHONE, PHONE_NOTE } from '../config';
+
+// §4 — 항상: 전화. 추가: 기관소개.
+const links = [
+  { label: `전화 상담: ${PHONE.display}`, href: `tel:${PHONE.tel}` },
+  { label: '기관소개', href: '/기관소개/' },
+];
+---
+
+<BaseLayout pageName="상담안내" breadcrumb={[{ label: '홈', href: '/' }]} links={links}>
+  <h2>전화로 상담합니다</h2>
+  <p>{PHONE_NOTE}</p>
+  <p><a href={`tel:${PHONE.tel}`}>전화 상담: {PHONE.display}</a></p>
+</BaseLayout>

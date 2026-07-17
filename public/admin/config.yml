@@ -30,16 +30,24 @@ collections:
         required: false
         hint: '이미지를 넣으면 대체 텍스트(alt)를 반드시 채우세요. 비어 있으면 빌드가 실패합니다.'
 
-  - name: partners
-    label: 협력기관
-    folder: src/content/partners
+  - name: network-orgs
+    label: 함께하는 기관
+    folder: src/content/network-orgs
+    create: true
+    fields:
+      - name: name
+        label: 기관명
+        widget: string
+        hint: '소식의 기관 태그와 글자가 정확히 같아야 태그 페이지가 이어집니다.'
+      - { name: url, label: 기관 홈페이지, widget: string, required: false }
+
+  - name: sponsors
+    label: 후원기관
+    folder: src/content/sponsors
     create: true
     fields:
       - { name: name, label: 기관명, widget: string }
       - { name: url, label: 기관 홈페이지, widget: string }
-      - { name: logo, label: 로고, widget: image, required: false }
-      - { name: desc, label: 소개 (두 문장), widget: text }
-      - { name: when, label: 이런 때 가세요 (한 줄), widget: string }
 
   - name: donation-reports
     label: 기부금 사용내역

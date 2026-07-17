@@ -3,6 +3,7 @@
 import SearchBox from '../components/SearchBox.astro';
 import PhoneLink from '../components/PhoneLink.astro';
 import RelatedLinks from '../components/RelatedLinks.astro';
+import PartnerGrid from '../components/PartnerGrid.astro';
 import { SITE_NAME, MAIN_MENU, NOINDEX, PHONE, type Link } from '../config';
 
 interface Props {
@@ -67,7 +68,7 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
     </main>
 
     <footer>
-      {/* 협력기관 그리드 — T4에서 partners 컬렉션 주입 */}
+      <PartnerGrid />
       <p>{SITE_NAME} · 전화 {PHONE.display}</p>
     </footer>
   </body>

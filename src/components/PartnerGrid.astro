@@ -1,0 +1,33 @@
+---
+// footer 상시 협력기관 그리드 (스펙 §1, §5). 정적 — 자동 회전·캐러셀 금지.
+// 로고 이미지가 없으므로 기관명 텍스트 사각형 배지로 렌더한다.
+// 제목을 h2로 달지 않는다: main의 "여기서 갈 수 있는 곳"이 페이지 마지막 h2여야 하므로(§2.3).
+import { getCollection } from 'astro:content';
+import { 태그경로 } from '../lib/notices';
+
+const orgs = (await getCollection('network-orgs')).sort((a, b) => a.id.localeCompare(b.id));
+---
+
+<p>협력기관</p>
+<ul class="partner-grid">
+  {orgs.map((org) => (
+    <li>
+      <a href={태그경로(org.data.name)}><span class="badge">{org.data.name}</span></a>
+    </li>
+  ))}
+</ul>
+
+<style>
+  .partner-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    padding: 0;
+    list-style: none;
+  }
+  .badge {
+    display: inline-block;
+    padding: 0.4rem 0.7rem;
+    border: 1px solid currentColor;
+  }
+</style>

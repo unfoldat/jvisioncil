@@ -3,7 +3,8 @@ import type { Link } from '../config';
 
 type Notice = CollectionEntry<'notices'>;
 
-export const 태그경로 = (org: string) => `/소식/태그/${org}/`;
+// 기관명에 공백·괄호가 있으므로 href는 인코딩해서 낸다.
+export const 태그경로 = (org: string) => `/소식/태그/${encodeURIComponent(org)}/`;
 
 // 스펙 §2.5 — 링크는 단독으로 읽혀도 완결. 템플릿 자동 조립, 편집자 수기 금지.
 export function noticeLink(notice: Notice): Link & { external: boolean } {

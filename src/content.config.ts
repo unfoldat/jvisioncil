@@ -19,15 +19,22 @@ const notices = defineCollection({
   }),
 });
 
-// 스펙 §3.4 — 태그 페이지 상단 매칭 단락 + footer 그리드 공급원.
-const partners = defineCollection({
-  loader: glob({ pattern: '**/*.md', base: './src/content/partners' }),
+// 협력기관을 두 컬렉션으로 분리 (독수리 지정).
+// network-orgs = 함께하는 기관: 기관소개 섹션 + footer 배지 + 태그 페이지 연결.
+const networkOrgs = defineCollection({
+  loader: glob({ pattern: '**/*.md', base: './src/content/network-orgs' }),
+  schema: z.object({
+    name: z.string(),
+    url: z.string().url().optional(),
+  }),
+});
+
+// sponsors = 후원기관: 후원안내 하위 섹션.
+const sponsors = defineCollection({
+  loader: glob({ pattern: '**/*.md', base: './src/content/sponsors' }),
   schema: z.object({
     name: z.string(),
     url: z.string().url(),
-    logo: z.string().optional(),
-    desc: z.string(),
-    when: z.string(),
   }),
 });
 
@@ -40,4 +47,9 @@ const donationReports = defineCollection({
   }),
 });
 
-export const collections = { notices, partners, 'donation-reports': donationReports };
+export const collections = {
+  notices,
+  'network-orgs': networkOrgs,
+  sponsors,
+  'donation-reports': donationReports,
+};
