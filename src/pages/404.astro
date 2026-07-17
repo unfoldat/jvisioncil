@@ -1,0 +1,15 @@
+---
+// Cloudflare Pages가 404 응답 시 dist/404.html을 서빙한다.
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { PHONE } from '../config';
+
+const links = [
+  { label: '홈', href: '/' },
+  { label: '소식', href: '/소식/' },
+  { label: `전화 상담: ${PHONE.display}`, href: `tel:${PHONE.tel}` },
+];
+---
+
+<BaseLayout pageName="페이지를 찾을 수 없습니다" links={links} searchable={false}>
+  <p>주소가 바뀌었거나 존재하지 않는 페이지입니다.</p>
+</BaseLayout>
