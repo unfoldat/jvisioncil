@@ -13,6 +13,11 @@ const links = [{ label: `전화 상담: ${PHONE.display}`, href: `tel:${PHONE.te
 </BaseLayout>
 
 <script is:inline>
+  // is:inline 필수 — is:inline을 빼면 Astro/Vite가 이 dynamic import를
+  // __vitePreload로 감싸면서 __VITE_PRELOAD__ 참조 에러를 내며 실제로 깨짐
+  // (실측 확인, ReferenceError: __VITE_PRELOAD__ is not defined).
+  // CSP script-src는 이 스크립트의 정확한 해시(scripts/inject-csp.mjs가 빌드마다
+  // 자동 계산)로 허용하므로 is:inline이어도 'unsafe-inline' 없이 안전하게 통과한다.
   (async () => {
     const params = new URLSearchParams(window.location.search);
     const q = (params.get('q') || '').trim();
@@ -23,7 +28,9 @@ const links = [{ label: `전화 상담: ${PHONE.display}`, href: `tel:${PHONE.te
     if (box) box.value = q;
     status.textContent = `"${q}" 검색 중…`;
     try {
-      const pagefind = await import('/pagefind/pagefind.js');
+      // pagefind.js는 astro-pagefind의 빌드 후처리 단계에서 생성되는 런타임 전용
+      // 경로라 번들러가 정적으로 못 찾는다 — @vite-ignore로 런타임 동적 import 처리.
+      const pagefind = await import(/* @vite-ignore */ '/pagefind/pagefind.js');
       const search = await pagefind.search(q);
       const results = await Promise.all(search.results.slice(0, 20).map((r) => r.data()));
       if (results.length === 0) {

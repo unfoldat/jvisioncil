@@ -7,7 +7,8 @@
   },
   "scripts": {
     "dev": "astro dev",
-    "build": "astro build && npm run verify",
+    "prebuild": "node scripts/copy-cms.mjs",
+    "build": "astro build && node scripts/inject-csp.mjs && npm run verify",
     "verify": "node scripts/verify.mjs",
     "preview": "astro preview",
     "astro": "astro"
@@ -15,6 +16,7 @@
   "dependencies": {
     "@astrojs/markdown-remark": "^7.2.1",
     "@astrojs/rss": "^4.0.19",
+    "@sveltia/cms": "^0.171.1",
     "astro": "^7.1.0",
     "astro-pagefind": "^2.0.1",
     "rehype-sanitize": "^6.0.0"
