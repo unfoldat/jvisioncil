@@ -1,0 +1,47 @@
+---
+// 검색 착지 페이지. header 검색창(Enter) → 여기로 GET ?q=.
+// 결과는 main 안에서만 갱신된다 (스펙 §2.9 — 동적 콘텐츠는 본문 하단, header 구간 동결).
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { PHONE } from '../config';
+
+const links = [{ label: `전화 상담: ${PHONE.display}`, href: `tel:${PHONE.tel}` }];
+---
+
+<BaseLayout pageName="검색 결과" links={links} searchable={false}>
+  <p id="search-status" role="status">검색어를 입력해 주세요.</p>
+  <ul id="search-results"></ul>
+</BaseLayout>
+
+<script is:inline>
+  (async () => {
+    const params = new URLSearchParams(window.location.search);
+    const q = (params.get('q') || '').trim();
+    const status = document.getElementById('search-status');
+    const list = document.getElementById('search-results');
+    const box = document.getElementById('site-search');
+    if (!q) return;
+    if (box) box.value = q;
+    status.textContent = `"${q}" 검색 중…`;
+    try {
+      const pagefind = await import('/pagefind/pagefind.js');
+      const search = await pagefind.search(q);
+      const results = await Promise.all(search.results.slice(0, 20).map((r) => r.data()));
+      if (results.length === 0) {
+        status.textContent = `"${q}" 검색 결과가 없습니다. 전화로 물어보셔도 됩니다.`;
+        return;
+      }
+      for (const r of results) {
+        const li = document.createElement('li');
+        const a = document.createElement('a');
+        a.href = r.url;
+        a.textContent = r.meta && r.meta.title ? r.meta.title : r.url;
+        li.appendChild(a);
+        list.appendChild(li);
+      }
+      // 목록을 먼저 채우고 나서 알린다 (role="status" — 결과 도착을 무음으로 두지 않는다).
+      status.textContent = `"${q}" 검색 결과 ${search.results.length}건`;
+    } catch {
+      status.textContent = '검색 기능을 불러오지 못했습니다. 전화로 물어보셔도 됩니다.';
+    }
+  })();
+</script>

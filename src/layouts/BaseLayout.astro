@@ -9,8 +9,10 @@ interface Props {
   pageName: string;
   breadcrumb?: Link[];
   links: Link[];
+  // 검색 결과 페이지처럼 자기 자신이 색인되면 안 되는 페이지만 false.
+  searchable?: boolean;
 }
-const { pageName, breadcrumb = [], links } = Astro.props;
+const { pageName, breadcrumb = [], links, searchable = true } = Astro.props;
 
 // 스펙 §2.7 첫 줄 계약 — 페이지명 선행. h1은 같은 문자열.
 const title = `${pageName} – ${SITE_NAME}`;
@@ -46,7 +48,8 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
       </ul>
     </nav>
 
-    <main>
+    {/* data-pagefind-body: 본문만 색인. header/footer 보일러플레이트와 /admin 제외. */}
+    <main data-pagefind-body={searchable || undefined} data-pagefind-ignore={!searchable || undefined}>
       <h1>{pageName}</h1>
       {breadcrumb.length > 0 && (
         <p>

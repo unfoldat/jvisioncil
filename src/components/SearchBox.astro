@@ -1,12 +1,15 @@
 ---
 // 페이지 유일의 편집창. 이 유일성이 계약이다 (스펙 §2.2, §2.4).
+// 버튼 없음 — Enter로 제출. header의 다음 포커스는 반드시 전화 링크여야 한다
+// (불변식: F2 → Tab 1회 = 전화).
+// role="search"는 <search> 엘리먼트 대신 명시 — 센스리더 호환 우선.
 interface Props {
   pageName: string;
 }
 const { pageName } = Astro.props;
 ---
 
-<search>
+<form action="/검색/" method="get" role="search">
   <label for="site-search">검색 — 현재 위치: {pageName}</label>
   <input id="site-search" type="search" name="q" />
-</search>
+</form>
