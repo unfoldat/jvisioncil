@@ -2,8 +2,8 @@ backend:
   name: github
   repo: unfoldat/jvisioncil
   branch: main
-  # sveltia-cms-auth Cloudflare Worker (PAT 대신 OAuth). 배포 후 실주소로 교체 — 정지 지점 P-1.
-  base_url: https://REPLACE-ME.workers.dev
+  # sveltia-cms-auth Cloudflare Worker (PAT 대신 OAuth).
+  base_url: https://jvisioncil-cms-auth.dkdlvkt244.workers.dev
 
 media_folder: public/uploads
 public_folder: /uploads
