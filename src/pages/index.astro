@@ -1,17 +1,16 @@
 ---
+// 홈 = 허브 (스펙 §1, §5 홈 입구).
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { MAIN_MENU, PHONE } from '../config';
 
+const links = [{ label: `전화 상담: ${PHONE.display}`, href: `tel:${PHONE.tel}` }];
 ---
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1>Astro</h1>
-	</body>
-</html>
+<BaseLayout pageName="홈" links={links}>
+  <h2>무엇을 도와드릴까요?</h2>
+  <ul>
+    {MAIN_MENU.map((item) => (
+      <li><a href={item.href}>{item.label}</a></li>
+    ))}
+  </ul>
+</BaseLayout>

@@ -1,0 +1,12 @@
+---
+// 페이지 유일의 편집창. 이 유일성이 계약이다 (스펙 §2.2, §2.4).
+interface Props {
+  pageName: string;
+}
+const { pageName } = Astro.props;
+---
+
+<search>
+  <label for="site-search">검색 — 현재 위치: {pageName}</label>
+  <input id="site-search" type="search" name="q" />
+</search>

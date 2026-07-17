@@ -1,0 +1,86 @@
+---
+// 스펙 §2.2 문서 순서. 배포 후 동결.
+import SearchBox from '../components/SearchBox.astro';
+import PhoneLink from '../components/PhoneLink.astro';
+import RelatedLinks from '../components/RelatedLinks.astro';
+import { SITE_NAME, MAIN_MENU, NOINDEX, PHONE, type Link } from '../config';
+
+interface Props {
+  pageName: string;
+  breadcrumb?: Link[];
+  links: Link[];
+}
+const { pageName, breadcrumb = [], links } = Astro.props;
+
+// 스펙 §2.7 첫 줄 계약 — 페이지명 선행. h1은 같은 문자열.
+const title = `${pageName} – ${SITE_NAME}`;
+const canonical = new URL(Astro.url.pathname, Astro.site);
+---
+
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    {/* 연습 배포 전용. 실도메인 전환 시 config의 NOINDEX만 끈다 (별도 커밋). */}
+    {NOINDEX && <meta name="robots" content="noindex" />}
+    <title>{title}</title>
+    <link rel="canonical" href={canonical} />
+    <meta property="og:title" content={title} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:type" content="website" />
+  </head>
+  <body>
+    {/* ① 검색창 = 페이지 유일의 편집창 ② 전화 — 불변식: F2 → Tab 1회 = 전화 */}
+    <header>
+      <SearchBox pageName={pageName} />
+      <PhoneLink />
+    </header>
+
+    <nav aria-label="주 메뉴">
+      <ul>
+        {MAIN_MENU.map((item) => (
+          <li><a href={item.href}>{item.label}</a></li>
+        ))}
+      </ul>
+    </nav>
+
+    <main>
+      <h1>{pageName}</h1>
+      {breadcrumb.length > 0 && (
+        <p>
+          {breadcrumb.map((crumb, i) => (
+            <>
+              {i > 0 && ' > '}
+              <a href={crumb.href}>{crumb.label}</a>
+            </>
+          ))}
+          {' > '}{pageName}
+        </p>
+      )}
+      <slot />
+      <RelatedLinks links={links} />
+    </main>
+
+    <footer>
+      {/* 협력기관 그리드 — T4에서 partners 컬렉션 주입 */}
+      <p>{SITE_NAME} · 전화 {PHONE.display}</p>
+    </footer>
+  </body>
+</html>
+
+<style is:global>
+  /* DOM 순서 = 읽기 순서 = 시각 순서 (스펙 §2.10). 시각 순서만 바꾸는 CSS 금지. */
+  body {
+    margin: 0 auto;
+    padding: 1rem;
+    max-width: 46rem;
+    line-height: 1.7;
+    font-family: system-ui, sans-serif;
+  }
+  nav ul {
+    list-style: none;
+    padding: 0;
+  }
+</style>

@@ -1,0 +1,20 @@
+---
+import { RELATED_HEADING, type Link } from '../config';
+
+interface Props {
+  links: Link[];
+}
+const { links } = Astro.props;
+
+// 스펙 §4 — 막다른 페이지 0개. 빌드 시점에 깨뜨린다.
+if (!links || links.length === 0) {
+  throw new Error(`막다른 페이지 금지: 전이표가 비었습니다 — ${Astro.url.pathname}`);
+}
+---
+
+<h2>{RELATED_HEADING}</h2>
+<ul>
+  {links.map((link) => (
+    <li><a href={link.href}>{link.label}</a></li>
+  ))}
+</ul>
