@@ -1,0 +1,29 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import { noticeLink } from '../lib/notices';
+
+interface Props {
+  notices: CollectionEntry<'notices'>[];
+  empty: string;
+}
+const { notices, empty } = Astro.props;
+const items = notices.map((notice) => ({ ...noticeLink(notice), date: notice.data.date }));
+const 날짜 = (d: Date) => d.toISOString().slice(0, 10);
+---
+
+{items.length === 0 ? (
+  <p>{empty}</p>
+) : (
+  <ul>
+    {items.map((item) => (
+      <li>
+        {item.external ? (
+          <a href={item.href} target="_blank" rel="noopener">{item.label}</a>
+        ) : (
+          <a href={item.href}>{item.label}</a>
+        )}
+        <span> {날짜(item.date)}</span>
+      </li>
+    ))}
+  </ul>
+)}

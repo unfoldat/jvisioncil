@@ -1,0 +1,31 @@
+---
+// url 없는 글 = 우리가 원본(활동소식) → 내부 상세. url 있는 글은 목록에서 외부 직행하므로
+// 여기서 페이지를 만들지 않는다 (§3.1 — 분기는 필드가 아니라 데이터에서 도출).
+import { getCollection, render } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { 태그경로 } from '../../lib/notices';
+import { PHONE } from '../../config';
+
+export async function getStaticPaths() {
+  const notices = await getCollection('notices', ({ data }) => !data.url);
+  return notices.map((notice) => ({ params: { slug: notice.id }, props: { notice } }));
+}
+
+const { notice } = Astro.props;
+const { Content } = await render(notice);
+
+const links = [
+  { label: `전화 상담: ${PHONE.display}`, href: `tel:${PHONE.tel}` },
+  { label: '후원안내', href: '/후원안내/' },
+  ...notice.data.org.map((org) => ({ label: `소식 — ${org}`, href: 태그경로(org) })),
+];
+const breadcrumb = [
+  { label: '홈', href: '/' },
+  { label: '소식', href: '/소식/' },
+];
+---
+
+<BaseLayout pageName={notice.data.title} breadcrumb={breadcrumb} links={links}>
+  <p>{notice.data.date.toISOString().slice(0, 10)} · {notice.data.org.join(', ')}</p>
+  <Content />
+</BaseLayout>

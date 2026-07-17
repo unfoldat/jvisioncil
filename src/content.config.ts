@@ -8,7 +8,14 @@ const notices = defineCollection({
     title: z.string(),
     date: z.coerce.date(),
     org: z.array(z.string()).min(1),
-    url: z.string().url().optional(),
+    // 해당 소식 글의 정확한 주소. 기관 메인 홈페이지를 붙이는 실수를 빌드에서 잡는다.
+    url: z
+      .string()
+      .url()
+      .refine((u) => new URL(u).pathname !== '/' || new URL(u).search !== '', {
+        message: '기관 메인 홈페이지가 아니라 이 소식이 있는 정확한 글 주소를 넣으세요.',
+      })
+      .optional(),
   }),
 });
 

@@ -1,0 +1,35 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import NoticeList from '../../components/NoticeList.astro';
+import { byDateDesc, orgCounts, 태그경로 } from '../../lib/notices';
+import { PHONE } from '../../config';
+
+const notices = (await getCollection('notices')).sort(byDateDesc);
+
+// 스펙 §3.3 — 필터 행은 글 2건 이상 기관만 (태그 남발 = 알림판 방지).
+const filterOrgs = [...orgCounts(notices)]
+  .filter(([, count]) => count >= 2)
+  .map(([org]) => org)
+  .sort((a, b) => a.localeCompare(b, 'ko'));
+
+const links = [
+  { label: `전화 상담: ${PHONE.display}`, href: `tel:${PHONE.tel}` },
+  { label: '후원안내', href: '/후원안내/' },
+];
+---
+
+<BaseLayout pageName="소식" links={links}>
+  {/* 태그 필터 행 — h1 직하 허용 (§2.9 예외). 정적 링크만, JS 필터링 금지 (§3.3). */}
+  {filterOrgs.length > 0 && (
+    <ul>
+      <li><a href="/소식/">전체</a></li>
+      {filterOrgs.map((org) => (
+        <li><a href={태그경로(org)}>{org}</a></li>
+      ))}
+    </ul>
+  )}
+
+  <h2>소식 목록</h2>
+  <NoticeList notices={notices} empty="아직 소식이 없습니다." />
+</BaseLayout>

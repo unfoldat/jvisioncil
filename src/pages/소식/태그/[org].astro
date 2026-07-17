@@ -1,0 +1,37 @@
+---
+// 방사의 실행 지점 (§3.4). 태그 = 정적 페이지. 새 h1이 필터 결과를 확언한다.
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import NoticeList from '../../../components/NoticeList.astro';
+import { byDateDesc, orgCounts, 태그경로 } from '../../../lib/notices';
+import { PHONE } from '../../../config';
+
+export async function getStaticPaths() {
+  const notices = await getCollection('notices');
+  const orgs = [...orgCounts(notices).keys()];
+  return orgs.map((org) => ({
+    params: { org },
+    props: {
+      org,
+      notices: notices.filter((n) => n.data.org.includes(org)).sort(byDateDesc),
+      others: orgs.filter((o) => o !== org),
+    },
+  }));
+}
+
+const { org, notices, others } = Astro.props;
+
+const links = [
+  { label: `전화 상담: ${PHONE.display}`, href: `tel:${PHONE.tel}` },
+  { label: '소식 전체 목록', href: '/소식/' },
+  ...others.map((other) => ({ label: `소식 — ${other}`, href: 태그경로(other) })),
+];
+const breadcrumb = [
+  { label: '홈', href: '/' },
+  { label: '소식', href: '/소식/' },
+];
+---
+
+<BaseLayout pageName={`소식 — ${org}`} breadcrumb={breadcrumb} links={links}>
+  <NoticeList notices={notices} empty={`${org} 소식은 아직 없습니다.`} />
+</BaseLayout>
