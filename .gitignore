@@ -1,5 +1,7 @@
 # build output
 dist/
+# node_modules에서 prebuild 시 복사되는 Sveltia CMS 번들 (scripts/copy-cms.mjs)
+public/admin/sveltia-cms.js
 # generated types
 .astro/
 

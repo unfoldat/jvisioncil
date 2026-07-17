@@ -7,6 +7,8 @@
     <title>콘텐츠 관리 – 좋은비전</title>
   </head>
   <body>
-    <script src="https://unpkg.com/@sveltia/cms@0.117.1/dist/sveltia-cms.js" type="module"></script>
+    <!-- 외부 CDN(unpkg) 대신 자체 호스팅 — 버전은 package.json의 @sveltia/cms가 관리,
+         빌드 시 scripts/copy-cms.mjs가 이 경로로 복사한다 (A08 — 공급망 신뢰 지점 제거). -->
+    <script src="./sveltia-cms.js"></script>
   </body>
 </html>
