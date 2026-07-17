@@ -7,10 +7,10 @@ export interface Link {
 
 export const SITE_NAME = '좋은비전';
 
-// ⚠️ 정지 지점 P1 — 대표 전화번호 실값 클라이언트 확인 필요. 아래는 placeholder.
+// ⚠️ 잠정값 (독수리 지정). 클라이언트 최종 확인 남음 — 정지 지점 P1.
 export const PHONE = {
-  display: '000-0000-0000',
-  tel: '00000000000',
+  display: '02-123-4567',
+  tel: '02-123-4567',
 };
 
 // 스펙 §2.2 — 대리 행위자(가족·지인) 대상 문구. 라벨 동결.
