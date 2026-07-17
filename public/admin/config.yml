@@ -1,0 +1,42 @@
+backend:
+  name: github
+  repo: unfoldat/jvisioncil
+  branch: main
+  # sveltia-cms-auth Cloudflare Worker (PAT 대신 OAuth). 배포 후 실주소로 교체 — 정지 지점 P-1.
+  base_url: https://REPLACE-ME.workers.dev
+
+media_folder: public/uploads
+public_folder: /uploads
+
+collections:
+  - name: notices
+    label: 소식
+    folder: src/content/notices
+    create: true
+    slug: '{{year}}-{{month}}-{{day}}-{{slug}}'
+    # 편집자 규칙: 남의 소식이면 주소를 붙이고, 우리 일이면 내용을 쓰세요.
+    fields:
+      - { name: title, label: 제목, widget: string }
+      - { name: date, label: 날짜, widget: datetime, date_format: 'YYYY-MM-DD', time_format: false }
+      - { name: org, label: 기관 태그, widget: list, min: 1 }
+      - { name: url, label: 원문 주소 (남의 소식일 때만), widget: string, required: false }
+      - { name: body, label: 내용 (우리 일일 때만), widget: markdown, required: false }
+
+  - name: partners
+    label: 협력기관
+    folder: src/content/partners
+    create: true
+    fields:
+      - { name: name, label: 기관명, widget: string }
+      - { name: url, label: 기관 홈페이지, widget: string }
+      - { name: logo, label: 로고, widget: image, required: false }
+      - { name: desc, label: 소개 (두 문장), widget: text }
+      - { name: when, label: 이런 때 가세요 (한 줄), widget: string }
+
+  - name: donation-reports
+    label: 기부금 사용내역
+    folder: src/content/donation-reports
+    create: true
+    fields:
+      - { name: year, label: 연도, widget: number, value_type: int }
+      - { name: file, label: PDF 파일, widget: file }
