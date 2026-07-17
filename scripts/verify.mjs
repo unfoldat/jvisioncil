@@ -62,8 +62,11 @@ for (const page of pages) {
   }
 
   // D5. 막다른 페이지 0개 — 전이표에 링크가 1개 이상
-  const idx = main.lastIndexOf(`<h2>${표제}</h2>`);
-  const 전이표 = idx === -1 ? '' : main.slice(idx);
+  // h2는 Astro scoped style이 data-astro-cid-* 속성을 붙이므로 속성 유무와
+  // 무관하게 매칭한다 (문자열 그대로 찾으면 속성이 붙는 순간 매치가 깨진다).
+  const h2Matches = [...main.matchAll(/<h2[^>]*>([\s\S]*?)<\/h2>/g)];
+  const lastH2 = h2Matches.at(-1);
+  const 전이표 = lastH2 && strip(lastH2[1]) === 표제 ? main.slice(lastH2.index + lastH2[0].length) : '';
   const 출구 = [...전이표.matchAll(/<a\s[^>]*href=/g)].length;
   if (출구 === 0) fail('D5', '전이표에 링크 0개 (막다른 페이지)');
 

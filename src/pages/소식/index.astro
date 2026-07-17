@@ -22,7 +22,7 @@ const links = [
 <BaseLayout pageName="소식" links={links}>
   {/* 태그 필터 행 — h1 직하 허용 (§2.9 예외). 정적 링크만, JS 필터링 금지 (§3.3). */}
   {filterOrgs.length > 0 && (
-    <ul>
+    <ul class="menu-list">
       <li><a href="/소식/">전체</a></li>
       {filterOrgs.map((org) => (
         <li><a href={태그경로(org)}>{org}</a></li>

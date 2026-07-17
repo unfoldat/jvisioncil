@@ -8,7 +8,7 @@ const links = [{ label: `전화 상담: ${PHONE.display}`, href: `tel:${PHONE.te
 
 <BaseLayout pageName="홈" links={links}>
   <h2>무엇을 도와드릴까요?</h2>
-  <ul>
+  <ul class="menu-list">
     {MAIN_MENU.map((item) => (
       <li><a href={item.href}>{item.label}</a></li>
     ))}

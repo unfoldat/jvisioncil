@@ -13,8 +13,26 @@ if (!links || links.length === 0) {
 ---
 
 <h2>{RELATED_HEADING}</h2>
-<ul>
+<ul class="related-list">
   {links.map((link) => (
     <li><a href={link.href}>{link.label}</a></li>
   ))}
 </ul>
+
+<style>
+  /* 라벨 길이가 제각각이라(전화번호~기관명) 칩 대신 세로 목록, 터치 타겟 44px 이상. */
+  .related-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  .related-list li {
+    margin-bottom: 0.25rem;
+  }
+  .related-list a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    padding: 0.4rem 0.2rem;
+  }
+</style>

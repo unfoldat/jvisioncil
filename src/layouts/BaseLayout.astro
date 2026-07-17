@@ -42,7 +42,7 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
     </header>
 
     <nav aria-label="주 메뉴">
-      <ul>
+      <ul class="menu-list">
         {MAIN_MENU.map((item) => (
           <li><a href={item.href}>{item.label}</a></li>
         ))}
@@ -76,15 +76,91 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
 
 <style is:global>
   /* DOM 순서 = 읽기 순서 = 시각 순서 (스펙 §2.10). 시각 순서만 바꾸는 CSS 금지. */
+
+  /* 대비값은 실제 계산 결과 (WCAG AA 4.5:1 이상):
+     text #1a1a1a vs #fff = 17.4:1 / link #0b4fa8 vs #fff = 7.78:1 /
+     focus #c6501a vs #fff = 4.60:1 (비텍스트 컴포넌트 기준 3:1 이상 요구, 여유 있게 통과) */
+  :root {
+    --color-bg: #ffffff;
+    --color-text: #1a1a1a;
+    --color-link: #0b4fa8;
+    --color-link-visited: #5b3a99;
+    --color-footer-bg: #f2f4f7;
+    --color-focus: #c6501a;
+  }
+
+  * {
+    box-sizing: border-box;
+  }
+
+  html {
+    /* 기본 16px 기준 18px — 대리 행위자·고령 이용자 가독성 */
+    font-size: 112.5%;
+  }
+
   body {
     margin: 0 auto;
     padding: 1rem;
     max-width: 46rem;
     line-height: 1.7;
     font-family: system-ui, sans-serif;
+    color: var(--color-text);
+    background: var(--color-bg);
   }
-  nav ul {
+
+  a {
+    color: var(--color-link);
+  }
+  a:visited {
+    color: var(--color-link-visited);
+  }
+
+  /* 포커스는 색만이 아니라 굵은 외곽선으로 표시 (Tab 이동 추적성). */
+  a:focus-visible,
+  input:focus-visible {
+    outline: 3px solid var(--color-focus);
+    outline-offset: 2px;
+  }
+
+  h1 {
+    font-size: 1.6rem;
+    line-height: 1.35;
+  }
+  h2 {
+    font-size: 1.2rem;
+    line-height: 1.35;
+    margin-top: 2rem;
+  }
+
+  /* 터치 타겟 44px 이상 — 독립된 메뉴/목록 항목에 적용.
+     문장 안에 섞인 링크(브레드크럼, 본문 링크)는 WCAG 타겟 크기 규정의
+     인라인 예외 대상이라 제외한다. */
+  .menu-list {
     list-style: none;
     padding: 0;
+    margin: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+  .menu-list a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    padding: 0.5rem 0.9rem;
+    text-decoration: underline;
+  }
+
+  input[type='search'] {
+    min-height: 44px;
+    font-size: 1rem;
+    padding: 0.4rem 0.6rem;
+  }
+
+  footer {
+    margin-top: 2rem;
+    padding-top: 1rem;
+    border-top: 1px solid #ccc;
+    background: var(--color-footer-bg);
   }
 </style>

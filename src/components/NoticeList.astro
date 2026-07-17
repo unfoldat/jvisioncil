@@ -14,7 +14,7 @@ const iso = (d: Date) => d.toISOString().slice(0, 10);
 {items.length === 0 ? (
   <p>{empty}</p>
 ) : (
-  <ul>
+  <ul class="notice-list">
     {items.map((item) => (
       <li>
         {item.external ? (
@@ -27,3 +27,20 @@ const iso = (d: Date) => d.toISOString().slice(0, 10);
     ))}
   </ul>
 )}
+
+<style>
+  .notice-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  .notice-list li {
+    margin-bottom: 0.25rem;
+  }
+  .notice-list a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    padding: 0.4rem 0.2rem;
+  }
+</style>
