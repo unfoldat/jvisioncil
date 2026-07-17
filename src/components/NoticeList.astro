@@ -8,7 +8,7 @@ interface Props {
 }
 const { notices, empty } = Astro.props;
 const items = notices.map((notice) => ({ ...noticeLink(notice), date: notice.data.date }));
-const 날짜 = (d: Date) => d.toISOString().slice(0, 10);
+const iso = (d: Date) => d.toISOString().slice(0, 10);
 ---
 
 {items.length === 0 ? (
@@ -22,7 +22,7 @@ const 날짜 = (d: Date) => d.toISOString().slice(0, 10);
         ) : (
           <a href={item.href}>{item.label}</a>
         )}
-        <span> {날짜(item.date)}</span>
+        {' · '}<time datetime={iso(item.date)}>{iso(item.date)}</time>
       </li>
     ))}
   </ul>

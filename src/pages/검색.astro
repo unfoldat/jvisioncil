@@ -36,6 +36,9 @@ const links = [{ label: `전화 상담: ${PHONE.display}`, href: `tel:${PHONE.te
         a.href = r.url;
         a.textContent = r.meta && r.meta.title ? r.meta.title : r.url;
         li.appendChild(a);
+        if (r.meta && r.meta.date) {
+          li.append(' · ' + r.meta.date);
+        }
         list.appendChild(li);
       }
       // 목록을 먼저 채우고 나서 알린다 (role="status" — 결과 도착을 무음으로 두지 않는다).

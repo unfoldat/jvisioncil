@@ -23,9 +23,14 @@ const breadcrumb = [
   { label: '홈', href: '/' },
   { label: '소식', href: '/소식/' },
 ];
+const isoDate = notice.data.date.toISOString().slice(0, 10);
 ---
 
 <BaseLayout pageName={notice.data.title} breadcrumb={breadcrumb} links={links}>
-  <p>{notice.data.date.toISOString().slice(0, 10)} · {notice.data.org.join(', ')}</p>
+  {/* data-pagefind-meta: 검색 결과 목록에도 게시일이 뜨도록 (전에는 title만 뽑혀서 누락). */}
+  <p>
+    <time datetime={isoDate} data-pagefind-meta="date[datetime]">{isoDate}</time>
+    {' · '}{notice.data.org.join(', ')}
+  </p>
   <Content />
 </BaseLayout>
