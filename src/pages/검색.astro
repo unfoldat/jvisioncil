@@ -10,9 +10,11 @@ const links = [{ label: `전화 상담: ${PHONE.display}`, href: `tel:${PHONE.te
 <BaseLayout pageName="검색 결과" links={links} searchable={false}>
   <p id="search-status" role="status">검색어를 입력해 주세요.</p>
   <ul id="search-results"></ul>
-</BaseLayout>
 
-<script is:inline>
+  {/* BaseLayout의 <slot/> 안(= <main> 내부)에 있어야 한다. 예전엔 </BaseLayout> 뒤에
+      형제로 뒀더니 </html> 다음에 <script>가 붙는 마크업 오류였음
+      (W3C validator 실측: "Stray start tag script" — KWCAG 8.1.1 위반). */}
+  <script is:inline>
   // is:inline 필수 — is:inline을 빼면 Astro/Vite가 이 dynamic import를
   // __vitePreload로 감싸면서 __VITE_PRELOAD__ 참조 에러를 내며 실제로 깨짐
   // (실측 확인, ReferenceError: __VITE_PRELOAD__ is not defined).
@@ -54,4 +56,5 @@ const links = [{ label: `전화 상담: ${PHONE.display}`, href: `tel:${PHONE.te
       status.textContent = '검색 기능을 불러오지 못했습니다. 전화로 물어보셔도 됩니다.';
     }
   })();
-</script>
+  </script>
+</BaseLayout>

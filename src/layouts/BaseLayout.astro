@@ -35,6 +35,11 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
     <meta property="og:type" content="website" />
   </head>
   <body>
+    {/* KWCAG 6.4.1(반복 영역 건너뛰기). 평소엔 숨겨져 있다가 포커스 시에만 보임 —
+        Tab 첫 번째 정지점. F2(스크린리더 입력창 이동)는 폼 필드만 잡아 검색창으로
+        바로 가므로 이 링크와 안 부딪힌다. */}
+    <a href="#main-content" class="skip-link">본문으로 바로가기</a>
+
     {/* ① 검색창 = 페이지 유일의 편집창 ② 전화 — 불변식: F2 → Tab 1회 = 전화 */}
     <header>
       <SearchBox pageName={pageName} />
@@ -50,7 +55,7 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
     </nav>
 
     {/* data-pagefind-body: 본문만 색인. header/footer 보일러플레이트와 /admin 제외. */}
-    <main data-pagefind-body={searchable || undefined} data-pagefind-ignore={!searchable || undefined}>
+    <main id="main-content" tabindex="-1" data-pagefind-body={searchable || undefined} data-pagefind-ignore={!searchable || undefined}>
       <h1>{pageName}</h1>
       {breadcrumb.length > 0 && (
         <p>
@@ -162,5 +167,20 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
     padding-top: 1rem;
     border-top: 1px solid #ccc;
     background: var(--color-footer-bg);
+  }
+
+  /* 스킵 링크: 평소엔 화면 밖, 포커스 시에만 좌상단에 나타남. */
+  .skip-link {
+    position: absolute;
+    top: -100px;
+    left: 0;
+    padding: 0.75rem 1rem;
+    background: var(--color-bg);
+    color: var(--color-text);
+    z-index: 100;
+    text-decoration: underline;
+  }
+  .skip-link:focus {
+    top: 0;
   }
 </style>
