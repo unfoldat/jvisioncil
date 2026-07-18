@@ -19,6 +19,22 @@ const toUrl = (file) =>
 
 const strip = (html) => html.replace(/<[^>]+>/g, '').replace(/&gt;/g, '>').replace(/&amp;/g, '&').trim();
 
+const escapeRegExp = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+
+// 협력기관 배지 검사의 정답지: network-orgs 컨텐츠 소스에서 name/url을 직접 읽는다
+// (렌더링 결과가 아니라 소스 진실을 기준으로 대조 — 회귀를 잡아내는 핵심).
+const NETWORK_ORGS_DIR = 'src/content/network-orgs';
+const networkOrgs = fs
+  .readdirSync(NETWORK_ORGS_DIR)
+  .filter((f) => f.endsWith('.md'))
+  .map((f) => {
+    const raw = fs.readFileSync(path.join(NETWORK_ORGS_DIR, f), 'utf8');
+    return {
+      name: raw.match(/^name:\s*(.+)$/m)?.[1]?.trim(),
+      url: raw.match(/^url:\s*(.+)$/m)?.[1]?.trim(),
+    };
+  });
+
 const 검사 = [];
 const 실패 = [];
 
@@ -79,6 +95,38 @@ for (const page of pages) {
   const imgs = [...html.matchAll(/<img\b[^>]*>/g)];
   for (const img of imgs) {
     if (!/\salt=/.test(img[0])) fail('alt', `alt 없는 이미지: ${img[0].slice(0, 60)}`);
+  }
+
+  // PARTNER-LOC. 협력기관 그리드는 footer 전용 — main에 있으면 회귀.
+  const footer = html.split(/<footer[^>]*>/)[1]?.split('</footer>')[0] ?? '';
+  if (main.includes('partner-grid') || main.includes('협력기관')) {
+    fail('PARTNER', '협력기관 그리드가 main 안에 있음 (footer 전용이어야 함, §5)');
+  }
+  if (!footer.includes('partner-grid')) {
+    fail('PARTNER', 'footer에 협력기관 그리드가 없음');
+  }
+
+  // PARTNER-URL. 배지 목적지가 소스(url 유무)와 일치하는지 대조.
+  // url 있으면 그 URL로 직행, 없으면 링크 없이 텍스트만 — 태그 페이지(/소식/태그/)로
+  // 새는 것도, url 없는데 아무 링크가 붙는 것도 전부 회귀로 잡는다.
+  for (const org of networkOrgs) {
+    if (!org.name) continue;
+    const liMatch = footer.match(
+      new RegExp(`<li[^>]*>((?:(?!</li>)[\\s\\S])*?${escapeRegExp(org.name)}(?:(?!</li>)[\\s\\S])*?)</li>`),
+    );
+    if (!liMatch) {
+      fail('PARTNER', `footer에 "${org.name}" 배지가 없음`);
+      continue;
+    }
+    const aHref = liMatch[1].match(/<a\s[^>]*href="([^"]*)"/)?.[1];
+    if (org.url) {
+      if (!aHref) fail('PARTNER', `"${org.name}": url이 있는데 배지가 링크가 아님`);
+      else if (aHref !== org.url) {
+        fail('PARTNER', `"${org.name}": 배지가 "${aHref}"로 나감 (기대값 "${org.url}")`);
+      }
+    } else if (aHref) {
+      fail('PARTNER', `"${org.name}": url이 없는데 배지가 "${aHref}"로 링크됨 (텍스트만이어야 함)`);
+    }
   }
 
   검사.push({ url, 출구, h2끝: h2s.at(-1) ?? '(없음)', inputs });
