@@ -56,4 +56,4 @@ collections:
     create: true
     fields:
       - { name: year, label: 연도, widget: number, value_type: int }
-      - { name: file, label: PDF 파일, widget: file }
+      - { name: file, label: PDF 파일, widget: file, accept: 'application/pdf,.pdf' }
