@@ -2,11 +2,14 @@
 // 말단 = 계좌 (§1). 기부금 PDF = 무보관 원칙의 유일한 보관 예외 (§0.1).
 import { getCollection } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
+import ImpactList from '../components/ImpactList.astro';
 import { 태그경로 } from '../lib/notices';
+import { sortForList as sortImpactForList } from '../lib/impact';
 import { PHONE } from '../config';
 
 const reports = (await getCollection('donation-reports')).sort((a, b) => b.data.year - a.data.year);
 const sponsors = (await getCollection('sponsors')).sort((a, b) => a.id.localeCompare(b.id));
+const impactEntries = sortImpactForList(await getCollection('impact'));
 
 // §4 — 후원 신뢰의 이중 근거: 기부금 PDF(숫자) + 활동소식(이야기).
 const links = [
@@ -41,4 +44,7 @@ const links = [
       ))}
     </ul>
   )}
+
+  <h2 id="함께-만드는-변화">함께 만드는 변화</h2>
+  <ImpactList entries={impactEntries} empty="아직 등록된 활동 글이 없습니다." />
 </BaseLayout>

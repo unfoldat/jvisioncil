@@ -57,3 +57,41 @@ collections:
     fields:
       - { name: year, label: 연도, widget: number, value_type: int }
       - { name: file, label: PDF 파일, widget: file, accept: 'application/pdf,.pdf' }
+
+  - name: impact
+    label: 함께 만드는 변화
+    label_singular: 활동 글
+    folder: src/content/impact
+    create: true
+    slug: '{{year}}-{{month}}-{{day}}-{{slug}}'
+    # 편집자 규칙: 좋은비전이 직접 수행한 활동, 후원으로 만들어진 변화만 여기 씁니다.
+    # 공지·행사안내·외부기관 소식은 '소식' 컬렉션에 쓰세요.
+    fields:
+      - { name: title, label: 제목, widget: string }
+      - { name: date, label: 게시일, widget: datetime, date_format: 'YYYY-MM-DD', time_format: false }
+      - { name: image, label: 대표 사진, widget: image }
+      - name: image_alt
+        label: 대표 사진 대체텍스트
+        widget: string
+        hint: '사진이 전달하는 내용을 문장으로 설명하세요. 스크린리더 이용자에게는 이 글자가 사진입니다.'
+      - { name: summary, label: 짧은 소개, widget: text }
+      - name: body
+        label: 본문
+        widget: markdown
+        hint: '이미지를 넣으면 대체 텍스트(alt)를 반드시 채우세요. 비어 있으면 빌드가 실패합니다.'
+      - name: category
+        label: 활동 유형
+        widget: select
+        options: ['상담', '강연', '행사', '협력 활동', '후원 이야기', '기타']
+      - name: link
+        label: 관련 링크
+        widget: string
+        required: false
+        hint: '관련 기사·페이지 주소가 있으면 붙여주세요 (선택).'
+      - name: status
+        label: 공개 여부
+        widget: select
+        options:
+          - { label: '임시저장 (draft)', value: draft }
+          - { label: '공개 (published)', value: published }
+        default: draft

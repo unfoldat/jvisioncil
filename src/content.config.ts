@@ -58,9 +58,27 @@ const donationReports = defineCollection({
   }),
 });
 
+// impact = 함께 만드는 변화: 좋은비전이 직접 수행한 활동·후원으로 만들어진 변화 아카이브.
+// notices(소식: 공지·행사안내·외부기관 소식)와는 목적이 분리된 별도 컬렉션 (독수리 지정).
+const impact = defineCollection({
+  loader: glob({ pattern: '**/*.md', base: './src/content/impact' }),
+  schema: z.object({
+    title: z.string(),
+    date: z.coerce.date(),
+    image: z.string(),
+    // 카드·상세 페이지 모두 이 값을 <img alt>로 그대로 쓴다 — 빈 문자열이면 CMS 필수 검증에서 막힌다.
+    image_alt: z.string().min(1),
+    summary: z.string(),
+    category: z.enum(['상담', '강연', '행사', '협력 활동', '후원 이야기', '기타']),
+    link: optionalUrl(),
+    status: z.enum(['draft', 'published']).default('draft'),
+  }),
+});
+
 export const collections = {
   notices,
   'network-orgs': networkOrgs,
   sponsors,
   'donation-reports': donationReports,
+  impact,
 };
