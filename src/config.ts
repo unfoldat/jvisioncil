@@ -1,31 +1,36 @@
 // 라벨 동결 대상 값 + 클라이언트 확인 필요 값의 단일 출처.
 
-export interface Link {
-  label: string;
-  href: string;
-}
-
 export const SITE_NAME = '좋은비전';
+export const ORG_FULL_NAME = '좋은비전장애인자립생활센터';
+export const SITE_DESCRIPTION = '좋은비전장애인자립생활센터';
 
-// ⚠️ 잠정값 (독수리 지정). 클라이언트 최종 확인 남음 — 정지 지점 P1.
+// 2026-07-21 최종 디자인 반영 — 이전 잠정값(02-123-4567)에서 확정.
 export const PHONE = {
-  display: '02-123-4567',
-  tel: '02-123-4567',
+  display: '010-2133-1381',
+  tel: '01021331381',
 };
 
-// 스펙 §2.2 — 대리 행위자(가족·지인) 대상 문구. 라벨 동결.
-export const PHONE_NOTE = '본인이 아니어도 됩니다. 가족·지인의 상담 문의를 환영합니다.';
-
-// 스펙 §1 — 주 메뉴 4개. 라벨 동결.
+// 2026-07-21 최종 디자인 반영 — 6항목 주 메뉴(홈 포함), 라벨 ≠ href 라우트명.
 export const MAIN_MENU = [
-  { label: '기관소개', href: '/기관소개/' },
-  { label: '상담안내', href: '/상담안내/' },
-  { label: '후원안내', href: '/후원안내/' },
+  { label: '홈', href: '/' },
+  { label: '센터소개', href: '/기관소개/' },
+  { label: '전문상담', href: '/상담안내/' },
   { label: '소식', href: '/소식/' },
+  { label: '강의', href: '/강의/' },
+  { label: '후원', href: '/후원안내/' },
 ];
 
-// 스펙 §4 — 전이표 표제. 라벨 동결.
-export const RELATED_HEADING = '여기서 갈 수 있는 곳';
+// 푸터 메뉴 — 주 메뉴와 별도, 4항목만.
+export const FOOTER_MENU = [
+  { label: '센터소개', href: '/기관소개/' },
+  { label: '전문상담', href: '/상담안내/' },
+  { label: '후원', href: '/후원안내/' },
+  { label: '콘텐츠 관리', href: '/admin/' },
+];
+
+// 공식 자료 확인 전 자리표시자 — 독수리 확인 필요 (정지 지점).
+export const ADDRESS_PLACEHOLDER = '공식 자료 확인 후 입력';
+export const EMAIL_PLACEHOLDER = '공식 자료 확인 후 입력';
 
 // 연습 배포 기간에만 true. 실도메인 전환 시 false로 바꾸는 커밋을 따로 낸다.
 export const NOINDEX = true;

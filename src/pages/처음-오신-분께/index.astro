@@ -1,0 +1,36 @@
+---
+// 2026-07-21 최종 디자인 반영 — 신규 컬렉션(first-guides) 목록.
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { sortForList, guidePath } from '../../lib/firstGuides';
+
+const guides = sortForList(await getCollection('first-guides'));
+---
+
+<BaseLayout pageName="처음 오신 분께">
+  <section>
+    <small class="review">검토 영역: 첫 안내</small>
+    <h1>시력이 달라진 뒤, 무엇부터 해야 할까요?</h1>
+    <p class="lead">현재 가장 불편하고 급한 문제부터 확인해 필요한 정보와 기관을 찾아가면 됩니다.</p>
+  </section>
+
+  <section>
+    <small class="review">검토 영역: 처음 필요한 정보</small>
+    <h2>안내 목록</h2>
+    {guides.length === 0 ? (
+      <p>아직 등록된 안내가 없습니다.</p>
+    ) : (
+      <ul>
+        {guides.map((guide) => (
+          <li>
+            {guide.data.pinned && (
+              <span class="pinned-label"><span aria-hidden="true">📌</span> 상단 고정</span>
+            )}
+            <a href={guidePath(guide)}>{guide.data.title}</a>
+          </li>
+        ))}
+      </ul>
+    )}
+    <p><a href="/상담안내/">전문상담 안내 보기</a></p>
+  </section>
+</BaseLayout>

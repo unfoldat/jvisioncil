@@ -1,50 +1,83 @@
 ---
-// 말단 = 계좌 (§1). 기부금 PDF = 무보관 원칙의 유일한 보관 예외 (§0.1).
+// 2026-07-21 최종 디자인 반영. 기부금 PDF = 무보관 원칙의 유일한 보관 예외.
 import { getCollection } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import ImpactList from '../components/ImpactList.astro';
-import { 태그경로 } from '../lib/notices';
 import { sortForList as sortImpactForList } from '../lib/impact';
-import { PHONE } from '../config';
+import { sortForList as sortReportsForList, reportPath } from '../lib/donationReports';
 
-const reports = (await getCollection('donation-reports')).sort((a, b) => b.data.year - a.data.year);
-const sponsors = (await getCollection('sponsors')).sort((a, b) => a.id.localeCompare(b.id));
 const impactEntries = sortImpactForList(await getCollection('impact'));
-
-// §4 — 후원 신뢰의 이중 근거: 기부금 PDF(숫자) + 활동소식(이야기).
-const links = [
-  { label: '소식 — 좋은비전', href: 태그경로('좋은비전') },
-  { label: `전화 상담: ${PHONE.display}`, href: `tel:${PHONE.tel}` },
-];
+const reports = sortReportsForList(await getCollection('donation-reports'));
+const sponsors = (await getCollection('sponsors')).sort((a, b) => a.id.localeCompare(b.id));
 ---
 
-<BaseLayout pageName="후원안내" breadcrumb={[{ label: '홈', href: '/' }]} links={links}>
-  <h2>후원 계좌</h2>
-  {/* ⚠️ 계좌번호 클라이언트 미제공 — 실값 받으면 config로 옮기고 복사 버튼 추가(§2.4). */}
-  <p>계좌번호는 준비 중입니다. 전화로 문의해 주세요.</p>
+<BaseLayout pageName="후원 안내">
+  <section>
+    <small class="review">검토 영역: 후원 소개</small>
+    <h1>후원 안내</h1>
+    <p class="lead">좋은비전의 상담과 정보 연결 활동이 지속되도록 함께해주세요.</p>
+  </section>
 
-  <h2>기부금 사용내역</h2>
-  {reports.length === 0 ? (
-    <p>공개된 기부금 사용내역이 아직 없습니다.</p>
-  ) : (
-    <ul>
-      {reports.map((report) => (
-        <li><a href={report.data.file}>{report.data.year}년 기부금 사용내역 (PDF)</a></li>
-      ))}
-    </ul>
-  )}
+  <section aria-labelledby="changes-title">
+    <small class="review">검토 영역: 함께 만드는 변화</small>
+    <div class="section-head">
+      <h2 id="changes-title">함께 만드는 변화</h2>
+    </div>
+    <p>후원과 참여로 이어진 좋은비전의 활동을 전합니다.</p>
+    <ImpactList entries={impactEntries} empty="등록된 활동 이야기가 아직 없습니다." />
+  </section>
 
-  <h2>후원기관</h2>
-  {sponsors.length === 0 ? (
-    <p>후원기관 목록은 준비 중입니다.</p>
-  ) : (
-    <ul>
-      {sponsors.map((sponsor) => (
-        <li><a href={sponsor.data.url}>{sponsor.data.name}</a></li>
-      ))}
-    </ul>
-  )}
+  <section aria-labelledby="donate-title">
+    <small class="review">검토 영역: 후원 안내</small>
+    <h2 id="donate-title">후원하기</h2>
+    <dl class="facts support-box">
+      <div><dt>은행</dt><dd>○○은행</dd></div>
+      <div><dt>계좌번호</dt><dd>123-456-123456</dd></div>
+      <div><dt>예금주</dt><dd>확인 후 입력</dd></div>
+    </dl>
+  </section>
 
-  <h2 id="함께-만드는-변화">함께 만드는 변화</h2>
-  <ImpactList entries={impactEntries} empty="아직 등록된 활동 글이 없습니다." />
+  <section aria-labelledby="reports-title">
+    <h2 id="reports-title">기부금 사용내역</h2>
+    {reports.length === 0 ? (
+      <p>공개된 기부금 사용내역이 아직 없습니다.</p>
+    ) : (
+      <ul class="report-list">
+        {reports.map((report) => (
+          <li>
+            <a href={reportPath(report)}>{report.data.title} HTML로 보기</a>
+            <a href={report.data.file} download>{report.data.title} PDF 다운로드</a>
+          </li>
+        ))}
+      </ul>
+    )}
+  </section>
+
+  <section aria-labelledby="sponsors-title">
+    <h2 id="sponsors-title">후원기관</h2>
+    {sponsors.length === 0 ? (
+      <p>후원기관 목록은 준비 중입니다.</p>
+    ) : (
+      <ul>
+        {sponsors.map((sponsor) => (
+          <li><a href={sponsor.data.url}>{sponsor.data.name}</a></li>
+        ))}
+      </ul>
+    )}
+  </section>
 </BaseLayout>
+
+<style>
+  .report-list {
+    padding: 0;
+    list-style: none;
+  }
+  .report-list li {
+    border-bottom: 1px solid var(--line);
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.6rem 1rem;
+    padding: 0.8rem 0;
+    display: flex;
+  }
+</style>

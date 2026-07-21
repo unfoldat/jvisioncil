@@ -1,8 +1,9 @@
 // 빌드 후 보안 헤더를 dist/_headers에 주입한다 (OWASP A05).
 //
-// 왜 astro build 이후에 실행하나: 사이트 본문 페이지 중 유일한 인라인 <script>
-// (src/pages/검색.astro, pagefind 동적 import 때문에 @vite-ignore로 인라인 유지됨)의
+// 왜 astro build 이후에 실행하나: dist 전체에서 src 없는 <script>(인라인)를 전부 스캔해
 // 정확한 해시값을 CSP script-src에 넣어야 하는데, 이건 빌드 산출물을 봐야 계산된다.
+// 2026-07-21 기준 인라인 스크립트 2개 — ① BaseLayout(글자 배율·메뉴 토글, 전 페이지 공용)
+// ② src/pages/검색.astro(pagefind 동적 import, @vite-ignore 때문에 인라인 유지됨).
 // 스크립트가 바뀌면 해시도 자동으로 다시 계산되므로 수동 유지보수가 필요 없다.
 //
 // 사이트 전체에 CSP를 하나만 쓰는 이유: Cloudflare Pages _headers는 겹치는 경로

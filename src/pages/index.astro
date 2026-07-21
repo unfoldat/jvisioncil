@@ -1,16 +1,80 @@
 ---
-// 홈 = 허브 (스펙 §1, §5 홈 입구).
+// 2026-07-21 최종 디자인 반영 — 홈 = 허브.
+import { getCollection } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
-import { MAIN_MENU, PHONE } from '../config';
+import NoticeList from '../components/NoticeList.astro';
+import PartnerGrid from '../components/PartnerGrid.astro';
+import { sortForList } from '../lib/notices';
+import { ORG_FULL_NAME } from '../config';
 
-const links = [{ label: `전화 상담: ${PHONE.display}`, href: `tel:${PHONE.tel}` }];
+const notices = sortForList(await getCollection('notices')).slice(0, 5);
 ---
 
-<BaseLayout pageName="홈" links={links}>
-  <h2>무엇을 도와드릴까요?</h2>
-  <ul class="menu-list">
-    {MAIN_MENU.map((item) => (
-      <li><a href={item.href}>{item.label}</a></li>
-    ))}
-  </ul>
+<BaseLayout pageName="홈">
+  <section class="home-summary">
+    <small class="review">검토 영역: 홈 첫 화면</small>
+    <p class="eyebrow">{ORG_FULL_NAME}</p>
+    <h1>상담과 정보를 제공하고, 필요한 서비스와 기관으로 연결합니다.</h1>
+    <p class="lead">시각장애인과 가족이 달라진 일상에서 필요한 길을 빠르게 찾도록 돕습니다.</p>
+  </section>
+
+  <section>
+    <small class="review">검토 영역: 주요 사용자 여정</small>
+    <div class="grid journey-grid">
+      <article class="journey-card">
+        <h2>전문상담</h2>
+        <p>무엇부터 해야 할지 막막할 때 현재 상황을 함께 살펴봅니다.</p>
+        <a href="/상담안내/">전문상담 안내 보기</a>
+      </article>
+      <article class="journey-card">
+        <h2>소식·정보</h2>
+        <p>좋은비전과 협력기관의 최신 소식을 확인합니다.</p>
+        <a href="/소식/">소식 전체 보기</a>
+      </article>
+      <article class="journey-card">
+        <h2>강의 신청</h2>
+        <p>강의자와 주제를 확인하고 기관 강의를 신청합니다.</p>
+        <a href="/강의/">강의 안내 보기</a>
+      </article>
+      <article class="journey-card">
+        <h2>후원</h2>
+        <p>좋은비전의 상담과 정보 연결 활동을 함께 이어갑니다.</p>
+        <a href="/후원안내/">후원 안내 보기</a>
+      </article>
+    </div>
+  </section>
+
+  <section>
+    <small class="review">검토 영역: 최근 소식</small>
+    <div class="section-head">
+      <h2>최근 소식</h2>
+      <a href="/소식/"><strong>소식 전체 보기</strong></a>
+    </div>
+    <NoticeList notices={notices} variant="home" empty="아직 소식이 없습니다." />
+  </section>
+
+  <section class="counsel">
+    <small class="review">검토 영역: 처음 필요한 정보</small>
+    <h2>처음 오신 분께</h2>
+    <p>시력이 달라진 뒤 처음 확인할 내용과 자주 묻는 질문을 살펴봅니다.</p>
+    <a href="/처음-오신-분께/"><strong>처음 오신 분 안내 보기</strong></a>
+  </section>
+
+  <section class="support-box">
+    <small class="review">검토 영역: 후원 안내</small>
+    <h2>후원 안내</h2>
+    <p>좋은비전의 활동을 함께 응원해주세요.</p>
+    <dl class="facts">
+      <div><dt>은행</dt><dd>○○은행</dd></div>
+      <div><dt>계좌번호</dt><dd>123-456-123456</dd></div>
+      <div><dt>예금주</dt><dd>확인 후 입력</dd></div>
+    </dl>
+    <a href="/후원안내/">후원 활동과 사용 내역 보기</a>
+  </section>
+
+  <section>
+    <small class="review">검토 영역: 함께하는 기관</small>
+    <h2>함께하는 기관</h2>
+    <PartnerGrid compact />
+  </section>
 </BaseLayout>

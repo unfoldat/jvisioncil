@@ -1,60 +1,58 @@
 ---
 // 검색 착지 페이지. header 검색창(Enter) → 여기로 GET ?q=.
-// 결과는 main 안에서만 갱신된다 (스펙 §2.9 — 동적 콘텐츠는 본문 하단, header 구간 동결).
 import BaseLayout from '../layouts/BaseLayout.astro';
-import { PHONE } from '../config';
-
-const links = [{ label: `전화 상담: ${PHONE.display}`, href: `tel:${PHONE.tel}` }];
 ---
 
-<BaseLayout pageName="검색 결과" links={links} searchable={false}>
-  <p id="search-status" role="status">검색어를 입력해 주세요.</p>
-  <ul id="search-results"></ul>
+<BaseLayout pageName="검색 결과" searchable={false}>
+  <section>
+    <small class="review">검토 영역: 검색 결과</small>
+    <h1>검색 결과</h1>
+    <p id="search-status" role="status">검색어를 입력해 주세요.</p>
+    <ul id="search-results"></ul>
+  </section>
 
-  {/* BaseLayout의 <slot/> 안(= <main> 내부)에 있어야 한다. 예전엔 </BaseLayout> 뒤에
-      형제로 뒀더니 </html> 다음에 <script>가 붙는 마크업 오류였음
-      (W3C validator 실측: "Stray start tag script" — KWCAG 8.1.1 위반). */}
+  {/* BaseLayout의 <slot/> 안(= <main> 내부)에 있어야 한다. */}
   <script is:inline>
-  // is:inline 필수 — is:inline을 빼면 Astro/Vite가 이 dynamic import를
-  // __vitePreload로 감싸면서 __VITE_PRELOAD__ 참조 에러를 내며 실제로 깨짐
-  // (실측 확인, ReferenceError: __VITE_PRELOAD__ is not defined).
-  // CSP script-src는 이 스크립트의 정확한 해시(scripts/inject-csp.mjs가 빌드마다
-  // 자동 계산)로 허용하므로 is:inline이어도 'unsafe-inline' 없이 안전하게 통과한다.
-  (async () => {
-    const params = new URLSearchParams(window.location.search);
-    const q = (params.get('q') || '').trim();
-    const status = document.getElementById('search-status');
-    const list = document.getElementById('search-results');
-    const box = document.getElementById('site-search');
-    if (!q) return;
-    if (box) box.value = q;
-    status.textContent = `"${q}" 검색 중…`;
-    try {
-      // pagefind.js는 astro-pagefind의 빌드 후처리 단계에서 생성되는 런타임 전용
-      // 경로라 번들러가 정적으로 못 찾는다 — @vite-ignore로 런타임 동적 import 처리.
-      const pagefind = await import(/* @vite-ignore */ '/pagefind/pagefind.js');
-      const search = await pagefind.search(q);
-      const results = await Promise.all(search.results.slice(0, 20).map((r) => r.data()));
-      if (results.length === 0) {
-        status.textContent = `"${q}" 검색 결과가 없습니다. 전화로 물어보셔도 됩니다.`;
-        return;
-      }
-      for (const r of results) {
-        const li = document.createElement('li');
-        const a = document.createElement('a');
-        a.href = r.url;
-        a.textContent = r.meta && r.meta.title ? r.meta.title : r.url;
-        li.appendChild(a);
-        if (r.meta && r.meta.date) {
-          li.append(' · ' + r.meta.date);
+    // is:inline 필수 — is:inline을 빼면 Astro/Vite가 이 dynamic import를
+    // __vitePreload로 감싸면서 __VITE_PRELOAD__ 참조 에러를 내며 실제로 깨짐
+    // (실측 확인, ReferenceError: __VITE_PRELOAD__ is not defined).
+    // CSP script-src는 이 스크립트의 정확한 해시(scripts/inject-csp.mjs가 빌드마다
+    // 자동 계산)로 허용하므로 is:inline이어도 'unsafe-inline' 없이 안전하게 통과한다.
+    (async () => {
+      const params = new URLSearchParams(window.location.search);
+      const q = (params.get('q') || '').trim();
+      const status = document.getElementById('search-status');
+      const list = document.getElementById('search-results');
+      const box = document.getElementById('site-search');
+      if (!q) return;
+      if (box) box.value = q;
+      status.textContent = `"${q}" 검색 중…`;
+      try {
+        // pagefind.js는 astro-pagefind의 빌드 후처리 단계에서 생성되는 런타임 전용
+        // 경로라 번들러가 정적으로 못 찾는다 — @vite-ignore로 런타임 동적 import 처리.
+        const pagefind = await import(/* @vite-ignore */ '/pagefind/pagefind.js');
+        const search = await pagefind.search(q);
+        const results = await Promise.all(search.results.slice(0, 20).map((r) => r.data()));
+        if (results.length === 0) {
+          status.textContent = `"${q}" 검색 결과가 없습니다. 전화로 물어보셔도 됩니다.`;
+          return;
         }
-        list.appendChild(li);
+        for (const r of results) {
+          const li = document.createElement('li');
+          const a = document.createElement('a');
+          a.href = r.url;
+          a.textContent = r.meta && r.meta.title ? r.meta.title : r.url;
+          li.appendChild(a);
+          if (r.meta && r.meta.date) {
+            li.append(' · ' + r.meta.date);
+          }
+          list.appendChild(li);
+        }
+        // 목록을 먼저 채우고 나서 알린다 (role="status" — 결과 도착을 무음으로 두지 않는다).
+        status.textContent = `"${q}" 검색 결과 ${search.results.length}건`;
+      } catch {
+        status.textContent = '검색 기능을 불러오지 못했습니다. 전화로 물어보셔도 됩니다.';
       }
-      // 목록을 먼저 채우고 나서 알린다 (role="status" — 결과 도착을 무음으로 두지 않는다).
-      status.textContent = `"${q}" 검색 결과 ${search.results.length}건`;
-    } catch {
-      status.textContent = '검색 기능을 불러오지 못했습니다. 전화로 물어보셔도 됩니다.';
-    }
-  })();
-  </script>
+    })();
+    </script>
 </BaseLayout>

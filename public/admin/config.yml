@@ -52,10 +52,22 @@ collections:
 
   - name: donation-reports
     label: 기부금 사용내역
+    label_singular: 기부금 사용내역 작성
     folder: src/content/donation-reports
     create: true
+    identifier_field: title
+    summary: '{{year}}년 · {{title}}'
+    slug: '{{year}}-{{slug}}'
     fields:
+      - { name: title, label: 제목, widget: string }
       - { name: year, label: 연도, widget: number, value_type: int }
+      - { name: date, label: 게시일, widget: datetime, date_format: 'YYYY-MM-DD', time_format: false, required: false }
+      - { name: pinned, label: 상단 고정, widget: boolean, default: false }
+      - name: body
+        label: 설명
+        widget: markdown
+        required: false
+        hint: '상세 페이지 "공시 내용"에 표시할 설명입니다.'
       - { name: file, label: PDF 파일, widget: file, accept: 'application/pdf,.pdf' }
 
   - name: impact
@@ -95,3 +107,16 @@ collections:
           - { label: '임시저장 (draft)', value: draft }
           - { label: '공개 (published)', value: published }
         default: draft
+
+  - name: first-guides
+    label: 처음 오신 분께
+    label_singular: 처음 오신 분 안내 작성
+    folder: src/content/first-guides
+    create: true
+    identifier_field: title
+    summary: '{{title}}'
+    fields:
+      - { name: title, label: 제목, widget: string }
+      - { name: date, label: 게시일, widget: datetime, date_format: 'YYYY-MM-DD', time_format: false, required: false }
+      - { name: pinned, label: 상단 고정, widget: boolean, default: false }
+      - { name: body, label: 본문, widget: markdown }

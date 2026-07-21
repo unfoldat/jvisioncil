@@ -1,55 +1,186 @@
 ---
+// 2026-07-21 최종 디자인 반영 — 홈의 "최근 소식"(article 목록)과 소식 목록/태그 페이지
+// (데스크톱 table + 좁은 화면·글자 확대 시 mobile-list)가 이 한 컴포넌트에서 갈린다.
 import type { CollectionEntry } from 'astro:content';
-import { noticeLink } from '../lib/notices';
+import { noticeHref } from '../lib/notices';
 
 interface Props {
   notices: CollectionEntry<'notices'>[];
+  variant?: 'home' | 'table';
   empty: string;
 }
-const { notices, empty } = Astro.props;
-// 정렬은 호출부(lib/notices.ts의 sortForList)에서 끝내고 넘어온다 — 여기서는 순서를 안 바꾼다.
+const { notices, variant = 'table', empty } = Astro.props;
+const iso = (d: Date) => d.toISOString().slice(0, 10);
 const items = notices.map((notice) => ({
-  ...noticeLink(notice),
+  ...noticeHref(notice),
+  title: notice.data.title,
+  org: notice.data.org[0],
   date: notice.data.date,
   pinned: notice.data.pinned,
 }));
-const iso = (d: Date) => d.toISOString().slice(0, 10);
 ---
 
 {items.length === 0 ? (
   <p>{empty}</p>
-) : (
-  <ul class="notice-list">
+) : variant === 'home' ? (
+  <div class="home-news">
     {items.map((item) => (
-      <li>
-        {item.pinned && <strong class="pinned-badge">[공지]</strong>}
-        {item.external ? (
-          <a href={item.href} target="_blank" rel="noopener">{item.label}</a>
-        ) : (
-          <a href={item.href}>{item.label}</a>
-        )}
-        {' · '}<time datetime={iso(item.date)}>{iso(item.date)}</time>
-      </li>
+      <article>
+        <div>
+          {item.pinned && (
+            <span class="pinned-label"><span aria-hidden="true">📌</span> 상단 고정</span>
+          )}
+          <span class="tag">{item.org}</span>
+          <h3>
+            {item.external ? (
+              <a href={item.href} target="_blank" rel="noopener noreferrer">
+                {item.title}<span class="sr-only">, 원문, 새 창에서 열림</span>
+              </a>
+            ) : (
+              <a href={item.href}>{item.title}</a>
+            )}
+          </h3>
+          {item.external && <span class="external-link-label" aria-hidden="true">원문 · 새 창</span>}
+        </div>
+        <p class="meta">{item.org} · <time datetime={iso(item.date)}>{iso(item.date)}</time></p>
+      </article>
     ))}
-  </ul>
+  </div>
+) : (
+  <>
+    <table class="news-table">
+      <thead>
+        <tr>
+          <th scope="col">기관</th>
+          <th scope="col">제목</th>
+          <th scope="col">날짜</th>
+        </tr>
+      </thead>
+      <tbody>
+        {items.map((item) => (
+          <tr>
+            <td>
+              {item.pinned && (
+                <span class="pinned-label"><span aria-hidden="true">📌</span> 상단 고정</span>
+              )}
+              <span class="tag">{item.org}</span>
+            </td>
+            <td>
+              {item.external ? (
+                <>
+                  <a href={item.href} target="_blank" rel="noopener noreferrer">
+                    {item.title}<span class="sr-only">, 원문, 새 창에서 열림</span>
+                  </a>
+                  <span class="external-link-label" aria-hidden="true">원문 · 새 창</span>
+                </>
+              ) : (
+                <a href={item.href}>{item.title}</a>
+              )}
+            </td>
+            <td><time datetime={iso(item.date)}>{iso(item.date)}</time></td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+    <div class="mobile-list">
+      {items.map((item) => (
+        <article class="mobile-post">
+          <p>
+            {item.pinned && (
+              <span class="pinned-label"><span aria-hidden="true">📌</span> 상단 고정</span>
+            )}
+            <span class="tag">{item.org}</span>
+          </p>
+          <h2>
+            {item.external ? (
+              <a href={item.href} target="_blank" rel="noopener noreferrer">
+                {item.title}<span class="sr-only">, 원문, 새 창에서 열림</span>
+              </a>
+            ) : (
+              <a href={item.href}>{item.title}</a>
+            )}
+          </h2>
+          {item.external && <span class="external-link-label" aria-hidden="true">원문 · 새 창</span>}
+          <p class="meta"><time datetime={iso(item.date)}>{iso(item.date)}</time></p>
+        </article>
+      ))}
+    </div>
+  </>
 )}
 
 <style>
-  .notice-list {
-    list-style: none;
-    padding: 0;
-    margin: 0;
+  .home-news {
+    border-top: 2px solid var(--ink);
+    background: #fff;
   }
-  .notice-list li {
-    margin-bottom: 0.25rem;
-  }
-  .notice-list a {
-    display: inline-flex;
+  .home-news article {
+    border-bottom: 1px solid var(--line);
+    grid-template-columns: minmax(0, 1fr) auto;
     align-items: center;
-    min-height: 44px;
-    padding: 0.4rem 0.2rem;
+    gap: 0.4rem 1rem;
+    padding: 0.75rem;
+    display: grid;
   }
-  .pinned-badge {
+  .home-news h3 {
+    margin: 0.25rem 0;
+    font-size: 1.03rem;
+  }
+  .home-news .meta {
+    white-space: nowrap;
+  }
+  .news-table {
+    border-collapse: collapse;
+    border-top: 2px solid var(--ink);
+    background: #fff;
+    width: 100%;
+  }
+  .news-table th,
+  .news-table td {
+    border-bottom: 1px solid var(--line);
+    text-align: left;
+    vertical-align: top;
+    padding: 0.82rem 0.65rem;
+  }
+  .news-table th {
+    color: #4d524b;
+    background: #f6f4ec;
+    font-size: 0.9rem;
+  }
+  .mobile-list {
+    display: none;
+  }
+  .mobile-post {
+    border: 1px solid var(--line);
+    background: #fff;
+    padding: 1rem;
+  }
+  .mobile-post h2 {
+    font-size: 1.12rem;
+  }
+  .pinned-label,
+  .external-link-label {
     margin-right: 0.3rem;
+  }
+  @media (width <= 640px) {
+    .news-table {
+      display: none;
+    }
+    .mobile-list {
+      gap: 0.8rem;
+      display: grid;
+    }
+    .home-news article {
+      grid-template-columns: 1fr;
+    }
+    .home-news .meta {
+      white-space: normal;
+    }
+  }
+  html[data-zoom='wide'] .news-table {
+    display: none;
+  }
+  html[data-zoom='wide'] .mobile-list {
+    gap: 0.8rem;
+    display: grid;
   }
 </style>

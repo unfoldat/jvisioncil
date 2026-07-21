@@ -1,43 +1,68 @@
 ---
-// footer 상시 협력기관 그리드 (스펙 §1, §5). 정적 — 자동 회전·캐러셀 금지.
-// 로고 이미지가 없으므로 기관명 텍스트 사각형 배지로 렌더한다.
-// 배지 클릭 = 기관 홈페이지 직행 (독수리 지정). url 없으면 링크 없이 텍스트만.
-// 태그 페이지(/소식/태그/)는 소식 모아보기 경로일 뿐, 배지의 목적지가 아니다.
-// 제목을 h2로 달지 않는다: main의 "여기서 갈 수 있는 곳"이 페이지 마지막 h2여야 하므로(§2.3).
+// 협력기관 배너 그리드 (2026-07-21 최종 디자인 반영) — 기관소개/홈 본문에 배치.
+// 배지 클릭 = 기관 홈페이지 직행, 새 탭. url 없으면 링크 없이 텍스트만.
 import { getCollection } from 'astro:content';
+
+interface Props {
+  compact?: boolean;
+}
+const { compact = false } = Astro.props;
 
 const orgs = (await getCollection('network-orgs')).sort((a, b) => a.id.localeCompare(b.id));
 ---
 
-<p>협력기관</p>
-<ul class="partner-grid">
+<div class:list={['partner-banners', { compact }]}>
   {orgs.map((org) => (
-    <li>
-      {org.data.url ? (
-        <a href={org.data.url}><span class="badge">{org.data.name}</span></a>
-      ) : (
-        <span class="badge">{org.data.name}</span>
-      )}
-    </li>
+    org.data.url ? (
+      <a class="partner-banner" href={org.data.url} target="_blank" rel="noopener noreferrer">
+        {org.data.name}<span class="sr-only">, 공식 사이트, 새 창에서 열림</span>
+      </a>
+    ) : (
+      <span class="partner-banner">{org.data.name}<small>공식 주소 확인 중</small></span>
+    )
   ))}
-</ul>
+</div>
 
 <style>
-  .partner-grid {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-    padding: 0;
-    list-style: none;
+  .partner-banners {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 0.65rem;
+    display: grid;
   }
-  .partner-grid a {
-    display: inline-flex;
-  }
-  .badge {
-    display: inline-flex;
+  .partner-banner {
+    border: 1px solid var(--line);
+    min-height: 5rem;
+    color: var(--ink);
+    text-align: center;
+    background: #fff;
+    border-radius: 0.35rem;
+    flex-direction: column;
+    justify-content: center;
     align-items: center;
-    min-height: 44px;
-    padding: 0.5rem 0.9rem;
-    border: 1px solid currentColor;
+    padding: 0.7rem;
+    font-weight: 850;
+    text-decoration: none;
+    display: flex;
+  }
+  .partner-banner:hover {
+    background: var(--green2);
+  }
+  .partner-banner small {
+    color: var(--muted);
+    font-weight: 400;
+    display: block;
+  }
+  @media (width <= 950px) {
+    .partner-banners {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+  @media (width <= 640px) {
+    .partner-banners {
+      grid-template-columns: 1fr;
+    }
+  }
+  html[data-zoom='wide'] .partner-banners {
+    grid-template-columns: 1fr;
   }
 </style>

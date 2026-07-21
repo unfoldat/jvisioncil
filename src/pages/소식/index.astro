@@ -1,36 +1,55 @@
 ---
+// 2026-07-21 최종 디자인 반영 — 데스크톱 table + 좁은 화면 mobile-list.
 import { getCollection } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import NoticeList from '../../components/NoticeList.astro';
 import { sortForList, orgCounts, 태그경로 } from '../../lib/notices';
-import { PHONE } from '../../config';
 
-// 기본 정렬 최신순, 고정(pinned) 글만 예외적으로 최상단 (§7 — 목록 정렬 기본값 확인).
 const notices = sortForList(await getCollection('notices'));
 
-// 스펙 §3.3 — 필터 행은 글 2건 이상 기관만 (태그 남발 = 알림판 방지).
+// 필터 탭 노출은 글 2건 이상 기관만 (태그 남발 방지).
 const filterOrgs = [...orgCounts(notices)]
   .filter(([, count]) => count >= 2)
   .map(([org]) => org)
   .sort((a, b) => a.localeCompare(b, 'ko'));
-
-const links = [
-  { label: `전화 상담: ${PHONE.display}`, href: `tel:${PHONE.tel}` },
-  { label: '후원안내', href: '/후원안내/' },
-];
 ---
 
-<BaseLayout pageName="소식" links={links}>
-  {/* 태그 필터 행 — h1 직하 허용 (§2.9 예외). 정적 링크만, JS 필터링 금지 (§3.3). */}
-  {filterOrgs.length > 0 && (
-    <ul class="menu-list">
-      <li><a href="/소식/">전체</a></li>
-      {filterOrgs.map((org) => (
-        <li><a href={태그경로(org)}>{org}</a></li>
-      ))}
-    </ul>
-  )}
-
-  <h2>소식 목록</h2>
-  <NoticeList notices={notices} empty="아직 소식이 없습니다." />
+<BaseLayout pageName="소식">
+  <section>
+    <small class="review">검토 영역: 소식 게시판</small>
+    <h1>소식</h1>
+    {filterOrgs.length > 0 && (
+      <nav aria-label="소식 기관 분류">
+        <ul class="tabs">
+          <li><a href="/소식/" aria-current="page">전체</a></li>
+          {filterOrgs.map((org) => (
+            <li><a href={태그경로(org)}>{org}</a></li>
+          ))}
+        </ul>
+      </nav>
+    )}
+    <NoticeList notices={notices} variant="table" empty="아직 소식이 없습니다." />
+  </section>
 </BaseLayout>
+
+<style>
+  .tabs {
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    padding: 0;
+    list-style: none;
+    display: flex;
+  }
+  .tabs a {
+    border: 1px solid var(--line);
+    background: #fff;
+    align-items: center;
+    min-height: 2.5rem;
+    padding: 0.3rem 0.75rem;
+    display: inline-flex;
+  }
+  .tabs a[aria-current='page'] {
+    border-bottom: 0.3rem solid var(--green);
+    font-weight: 900;
+  }
+</style>

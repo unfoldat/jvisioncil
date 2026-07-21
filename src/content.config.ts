@@ -50,10 +50,14 @@ const sponsors = defineCollection({
 });
 
 // 스펙 §5 — 법적 의무 문서(무보관 원칙의 유일한 예외).
+// 2026-07-21 최종 디자인 반영 — 보고서마다 HTML 상세 페이지가 생기면서 title/body 추가.
 const donationReports = defineCollection({
   loader: glob({ pattern: '**/*.md', base: './src/content/donation-reports' }),
   schema: z.object({
+    title: z.string(),
     year: z.number().int(),
+    date: z.coerce.date().optional(),
+    pinned: z.boolean().default(false),
     file: z.string(),
   }),
 });
@@ -75,10 +79,21 @@ const impact = defineCollection({
   }),
 });
 
+// 2026-07-21 최종 디자인 반영 — first-guides = 처음 오신 분께 (신규, 이전엔 예약 상태였음).
+const firstGuides = defineCollection({
+  loader: glob({ pattern: '**/*.md', base: './src/content/first-guides' }),
+  schema: z.object({
+    title: z.string(),
+    date: z.coerce.date().optional(),
+    pinned: z.boolean().default(false),
+  }),
+});
+
 export const collections = {
   notices,
   'network-orgs': networkOrgs,
   sponsors,
   'donation-reports': donationReports,
   impact,
+  'first-guides': firstGuides,
 };

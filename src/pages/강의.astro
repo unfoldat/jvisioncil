@@ -1,0 +1,52 @@
+---
+// 2026-07-21 최종 디자인 반영 — 신규 정적 페이지(강의 안내). CMS 컬렉션 없음.
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout pageName="강의 안내">
+  <section>
+    <small class="review">검토 영역: 강의·교육 소개</small>
+    <h1>강의 안내</h1>
+    <p class="lead">강의자와 주요 강의 주제, 진행 사례를 확인한 뒤 신청할 수 있습니다.</p>
+  </section>
+
+  <section>
+    <small class="review">검토 영역: 강의자 프로필</small>
+    <h2>강의자 프로필</h2>
+    <div class="profile-grid">
+      <div class="profile-photo" role="img" aria-label="부센터장 공식 프로필 사진 자리">공식 프로필 사진<br />확인 후 교체</div>
+      <div>
+        <h3>이름: 공식 자료 확인 후 입력</h3>
+        <p><strong>좋은비전장애인자립생활센터 부센터장</strong></p>
+        <dl class="facts">
+          <div><dt>상담 및 활동 경력</dt><dd>공식 자료 확인 후 입력</dd></div>
+          <div><dt>전문 분야</dt><dd>상담학, 중도시각장애, 자립생활 및 기관 연결</dd></div>
+        </dl>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>주요 강의 주제</h2>
+    <ul class="grid two">
+      <li class="card">중도시각장애 이해</li>
+      <li class="card">스크린리더와 디지털 접근성</li>
+      <li class="card">가족과 동료의 지원 방법</li>
+      <li class="card">기관 현장에서의 안내와 응대</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>강의 경력 또는 진행 사례</h2>
+    <p>공식 강의 경력과 진행 사례 확인 후 입력</p>
+  </section>
+
+  <section>
+    <h2>강의 신청</h2>
+    <p>
+      <a class="btn alt" href="https://forms.gle/" target="_blank" rel="noopener noreferrer">
+        강의 신청하기 <span class="sr-only">새 창에서 열림</span>
+      </a>
+    </p>
+  </section>
+</BaseLayout>

@@ -1,89 +1,33 @@
 ---
-// url 없는 글 = 우리가 원본(활동소식) → 내부 상세. url 있는 글은 목록에서 외부 직행하므로
-// 여기서 페이지를 만들지 않는다 (§3.1 — 분기는 필드가 아니라 데이터에서 도출).
+// url 없는 글 = 우리가 원본(활동소식) → 내부 상세.
 import { getCollection, render } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import { 태그경로, adjacentNotices, noticeLink } from '../../lib/notices';
-import { PHONE } from '../../config';
 
 export async function getStaticPaths() {
   const allNotices = await getCollection('notices');
   const internalNotices = allNotices.filter(({ data }) => !data.url);
-
-  return internalNotices.map((notice) => {
-    // 이전글/다음글은 전체 소식(외부 직행 글 포함) 기준 날짜순 인접 항목.
-    const { prev, next } = adjacentNotices(allNotices, notice.id);
-    return { params: { slug: notice.id }, props: { notice, prev, next } };
-  });
+  return internalNotices.map((notice) => ({ params: { slug: notice.id }, props: { notice } }));
 }
 
-const { notice, prev, next } = Astro.props;
+const { notice } = Astro.props;
 const { Content } = await render(notice);
-
-const links = [
-  { label: '소식 목록', href: '/소식/' },
-  { label: `전화 상담: ${PHONE.display}`, href: `tel:${PHONE.tel}` },
-  { label: '후원안내', href: '/후원안내/' },
-  ...notice.data.org.map((org) => ({ label: `소식 — ${org}`, href: 태그경로(org) })),
-];
-const breadcrumb = [
-  { label: '홈', href: '/' },
-  { label: '소식', href: '/소식/' },
-];
 const isoDate = notice.data.date.toISOString().slice(0, 10);
-
-const prevLink = prev && { ...noticeLink(prev), label: `이전 글: ${noticeLink(prev).label}` };
-const nextLink = next && { ...noticeLink(next), label: `다음 글: ${noticeLink(next).label}` };
 ---
 
-<BaseLayout pageName={notice.data.title} breadcrumb={breadcrumb} links={links}>
-  {/* data-pagefind-meta: 검색 결과 목록에도 게시일이 뜨도록 (전에는 title만 뽑혀서 누락). */}
-  <p>
-    <time datetime={isoDate} data-pagefind-meta="date[datetime]">{isoDate}</time>
-    {' · '}{notice.data.org.join(', ')}
-  </p>
-  <Content />
-
-  {(prevLink || nextLink) && (
-    <>
-      <h2>이전 글 · 다음 글</h2>
-      <ul class="adjacent-list">
-        {prevLink && (
-          <li>
-            {prevLink.external ? (
-              <a href={prevLink.href} target="_blank" rel="noopener">{prevLink.label}</a>
-            ) : (
-              <a href={prevLink.href}>{prevLink.label}</a>
-            )}
-          </li>
-        )}
-        {nextLink && (
-          <li>
-            {nextLink.external ? (
-              <a href={nextLink.href} target="_blank" rel="noopener">{nextLink.label}</a>
-            ) : (
-              <a href={nextLink.href}>{nextLink.label}</a>
-            )}
-          </li>
-        )}
-      </ul>
-    </>
-  )}
+<BaseLayout pageName={notice.data.title}>
+  <article>
+    <section class="post-head">
+      <small class="review">검토 영역: 소식 상세정보</small>
+      <p><span class="tag">{notice.data.org[0]}</span></p>
+      <h1>{notice.data.title}</h1>
+      <p class="meta">
+        {notice.data.org[0]} · <time datetime={isoDate} data-pagefind-meta="date[datetime]">{isoDate}</time>
+      </p>
+    </section>
+    <section>
+      <h2>본문</h2>
+      <Content />
+    </section>
+    <p><a href="/소식/">소식 목록으로 돌아가기</a></p>
+  </article>
 </BaseLayout>
-
-<style>
-  .adjacent-list {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-  }
-  .adjacent-list li {
-    margin-bottom: 0.25rem;
-  }
-  .adjacent-list a {
-    display: inline-flex;
-    align-items: center;
-    min-height: 44px;
-    padding: 0.4rem 0.2rem;
-  }
-</style>

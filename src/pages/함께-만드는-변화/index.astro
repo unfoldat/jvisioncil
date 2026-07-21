@@ -1,0 +1,19 @@
+---
+// 2026-07-21 최종 디자인 반영 — 함께 만드는 변화 전체 목록(카드).
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ImpactList from '../../components/ImpactList.astro';
+import { sortForList } from '../../lib/impact';
+
+const entries = sortForList(await getCollection('impact'));
+---
+
+<BaseLayout pageName="함께 만드는 변화">
+  <section>
+    <small class="review">검토 영역: 함께 만드는 변화</small>
+    <h1>함께 만드는 변화</h1>
+    <p class="lead">후원과 참여로 이어진 좋은비전의 활동을 최신순으로 전합니다.</p>
+    <ImpactList entries={entries} empty="등록된 활동 이야기가 아직 없습니다." />
+    <p><a href="/후원안내/">후원 안내로 돌아가기</a></p>
+  </section>
+</BaseLayout>

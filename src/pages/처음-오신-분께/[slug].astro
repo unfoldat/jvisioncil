@@ -1,0 +1,29 @@
+---
+// 2026-07-21 최종 디자인 반영 — 신규 컬렉션(first-guides) 상세.
+import { getCollection, render } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+export async function getStaticPaths() {
+  const guides = await getCollection('first-guides');
+  return guides.map((guide) => ({ params: { slug: guide.id }, props: { guide } }));
+}
+
+const { guide } = Astro.props;
+const { Content } = await render(guide);
+const isoDate = guide.data.date?.toISOString().slice(0, 10);
+---
+
+<BaseLayout pageName={guide.data.title}>
+  <article>
+    <section class="post-head">
+      <small class="review">검토 영역: 처음 필요한 정보</small>
+      <h1>{guide.data.title}</h1>
+      {isoDate && <p class="meta"><time datetime={isoDate}>{isoDate}</time></p>}
+    </section>
+    <section>
+      <h2>안내 내용</h2>
+      <Content />
+    </section>
+    <p><a href="/처음-오신-분께/">처음 오신 분 안내 목록으로 돌아가기</a></p>
+  </article>
+</BaseLayout>

@@ -1,46 +1,29 @@
 ---
-// 방사의 실행 지점 (§3.4). 태그 = 정적 페이지. 새 h1이 필터 결과를 확언한다.
-// 소식이 1건이라도 있는 기관만 생성한다 — 배지가 기관 홈페이지로 직행하게 된 뒤로
-// 소식 0건 기관의 태그 페이지는 들어오는 링크가 없는 빈 페이지가 되기 때문.
+// 방사의 실행 지점. 태그 = 정적 페이지. 소식이 1건이라도 있는 기관 + 좋은비전(후원안내가 항상 링크)만 생성.
 import { getCollection } from 'astro:content';
 import BaseLayout from '../../../layouts/BaseLayout.astro';
 import NoticeList from '../../../components/NoticeList.astro';
-import { sortForList, orgCounts, 태그경로 } from '../../../lib/notices';
-import { PHONE, SITE_NAME } from '../../../config';
+import { sortForList, orgCounts } from '../../../lib/notices';
+import { SITE_NAME } from '../../../config';
 
 export async function getStaticPaths() {
   const notices = await getCollection('notices');
-  const networkOrgs = await getCollection('network-orgs');
-  const orgUrls = new Map(networkOrgs.map((o) => [o.data.name, o.data.url]));
-  // 좋은비전(우리 활동)은 후원안내가 항상 링크하므로 소식 0건이어도 페이지가 있어야 한다.
   const orgs = [...new Set([SITE_NAME, ...orgCounts(notices).keys()])];
 
   return orgs.map((org) => ({
     params: { org },
-    props: {
-      org,
-      url: orgUrls.get(org),
-      notices: sortForList(notices.filter((n) => n.data.org.includes(org))),
-      others: orgs.filter((o) => o !== org),
-    },
+    props: { org, notices: sortForList(notices.filter((n) => n.data.org.includes(org))) },
   }));
 }
 
-const { org, url, notices, others } = Astro.props;
-
-// §4 — 항상: 해당 기관 외부 링크. 추가: 전화, 다른 태그.
-const links = [
-  ...(url ? [{ label: `${org} 홈페이지`, href: url }] : []),
-  { label: `전화 상담: ${PHONE.display}`, href: `tel:${PHONE.tel}` },
-  { label: '소식 전체 목록', href: '/소식/' },
-  ...others.map((other) => ({ label: `소식 — ${other}`, href: 태그경로(other) })),
-];
-const breadcrumb = [
-  { label: '홈', href: '/' },
-  { label: '소식', href: '/소식/' },
-];
+const { org, notices } = Astro.props;
 ---
 
-<BaseLayout pageName={`소식 — ${org}`} breadcrumb={breadcrumb} links={links}>
-  <NoticeList notices={notices} empty={`${org} 소식은 아직 없습니다.`} />
+<BaseLayout pageName={`${org} 소식`}>
+  <section>
+    <small class="review">검토 영역: 소식 게시판</small>
+    <h1>{org} 소식</h1>
+    <p><a href="/소식/">소식 전체 목록</a></p>
+    <NoticeList notices={notices} variant="table" empty={`${org} 소식은 아직 없습니다.`} />
+  </section>
 </BaseLayout>

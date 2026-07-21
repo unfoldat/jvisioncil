@@ -1,27 +1,67 @@
 ---
-// 글은 나중, 지금은 그릇만 (§6).
-import { getCollection } from 'astro:content';
+// 2026-07-21 최종 디자인 반영 — 센터소개(URL은 /기관소개/ 유지, 표시 라벨만 "센터소개").
 import BaseLayout from '../layouts/BaseLayout.astro';
-import { PHONE } from '../config';
-
-const orgs = (await getCollection('network-orgs')).sort((a, b) => a.id.localeCompare(b.id));
-
-// §4 — 항상: 전화. 추가: 센터장 소개(예약), 소식.
-const links = [
-  { label: `전화 상담: ${PHONE.display}`, href: `tel:${PHONE.tel}` },
-  { label: '소식', href: '/소식/' },
-];
+import PartnerGrid from '../components/PartnerGrid.astro';
+import { SITE_NAME } from '../config';
 ---
 
-<BaseLayout pageName="기관소개" breadcrumb={[{ label: '홈', href: '/' }]} links={links}>
-  <p>어디로 가야 할지 알려드립니다.</p>
+<BaseLayout pageName="센터소개">
+  <section class="slogan">
+    <small class="review">검토 영역: 기관 슬로건</small>
+    <h1>눈이 보이지 않아도,<br />비전으로 자신의 꿈을 볼 수 있습니다.</h1>
+    <p>{SITE_NAME}CIL</p>
+  </section>
 
-  <h2>함께하는 기관</h2>
-  <ul>
-    {orgs.map((org) => (
-      <li>
-        {org.data.url ? <a href={org.data.url}>{org.data.name}</a> : org.data.name}
-      </li>
-    ))}
-  </ul>
+  <section>
+    <small class="review">검토 영역: 기관 소개</small>
+    <h2>{SITE_NAME} 소개</h2>
+    <p class="lead">
+      {SITE_NAME}장애인자립생활센터는 시각장애인과 가족에게 필요한 상담과 정보를 제공하고 적절한 서비스와 기관으로 연결합니다.
+    </p>
+    <p>달라진 일상에서 필요한 정보와 관계를 다시 찾고, 교육·문화·사회활동에 참여할 수 있도록 함께합니다.</p>
+  </section>
+
+  <section>
+    <small class="review">검토 영역: 센터장 · 부센터장 소개</small>
+    <h2>센터장 · 부센터장 소개</h2>
+    <div class="grid two">
+      <article class="card">
+        <div class="profile-photo" role="img" aria-label="센터장 공식 프로필 사진 자리">센터장 공식 사진<br />확인 후 교체</div>
+        <h3>센터장</h3>
+        <dl class="facts">
+          <div><dt>이름</dt><dd>공식 자료 확인 후 입력</dd></div>
+          <div><dt>직책</dt><dd>센터장</dd></div>
+          <div><dt>담당 업무</dt><dd>센터 운영과 주요 사업 총괄</dd></div>
+          <div><dt>주요 약력</dt><dd>공식 자료 확인 후 입력</dd></div>
+        </dl>
+      </article>
+      <article class="card">
+        <div class="profile-photo" role="img" aria-label="부센터장 공식 프로필 사진 자리">부센터장 공식 사진<br />확인 후 교체</div>
+        <h3>부센터장</h3>
+        <dl class="facts">
+          <div><dt>이름</dt><dd>공식 자료 확인 후 입력</dd></div>
+          <div><dt>직책</dt><dd>부센터장</dd></div>
+          <div><dt>담당 업무</dt><dd>전문상담, 센터 운영과 강의 활동</dd></div>
+          <div><dt>주요 약력</dt><dd>공식 자료 확인 후 입력</dd></div>
+        </dl>
+      </article>
+    </div>
+  </section>
+
+  <section>
+    <small class="review">검토 영역: 함께하는 기관</small>
+    <h2>협력 네트워크</h2>
+    <p class="lead">{SITE_NAME}이 함께 활동하며 정보와 서비스를 연결하는 기관입니다.</p>
+    <PartnerGrid />
+  </section>
+
+  <section>
+    <h2>오시는 길</h2>
+    <p>기관 주소와 대중교통 안내 확인 후 입력</p>
+  </section>
+
+  <section>
+    <h2>문의</h2>
+    <p>기관 대표 연락처와 이메일은 페이지 아래 푸터에서 확인할 수 있습니다.</p>
+  </section>
 </BaseLayout>

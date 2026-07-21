@@ -1,0 +1,32 @@
+---
+// 2026-07-21 최종 디자인 반영 — 기부금 사용내역 보고서별 HTML 상세 페이지 신설.
+// §5 — 법적 의무 문서(무보관 원칙의 유일한 예외).
+import { getCollection, render } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+export async function getStaticPaths() {
+  const reports = await getCollection('donation-reports');
+  return reports.map((report) => ({ params: { slug: report.id }, props: { report } }));
+}
+
+const { report } = Astro.props;
+const { Content } = await render(report);
+---
+
+<BaseLayout pageName={report.data.title}>
+  <article>
+    <section class="post-head">
+      <h1>{report.data.title}</h1>
+      <p class="meta">{report.data.year}년 공시</p>
+    </section>
+    <section>
+      <h2>공시 내용</h2>
+      <Content />
+    </section>
+    <section>
+      <h2>첨부 자료</h2>
+      <p><a class="btn" href={report.data.file} download>{report.data.title} PDF 다운로드</a></p>
+    </section>
+    <p><a href="/후원안내/">기부금 사용내역 목록으로 돌아가기</a></p>
+  </article>
+</BaseLayout>

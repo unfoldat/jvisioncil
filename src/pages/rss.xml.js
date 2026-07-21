@@ -1,6 +1,6 @@
 import rss from '@astrojs/rss';
 import { getCollection } from 'astro:content';
-import { byDateDesc, noticeLink } from '../lib/notices';
+import { byDateDesc, noticeHref } from '../lib/notices';
 import { SITE_NAME } from '../config';
 
 // 소식 + 칼럼 통합 예정 (스펙 §6). columns 컬렉션은 아직 스키마·콘텐츠가 없어서
@@ -14,11 +14,10 @@ export async function GET(context) {
     description: '좋은비전 소식',
     site: context.site,
     items: notices.map((notice) => {
-      const link = noticeLink(notice);
       return {
         title: notice.data.title,
         pubDate: notice.data.date,
-        link: link.href,
+        link: noticeHref(notice).href,
         description: notice.data.org.join(', '),
       };
     }),

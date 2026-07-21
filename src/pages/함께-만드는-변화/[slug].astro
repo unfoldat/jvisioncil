@@ -1,10 +1,10 @@
 ---
 // 함께 만드는 변화: 좋은비전이 직접 수행한 활동·후원으로 만들어진 변화 기록 — 상세 페이지.
-// notices(소식)와 분리된 컬렉션 (§ CLAUDE.md 지침). 비공개(draft) 글은 경로 자체를 만들지 않는다.
+// notices(소식)와 분리된 컬렉션. 비공개(draft) 글은 경로 자체를 만들지 않는다.
+// 2026-07-21 최종 디자인 반영 — ChangeCard 상세(.change-hero) 스타일.
 import { getCollection, render } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { publishedOnly } from '../../lib/impact';
-import { PHONE } from '../../config';
 
 export async function getStaticPaths() {
   const entries = publishedOnly(await getCollection('impact'));
@@ -13,38 +13,42 @@ export async function getStaticPaths() {
 
 const { entry } = Astro.props;
 const { Content } = await render(entry);
-
-const links = [
-  { label: '목록으로 돌아가기', href: '/후원안내/#함께-만드는-변화' },
-  { label: `전화 상담: ${PHONE.display}`, href: `tel:${PHONE.tel}` },
-  { label: '소식', href: '/소식/' },
-];
-const breadcrumb = [
-  { label: '홈', href: '/' },
-  { label: '후원안내', href: '/후원안내/' },
-];
 const isoDate = entry.data.date.toISOString().slice(0, 10);
 ---
 
-<BaseLayout pageName={entry.data.title} breadcrumb={breadcrumb} links={links}>
-  <p>
-    <time datetime={isoDate} data-pagefind-meta="date[datetime]">{isoDate}</time>
-    {' · '}{entry.data.category}
-  </p>
-  <img src={entry.data.image} alt={entry.data.image_alt} class="impact-detail-image" />
-  <Content />
-
-  {entry.data.link && (
-    <p>
-      관련 링크:{' '}
-      <a href={entry.data.link} target="_blank" rel="noopener">{entry.data.link} (외부 사이트, 새 탭에서 열림)</a>
-    </p>
-  )}
+<BaseLayout pageName={entry.data.title}>
+  <article>
+    <section class="post-head">
+      <p><span class="tag">{entry.data.category}</span></p>
+      <h1>{entry.data.title}</h1>
+      <p class="meta"><time datetime={isoDate} data-pagefind-meta="date[datetime]">{isoDate}</time></p>
+    </section>
+    <section>
+      <img src={entry.data.image} alt={entry.data.image_alt} class="change-hero" />
+      <Content />
+    </section>
+    {entry.data.link && (
+      <p>
+        관련 링크:{' '}
+        <a href={entry.data.link} target="_blank" rel="noopener noreferrer">
+          {entry.data.link}<span class="sr-only">, 원문, 새 창에서 열림</span>
+        </a>
+        <span class="external-link-label" aria-hidden="true">원문 · 새 창</span>
+      </p>
+    )}
+    <p><a href="/함께-만드는-변화/">함께 만드는 변화 목록으로 돌아가기</a></p>
+  </article>
 </BaseLayout>
 
 <style>
-  .impact-detail-image {
-    max-width: 100%;
-    height: auto;
+  .change-hero {
+    object-fit: contain;
+    border: 1px solid var(--line);
+    background: #fff;
+    border-radius: 0.35rem;
+    width: 100%;
+    max-height: 42rem;
+    display: block;
+    margin-bottom: 1rem;
   }
 </style>

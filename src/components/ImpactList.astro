@@ -1,55 +1,26 @@
 ---
+// 2026-07-21 최종 디자인 반영 — ChangeCard 목록 래퍼(후원안내 카드 섹션 + 함께 만드는 변화 전체 목록 공용).
 import type { CollectionEntry } from 'astro:content';
-import { impactPath } from '../lib/impact';
+import ChangeCard from './ChangeCard.astro';
 
 interface Props {
   entries: CollectionEntry<'impact'>[];
   empty: string;
 }
 const { entries, empty } = Astro.props;
-const iso = (d: Date) => d.toISOString().slice(0, 10);
 ---
 
 {entries.length === 0 ? (
   <p>{empty}</p>
 ) : (
-  <ul class="impact-list">
-    {entries.map((entry) => (
-      <li>
-        <a href={impactPath(entry)} class="impact-card">
-          <img src={entry.data.image} alt={entry.data.image_alt} loading="lazy" />
-          <span class="impact-card-title">{entry.data.title}</span>
-          <time datetime={iso(entry.data.date)}>{iso(entry.data.date)}</time>
-          <span class="impact-card-summary">{entry.data.summary}</span>
-        </a>
-      </li>
-    ))}
-  </ul>
+  <div class="change-list">
+    {entries.map((entry) => <ChangeCard entry={entry} />)}
+  </div>
 )}
 
 <style>
-  .impact-list {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(14rem, 1fr));
+  .change-list {
     gap: 1rem;
-  }
-  .impact-card {
-    display: flex;
-    flex-direction: column;
-    gap: 0.3rem;
-    min-height: 44px;
-    padding: 0.5rem;
-    border: 1px solid #ccc;
-  }
-  .impact-card img {
-    width: 100%;
-    aspect-ratio: 4 / 3;
-    object-fit: cover;
-  }
-  .impact-card-title {
-    font-weight: bold;
+    display: grid;
   }
 </style>
