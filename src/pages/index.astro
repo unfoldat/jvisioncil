@@ -60,21 +60,24 @@ const notices = sortForList(await getCollection('notices')).slice(0, 5);
     <a href="/처음-오신-분께/"><strong>처음 오신 분 안내 보기</strong></a>
   </section>
 
-  <section class="support-box">
-    <small class="review">검토 영역: 후원 안내</small>
-    <h2>후원 안내</h2>
-    <p>좋은비전의 활동을 함께 응원해주세요.</p>
-    <dl class="facts">
-      <div><dt>은행</dt><dd>○○은행</dd></div>
-      <div><dt>계좌번호</dt><dd>123-456-123456</dd></div>
-      <div><dt>예금주</dt><dd>확인 후 입력</dd></div>
-    </dl>
-    <a href="/후원안내/">후원 활동과 사용 내역 보기</a>
-  </section>
-
   <section>
     <small class="review">검토 영역: 함께하는 기관</small>
     <h2>함께하는 기관</h2>
     <PartnerGrid compact />
   </section>
+
+  <section class="card donate-cta">
+    <small class="review">검토 영역: 후원 안내</small>
+    <p>좋은비전의 활동을 함께 응원해주세요.</p>
+    <a class="btn" href="/후원안내/">후원 안내 보기</a>
+  </section>
 </BaseLayout>
+
+<style>
+  .donate-cta {
+    text-align: center;
+  }
+  .donate-cta p {
+    margin: 0 0 0.9rem;
+  }
+</style>
