@@ -1,29 +1,32 @@
 ---
-// 방사의 실행 지점. 태그 = 정적 페이지. 소식이 1건이라도 있는 기관 + 좋은비전(후원안내가 항상 링크)만 생성.
+// 방사의 실행 지점. 태그 = 정적 페이지. network-orgs에 등록된 기관 전체에 대해
+// 페이지를 만든다(글 0건이어도) — 필터 탭이 항상 유효한 목적지로 이어지도록.
 import { getCollection } from 'astro:content';
 import BaseLayout from '../../../layouts/BaseLayout.astro';
 import NoticeList from '../../../components/NoticeList.astro';
-import { sortForList, orgCounts } from '../../../lib/notices';
-import { SITE_NAME } from '../../../config';
+import { sortForList } from '../../../lib/notices';
 
 export async function getStaticPaths() {
   const notices = await getCollection('notices');
-  const orgs = [...new Set([SITE_NAME, ...orgCounts(notices).keys()])];
+  const orgs = await getCollection('network-orgs');
 
   return orgs.map((org) => ({
-    params: { org },
-    props: { org, notices: sortForList(notices.filter((n) => n.data.org.includes(org))) },
+    params: { org: org.id },
+    props: {
+      orgName: org.data.name,
+      notices: sortForList(notices.filter((n) => n.data.org.id === org.id)),
+    },
   }));
 }
 
-const { org, notices } = Astro.props;
+const { orgName, notices } = Astro.props;
 ---
 
-<BaseLayout pageName={`${org} 소식`}>
+<BaseLayout pageName={`${orgName} 소식`}>
   <section>
     <small class="review">검토 영역: 소식 게시판</small>
-    <h1>{org} 소식</h1>
+    <h1>{orgName} 소식</h1>
     <p><a href="/소식/">소식 전체 목록</a></p>
-    <NoticeList notices={notices} variant="table" empty={`${org} 소식은 아직 없습니다.`} />
+    <NoticeList notices={notices} variant="table" empty={`${orgName} 소식은 아직 없습니다.`} />
   </section>
 </BaseLayout>

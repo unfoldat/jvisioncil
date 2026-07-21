@@ -26,6 +26,7 @@ const escapeRegExp = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 
 // 협력기관 배지 검사의 정답지: network-orgs 컨텐츠 소스에서 name/url을 직접 읽는다
 // (렌더링 결과가 아니라 소스 진실을 기준으로 대조 — 회귀를 잡아내는 핵심).
+// internal(좋은비전 자체 등)은 배너 그리드에 아예 안 나오므로 대조 대상에서 뺀다.
 const NETWORK_ORGS_DIR = 'src/content/network-orgs';
 const networkOrgs = fs
   .readdirSync(NETWORK_ORGS_DIR)
@@ -35,8 +36,10 @@ const networkOrgs = fs
     return {
       name: raw.match(/^name:\s*(.+)$/m)?.[1]?.trim(),
       url: raw.match(/^url:\s*(.+)$/m)?.[1]?.trim(),
+      internal: /^internal:\s*true\s*$/m.test(raw),
     };
-  });
+  })
+  .filter((org) => !org.internal);
 
 const 검사 = [];
 const 실패 = [];

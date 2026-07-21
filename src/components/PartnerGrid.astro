@@ -1,14 +1,15 @@
 ---
 // 협력기관 배너 그리드 (2026-07-21 최종 디자인 반영) — 기관소개/홈 본문에 배치.
 // 배지 클릭 = 기관 홈페이지 직행, 새 탭. url 없으면 링크 없이 텍스트만.
-import { getCollection } from 'astro:content';
+// internal(좋은비전 자체 등)은 협력기관이 아니므로 여기엔 나오지 않는다 — partnerOrgs()가 걸러낸다.
+import { partnerOrgs } from '../lib/networkOrgs';
 
 interface Props {
   compact?: boolean;
 }
 const { compact = false } = Astro.props;
 
-const orgs = (await getCollection('network-orgs')).sort((a, b) => a.id.localeCompare(b.id));
+const orgs = await partnerOrgs();
 ---
 
 <div class:list={['partner-banners', { compact }]}>

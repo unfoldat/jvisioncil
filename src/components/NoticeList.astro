@@ -3,6 +3,7 @@
 // (데스크톱 table + 좁은 화면·글자 확대 시 mobile-list)가 이 한 컴포넌트에서 갈린다.
 import type { CollectionEntry } from 'astro:content';
 import { noticeHref } from '../lib/notices';
+import { orgMap } from '../lib/networkOrgs';
 
 interface Props {
   notices: CollectionEntry<'notices'>[];
@@ -11,13 +12,19 @@ interface Props {
 }
 const { notices, variant = 'table', empty } = Astro.props;
 const iso = (d: Date) => d.toISOString().slice(0, 10);
-const items = notices.map((notice) => ({
-  ...noticeHref(notice),
-  title: notice.data.title,
-  org: notice.data.org[0],
-  date: notice.data.date,
-  pinned: notice.data.pinned,
-}));
+// 기관명이 바뀌어도 이 목록은 항상 network-orgs 최신값을 그대로 보여준다(참조 기반 렌더링).
+const orgs = await orgMap();
+const items = notices.map((notice) => {
+  const org = orgs.get(notice.data.org.id);
+  return {
+    ...noticeHref(notice),
+    title: notice.data.title,
+    orgName: org?.data.name ?? notice.data.org.id,
+    orgUrl: org?.data.url,
+    date: notice.data.date,
+    pinned: notice.data.pinned,
+  };
+});
 ---
 
 {items.length === 0 ? (
@@ -30,7 +37,13 @@ const items = notices.map((notice) => ({
           {item.pinned && (
             <span class="pinned-label"><span aria-hidden="true">📌</span> 상단 고정</span>
           )}
-          <span class="tag">{item.org}</span>
+          {item.orgUrl ? (
+            <a class="tag" href={item.orgUrl} target="_blank" rel="noopener noreferrer">
+              {item.orgName}<span class="sr-only">, 공식 사이트, 새 창에서 열림</span>
+            </a>
+          ) : (
+            <span class="tag">{item.orgName}</span>
+          )}
           <h3>
             {item.external ? (
               <a href={item.href} target="_blank" rel="noopener noreferrer">
@@ -42,7 +55,7 @@ const items = notices.map((notice) => ({
           </h3>
           {item.external && <span class="external-link-label" aria-hidden="true">원문 · 새 창</span>}
         </div>
-        <p class="meta">{item.org} · <time datetime={iso(item.date)}>{iso(item.date)}</time></p>
+        <p class="meta">{item.orgName} · <time datetime={iso(item.date)}>{iso(item.date)}</time></p>
       </article>
     ))}
   </div>
@@ -63,7 +76,13 @@ const items = notices.map((notice) => ({
               {item.pinned && (
                 <span class="pinned-label"><span aria-hidden="true">📌</span> 상단 고정</span>
               )}
-              <span class="tag">{item.org}</span>
+              {item.orgUrl ? (
+                <a class="tag" href={item.orgUrl} target="_blank" rel="noopener noreferrer">
+                  {item.orgName}<span class="sr-only">, 공식 사이트, 새 창에서 열림</span>
+                </a>
+              ) : (
+                <span class="tag">{item.orgName}</span>
+              )}
             </td>
             <td>
               {item.external ? (
@@ -89,7 +108,13 @@ const items = notices.map((notice) => ({
             {item.pinned && (
               <span class="pinned-label"><span aria-hidden="true">📌</span> 상단 고정</span>
             )}
-            <span class="tag">{item.org}</span>
+            {item.orgUrl ? (
+              <a class="tag" href={item.orgUrl} target="_blank" rel="noopener noreferrer">
+                {item.orgName}<span class="sr-only">, 공식 사이트, 새 창에서 열림</span>
+              </a>
+            ) : (
+              <span class="tag">{item.orgName}</span>
+            )}
           </p>
           <h2>
             {item.external ? (

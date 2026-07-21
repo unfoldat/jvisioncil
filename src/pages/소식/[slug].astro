@@ -1,6 +1,6 @@
 ---
 // url 없는 글 = 우리가 원본(활동소식) → 내부 상세.
-import { getCollection, render } from 'astro:content';
+import { getCollection, getEntry, render } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 
 export async function getStaticPaths() {
@@ -11,6 +11,9 @@ export async function getStaticPaths() {
 
 const { notice } = Astro.props;
 const { Content } = await render(notice);
+const org = await getEntry(notice.data.org);
+const orgName = org?.data.name ?? notice.data.org.id;
+const orgUrl = org?.data.url;
 const isoDate = notice.data.date.toISOString().slice(0, 10);
 ---
 
@@ -18,10 +21,18 @@ const isoDate = notice.data.date.toISOString().slice(0, 10);
   <article>
     <section class="post-head">
       <small class="review">검토 영역: 소식 상세정보</small>
-      <p><span class="tag">{notice.data.org[0]}</span></p>
+      <p>
+        {orgUrl ? (
+          <a class="tag" href={orgUrl} target="_blank" rel="noopener noreferrer">
+            {orgName}<span class="sr-only">, 공식 사이트, 새 창에서 열림</span>
+          </a>
+        ) : (
+          <span class="tag">{orgName}</span>
+        )}
+      </p>
       <h1>{notice.data.title}</h1>
       <p class="meta">
-        {notice.data.org[0]} · <time datetime={isoDate} data-pagefind-meta="date[datetime]">{isoDate}</time>
+        {orgName} · <time datetime={isoDate} data-pagefind-meta="date[datetime]">{isoDate}</time>
       </p>
     </section>
     <section>

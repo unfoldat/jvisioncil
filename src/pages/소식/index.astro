@@ -1,17 +1,15 @@
 ---
 // 2026-07-21 최종 디자인 반영 — 데스크톱 table + 좁은 화면 mobile-list.
+// 2026-07-21 — 기관 필터 탭은 이제 network-orgs에 등록된 기관 전체를 항상 보여준다
+// (글 수와 무관 — 태그가 자유 문자열이 아니라 관리되는 컬렉션이 됐기 때문).
 import { getCollection } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import NoticeList from '../../components/NoticeList.astro';
-import { sortForList, orgCounts, 태그경로 } from '../../lib/notices';
+import { sortForList, 태그경로 } from '../../lib/notices';
+import { filterableOrgs } from '../../lib/networkOrgs';
 
 const notices = sortForList(await getCollection('notices'));
-
-// 필터 탭 노출은 글 2건 이상 기관만 (태그 남발 방지).
-const filterOrgs = [...orgCounts(notices)]
-  .filter(([, count]) => count >= 2)
-  .map(([org]) => org)
-  .sort((a, b) => a.localeCompare(b, 'ko'));
+const filterOrgs = await filterableOrgs();
 ---
 
 <BaseLayout pageName="소식">
@@ -23,7 +21,7 @@ const filterOrgs = [...orgCounts(notices)]
         <ul class="tabs">
           <li><a href="/소식/" aria-current="page">전체</a></li>
           {filterOrgs.map((org) => (
-            <li><a href={태그경로(org)}>{org}</a></li>
+            <li><a href={태그경로(org.id)}>{org.data.name}</a></li>
           ))}
         </ul>
       </nav>

@@ -11,6 +11,7 @@ public_folder: /uploads
 collections:
   - name: notices
     label: 소식
+    description: 홈의 최근 소식과 소식 게시판(목록·상세·기관별 태그 페이지)에 표시됩니다.
     folder: src/content/notices
     create: true
     slug: '{{year}}-{{month}}-{{day}}-{{slug}}'
@@ -18,7 +19,15 @@ collections:
     fields:
       - { name: title, label: 제목, widget: string }
       - { name: date, label: 날짜, widget: datetime, date_format: 'YYYY-MM-DD', time_format: false }
-      - { name: org, label: 기관 태그, widget: list, min: 1 }
+      - name: org
+        label: 기관
+        widget: relation
+        collection: network-orgs
+        search_fields: [name]
+        display_fields: [name]
+        value_field: '{{slug}}'
+        multiple: false
+        hint: '이 소식을 발행한 기관을 선택하세요(좋은비전 자체 소식도 목록에 있습니다). 목록에 없으면 "함께하는 기관" 컬렉션에 먼저 등록하세요.'
       - { name: pinned, label: '상단 고정 ([공지])', widget: boolean, default: false }
       - name: url
         label: 원문 주소 (남의 소식일 때만)
@@ -33,17 +42,24 @@ collections:
 
   - name: network-orgs
     label: 함께하는 기관
+    description: 홈 하단과 센터소개 페이지의 함께하는 기관 배너, 그리고 소식 작성 시 "기관" 선택 목록에 표시됩니다.
     folder: src/content/network-orgs
     create: true
     fields:
       - name: name
         label: 기관명
         widget: string
-        hint: '소식의 기관 태그와 글자가 정확히 같아야 태그 페이지가 이어집니다.'
+        hint: '소식 작성 시 "기관" 선택 목록에 이 이름으로 나타납니다.'
       - { name: url, label: 기관 홈페이지, widget: string, required: false }
+      - name: internal
+        label: 내부 항목(파트너 배너 제외)
+        widget: boolean
+        default: false
+        hint: '좋은비전 자체처럼 외부 협력기관이 아니면 켜세요. 켜면 기관소개·홈의 배너 그리드에는 나오지 않지만, 소식 "기관" 선택 목록에는 계속 나옵니다.'
 
   - name: sponsors
     label: 후원기관
+    description: 후원 안내 페이지의 후원기관 영역에 표시됩니다.
     folder: src/content/sponsors
     create: true
     fields:
@@ -52,6 +68,7 @@ collections:
 
   - name: donation-reports
     label: 기부금 사용내역
+    description: 후원 안내 페이지의 기부금 사용내역 목록과, 보고서별 상세 페이지에 표시됩니다.
     label_singular: 기부금 사용내역 작성
     folder: src/content/donation-reports
     create: true
@@ -72,6 +89,7 @@ collections:
 
   - name: impact
     label: 함께 만드는 변화
+    description: 후원 안내 페이지의 활동 카드와, 전체 활동 목록·상세 페이지(/함께-만드는-변화/)에 표시됩니다.
     label_singular: 활동 글
     folder: src/content/impact
     create: true
@@ -110,6 +128,7 @@ collections:
 
   - name: first-guides
     label: 처음 오신 분께
+    description: 홈의 "처음 오신 분께" 영역과, 처음 오신 분께 안내 목록·상세 페이지(/처음-오신-분께/)에 표시됩니다.
     label_singular: 처음 오신 분 안내 작성
     folder: src/content/first-guides
     create: true

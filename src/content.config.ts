@@ -1,4 +1,4 @@
-import { defineCollection, z } from 'astro:content';
+import { defineCollection, z, reference } from 'astro:content';
 import { glob } from 'astro/loaders';
 
 // Sveltia CMS는 옵셔널 string 위젯을 비워두면 필드를 생략하지 않고 ''(빈 문자열)로
@@ -7,12 +7,14 @@ import { glob } from 'astro/loaders';
 const optionalUrl = () => z.preprocess((v) => (v === '' ? undefined : v), z.string().url().optional());
 
 // 스펙 §3.1 — url 있으면 외부 직행, 없으면 내부 상세(본문 = 마크다운 body).
+// 2026-07-21 — 기관 태그(자유 문자열 배열) 폐기, network-orgs 참조 단일값으로 교체.
+// 기관명이 바뀌어도 게시물을 일일이 고칠 필요가 없도록 이름이 아니라 항목(id)을 저장한다.
 const notices = defineCollection({
   loader: glob({ pattern: '**/*.md', base: './src/content/notices' }),
   schema: z.object({
     title: z.string(),
     date: z.coerce.date(),
-    org: z.array(z.string()).min(1),
+    org: reference('network-orgs'),
     // 해당 소식 글의 정확한 주소. 기관 메인 홈페이지를 붙이는 실수를 빌드에서 잡는다.
     url: z
       .preprocess(
@@ -31,12 +33,15 @@ const notices = defineCollection({
 });
 
 // 협력기관을 두 컬렉션으로 분리 (독수리 지정).
-// network-orgs = 함께하는 기관: 기관소개 섹션 + footer 배지 + 태그 페이지 연결.
+// network-orgs = 함께하는 기관: 기관소개/홈 배너 + 소식 기관 선택(relation) + 태그 페이지 연결.
 const networkOrgs = defineCollection({
   loader: glob({ pattern: '**/*.md', base: './src/content/network-orgs' }),
   schema: z.object({
     name: z.string(),
     url: optionalUrl(),
+    // 2026-07-21 — 좋은비전(자체 발행 주체) 등 실제 "협력기관"이 아닌 항목 표시.
+    // true면 배너 그리드에서 빠지지만 소식 기관 선택 목록에는 계속 나온다.
+    internal: z.boolean().default(false),
   }),
 });
 
