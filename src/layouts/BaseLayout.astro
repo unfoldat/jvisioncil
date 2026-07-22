@@ -2,7 +2,7 @@
 // 2026-07-21 최종 디자인 반영(전면 개편) — 독수리 검토 목업(좋은비전_최종_홈.html +
 // 좋은비전_최종_정적사이트.zip) 이식. "검토 영역" 표시는 내일 시연·피드백 수집용으로
 // 의도적으로 유지한다 — 임의로 지우지 않는다.
-import { SITE_NAME, SITE_DESCRIPTION, ORG_FULL_NAME, MAIN_MENU, FOOTER_MENU, NOINDEX, PHONE, ADDRESS_PLACEHOLDER, EMAIL_PLACEHOLDER } from '../config';
+import { SITE_NAME, SITE_DESCRIPTION, ORG_FULL_NAME, MAIN_MENU, FOOTER_MENU, NOINDEX, ADDRESS_PLACEHOLDER, EMAIL_PLACEHOLDER } from '../config';
 
 interface Props {
   pageName: string;
@@ -91,22 +91,19 @@ const path = Astro.url.pathname;
         <small class="review">검토 영역: 푸터</small>
         <div class="footer-top">
           <div class="footer-card">
-            <p class="footer-org-name"><strong>{ORG_FULL_NAME}</strong></p>
-            <dl class="facts footer-facts">
-              <div><dt>주소</dt><dd>{ADDRESS_PLACEHOLDER}</dd></div>
-              <div><dt>연락처</dt><dd>{PHONE.display}</dd></div>
-              <div><dt>이메일</dt><dd>{EMAIL_PLACEHOLDER}</dd></div>
-            </dl>
+            <p class="footer-org-name">{ORG_FULL_NAME}</p>
+            <p class="footer-line">{ADDRESS_PLACEHOLDER}</p>
+            {/* 검토 요청: 실연결 없는 표시용 텍스트(플레이스홀더 번호) — 링크 아님. */}
+            <p class="footer-line">
+              <span class="footer-phone-icon" aria-hidden="true">☎︎</span> 상담전화 02-123-4567
+              <span class="footer-sep" aria-hidden="true">·</span>
+              이메일 {EMAIL_PLACEHOLDER}
+            </p>
           </div>
-          {/* 검토 요청: 실연결 없는 표시용 텍스트(플레이스홀더 번호) — 링크 아님. */}
-          <p class="footer-phone">
-            <span aria-hidden="true">📞</span> 상담전화<br />
-            <span class="footer-phone-number">02-123-4567</span>
-          </p>
+          <nav aria-label="푸터 메뉴" class="footer-nav">
+            {FOOTER_MENU.map((item) => <a href={item.href}>{item.label}</a>)}
+          </nav>
         </div>
-        <nav aria-label="푸터 메뉴">
-          {FOOTER_MENU.map((item) => <a href={item.href}>{item.label}</a>)}
-        </nav>
       </div>
     </footer>
 
@@ -625,45 +622,37 @@ const path = Astro.url.pathname;
     flex-wrap: wrap;
     justify-content: space-between;
     align-items: flex-start;
-    gap: 1rem 2rem;
+    gap: 1.2rem 2rem;
     display: flex;
   }
-  /* 검토 요청: 기관 정보를 명함처럼 — 이름을 크게, 항목은 라벨 | 값 행으로. */
+  /* 검토 요청(참고 목업: 명함형이 아니라 일반 푸터 관행 — 기관명 강조 + 아래 항목은
+     좌측 정렬 줄글로, 상담전화는 우측에 따로 띄우지 않고 주소 밑에 한 줄로). */
   .footer-card {
-    max-width: 26rem;
+    max-width: 30rem;
   }
   .footer-org-name {
-    margin: 0 0 0.6rem;
-    font-size: 1.4rem;
-  }
-  .footer-facts {
-    margin: 0;
-  }
-  .footer-facts div {
-    padding: 0.55rem 0;
-    font-size: 1.05rem;
-  }
-  /* 검토 요청: 전화 아이콘 + "상담전화" 한 줄, 번호는 아래 줄에 더 크게 — 링크 아님. */
-  .footer-phone {
-    text-align: right;
-    margin: 0;
-    font-size: 1.1rem;
-    font-weight: 700;
-  }
-  .footer-phone-number {
-    font-size: 1.6rem;
-    font-weight: 900;
-  }
-  .footer-phone {
-    font-size: 1.15rem;
+    margin: 0 0 0.5rem;
+    color: var(--green);
+    font-size: 1.35rem;
     font-weight: 800;
-    white-space: nowrap;
-    margin: 0;
   }
-  .footer nav {
+  .footer-line {
+    margin: 0.3rem 0;
+    font-size: 1.02rem;
+  }
+  /* 검토 요청: 전화 아이콘이 컬러 이모지(📞)로 튀어서 흑백 글자 기호(☎)로 교체. */
+  .footer-phone-icon {
+    color: #1a1a1a;
+    font-size: 1.05em;
+  }
+  .footer-sep {
+    margin: 0 0.5rem;
+    color: var(--muted);
+  }
+  .footer-nav {
     flex-wrap: wrap;
-    gap: 1rem;
-    margin-top: 1rem;
+    align-content: flex-start;
+    gap: 0.6rem 1rem;
     display: flex;
   }
   .sr-only {
