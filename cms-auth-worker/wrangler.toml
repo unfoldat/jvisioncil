@@ -8,7 +8,11 @@ compatibility_date = "2023-03-24"
 # 여전히 대시보드에서 암호화된 시크릿으로만 관리 — 여기 절대 쓰지 않는다.
 [vars]
 GITHUB_CLIENT_ID = "Ov23liRql7sXg5EVNSb0"
-ALLOWED_DOMAINS = "jvisioncil.pages.dev"
+# 와일드카드로 프로덕션(jvisioncil.pages.dev)뿐 아니라 브랜치별 프리뷰 해시
+# 서브도메인(예: 608b295e.jvisioncil.pages.dev)에서도 /admin/ 로그인이 되게 함.
+# 이 프로젝트 Cloudflare Pages 서브도메인만 허용하므로 신뢰 경계는 넓어지지 않음
+# (프리뷰가 존재하려면 어차피 이 저장소에 push 권한이 있어야 함).
+ALLOWED_DOMAINS = "jvisioncil.pages.dev,*.jvisioncil.pages.dev"
 
 # 자동화 공격(무차별 대입) 방어 (KISA 가이드 대응). KV로 먼저 구현했다가 실측에서
 # 실패 확인(최종 일관성 때문에 빠른 연속 요청은 카운터가 안 쌓임 — 25연속 요청 전부
