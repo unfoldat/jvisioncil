@@ -7,7 +7,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   <section>
     <small class="review">검토 영역: 검색 결과</small>
     <h1>검색 결과</h1>
-    <p id="search-status" role="status">검색어를 입력해 주세요.</p>
+    <p id="search-status" role="status" tabindex="-1">검색어를 입력해 주세요.</p>
 
     {/* Pagefind는 "서울필로스합창단"처럼 띄어쓰기 없는 복합어를 통째로 한 토큰으로
         인덱싱해 "필로스"같은 부분 문자열은 못 찾는다(Pagefind 자체의 알려진 한계).
@@ -144,6 +144,11 @@ import BaseLayout from '../layouts/BaseLayout.astro';
         total > 0
           ? `"${q}" 검색 결과 ${total}건`
           : `"${q}" 검색 결과가 없습니다. 전화로 물어보셔도 됩니다.`;
+
+      // 검토 요청: 검색 버튼을 누른 뒤 포커스가 검색 결과 내용으로 이동해야 함 —
+      // 새 페이지로 이동한 뒤 결과가 비동기로 채워지므로, 채운 다음 이 요약 문구로
+      // 포커스를 옮겨 스크린리더가 바로 결과 건수를 읽고 아래 목록으로 이어가게 한다.
+      status.focus();
     })();
     </script>
 </BaseLayout>

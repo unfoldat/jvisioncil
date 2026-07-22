@@ -65,19 +65,4 @@ const notices = sortForList(await getCollection('notices')).slice(0, 5);
     <h2>함께하는 기관</h2>
     <PartnerGrid compact />
   </section>
-
-  <section class="card donate-cta">
-    <small class="review">검토 영역: 후원 안내</small>
-    <p>좋은비전의 활동을 함께 응원해주세요.</p>
-    <a class="btn" href="/후원안내/">후원 안내 보기</a>
-  </section>
 </BaseLayout>
-
-<style>
-  .donate-cta {
-    text-align: center;
-  }
-  .donate-cta p {
-    margin: 0 0 0.9rem;
-  }
-</style>
