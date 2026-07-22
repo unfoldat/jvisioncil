@@ -1,15 +1,15 @@
 ---
 // 2026-07-21 최종 디자인 반영 — 데스크톱 table + 좁은 화면 mobile-list.
-// 2026-07-21 — 기관 필터 탭은 이제 network-orgs에 등록된 기관 전체를 항상 보여준다
-// (글 수와 무관 — 태그가 자유 문자열이 아니라 관리되는 컬렉션이 됐기 때문).
+// 2026-07-22 — 기관 필터 탭은 좋은비전(가상 항목) + network-orgs 등록 기관 전체를
+// 항상 보여준다(글 수와 무관 — 태그가 자유 문자열이 아니라 관리되는 컬렉션이 됐기 때문).
 import { getCollection } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import NoticeList from '../../components/NoticeList.astro';
-import { sortForList, 태그경로 } from '../../lib/notices';
-import { filterableOrgs } from '../../lib/networkOrgs';
+import { sortForList, 태그경로, filterTargets } from '../../lib/notices';
 
 const notices = sortForList(await getCollection('notices'));
-const filterOrgs = await filterableOrgs();
+const orgs = (await getCollection('network-orgs')).sort((a, b) => a.id.localeCompare(b.id));
+const filterOrgs = filterTargets(orgs);
 ---
 
 <BaseLayout pageName="소식">
@@ -21,7 +21,7 @@ const filterOrgs = await filterableOrgs();
         <ul class="tabs">
           <li><a href="/소식/" aria-current="page">전체</a></li>
           {filterOrgs.map((org) => (
-            <li><a href={태그경로(org.id)}>{org.data.name}</a></li>
+            <li><a href={태그경로(org.id)}>{org.name}</a></li>
           ))}
         </ul>
       </nav>

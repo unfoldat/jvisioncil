@@ -2,7 +2,7 @@
 // 2026-07-21 최종 디자인 반영 — 홈의 "최근 소식"(article 목록)과 소식 목록/태그 페이지
 // (데스크톱 table + 좁은 화면·글자 확대 시 mobile-list)가 이 한 컴포넌트에서 갈린다.
 import type { CollectionEntry } from 'astro:content';
-import { noticeHref } from '../lib/notices';
+import { noticeHref, noticeOrgDisplay } from '../lib/notices';
 import { orgMap } from '../lib/networkOrgs';
 
 interface Props {
@@ -15,12 +15,12 @@ const iso = (d: Date) => d.toISOString().slice(0, 10);
 // 기관명이 바뀌어도 이 목록은 항상 network-orgs 최신값을 그대로 보여준다(참조 기반 렌더링).
 const orgs = await orgMap();
 const items = notices.map((notice) => {
-  const org = orgs.get(notice.data.org.id);
+  const org = noticeOrgDisplay(notice, orgs);
   return {
     ...noticeHref(notice),
     title: notice.data.title,
-    orgName: org?.data.name ?? notice.data.org.id,
-    orgUrl: org?.data.url,
+    orgName: org.name,
+    orgUrl: org.url,
     date: notice.data.date,
     pinned: notice.data.pinned,
   };

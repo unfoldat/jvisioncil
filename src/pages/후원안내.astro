@@ -4,7 +4,7 @@ import { getCollection } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import ImpactList from '../components/ImpactList.astro';
 import { sortForList as sortImpactForList } from '../lib/impact';
-import { sortForList as sortReportsForList, reportPath } from '../lib/donationReports';
+import { sortForList as sortReportsForList } from '../lib/donationReports';
 
 const impactEntries = sortImpactForList(await getCollection('impact'));
 const reports = sortReportsForList(await getCollection('donation-reports'));
@@ -30,7 +30,7 @@ const sponsors = (await getCollection('sponsors')).sort((a, b) => a.id.localeCom
   <section aria-labelledby="donate-title">
     <small class="review">검토 영역: 후원 안내</small>
     <h2 id="donate-title">후원하기</h2>
-    <dl class="facts support-box">
+    <dl class="facts donate-facts">
       <div><dt>은행</dt><dd>○○은행</dd></div>
       <div><dt>계좌번호</dt><dd>123-456-123456</dd></div>
       <div><dt>예금주</dt><dd>확인 후 입력</dd></div>
@@ -42,10 +42,12 @@ const sponsors = (await getCollection('sponsors')).sort((a, b) => a.id.localeCom
     {reports.length === 0 ? (
       <p>공개된 기부금 사용내역이 아직 없습니다.</p>
     ) : (
-      <ul class="report-list">
+      <ul class="report-board">
         {reports.map((report) => (
           <li>
-            <a href={reportPath(report)}>{report.data.title} HTML로 보기</a>
+            {report.data.pinned && (
+              <span class="pinned-label"><span aria-hidden="true">📌</span> 상단 고정</span>
+            )}
             <a href={report.data.file} download>{report.data.title} PDF 다운로드</a>
           </li>
         ))}
@@ -68,16 +70,28 @@ const sponsors = (await getCollection('sponsors')).sort((a, b) => a.id.localeCom
 </BaseLayout>
 
 <style>
-  .report-list {
+  /* 검토 요청: 노란 강조 범위가 너무 넓었음 — 텍스트보다 살짝 여유 있는 정도로 축소. */
+  .donate-facts {
+    background: #fff9e6;
+    border: 1px solid #dfc983;
+    border-radius: 0.25rem;
+    width: fit-content;
+    padding: 0.3rem 0.85rem;
+  }
+
+  /* 검토 요청: 보고서가 여러 건 쌓일 예정 — 게시판처럼(소식 목록과 같은 시각 언어). */
+  .report-board {
+    border-top: 2px solid var(--ink);
+    background: #fff;
     padding: 0;
     list-style: none;
   }
-  .report-list li {
+  .report-board li {
     border-bottom: 1px solid var(--line);
     flex-wrap: wrap;
     align-items: center;
-    gap: 0.6rem 1rem;
-    padding: 0.8rem 0;
+    gap: 0.4rem 1rem;
+    padding: 0.82rem 0.65rem;
     display: flex;
   }
 </style>

@@ -1,6 +1,6 @@
 import rss from '@astrojs/rss';
 import { getCollection } from 'astro:content';
-import { byDateDesc, noticeHref } from '../lib/notices';
+import { byDateDesc, noticeHref, noticeOrgDisplay } from '../lib/notices';
 import { orgMap } from '../lib/networkOrgs';
 import { SITE_NAME } from '../config';
 
@@ -20,7 +20,7 @@ export async function GET(context) {
         title: notice.data.title,
         pubDate: notice.data.date,
         link: noticeHref(notice).href,
-        description: orgs.get(notice.data.org.id)?.data.name ?? notice.data.org.id,
+        description: noticeOrgDisplay(notice, orgs).name,
       };
     }),
   });

@@ -19,15 +19,24 @@ collections:
     fields:
       - { name: title, label: 제목, widget: string }
       - { name: date, label: 날짜, widget: datetime, date_format: 'YYYY-MM-DD', time_format: false }
+      - name: publisher
+        label: 발행 주체
+        widget: select
+        options:
+          - { label: 좋은비전 (자체 소식), value: 좋은비전 }
+          - { label: 협력기관, value: 협력기관 }
+        default: 좋은비전
+        hint: '"협력기관"을 선택하면 바로 아래 "기관"에서 실제 기관을 고르세요.'
       - name: org
-        label: 기관
+        label: 기관 (발행 주체가 "협력기관"일 때만)
         widget: relation
         collection: network-orgs
         search_fields: [name]
         display_fields: [name]
         value_field: '{{slug}}'
         multiple: false
-        hint: '이 소식을 발행한 기관을 선택하세요(좋은비전 자체 소식도 목록에 있습니다). 목록에 없으면 "함께하는 기관" 컬렉션에 먼저 등록하세요.'
+        required: false
+        hint: 'Sveltia CMS는 다른 필드 값에 따라 필드를 자동으로 숨기는 기능이 아직 없어 이 필드가 항상 보입니다. 발행 주체가 "협력기관"일 때만 선택하고, "좋은비전"이면 비워두세요. 목록에 없는 기관이면 "함께하는 기관" 컬렉션에 먼저 등록하세요.'
       - { name: pinned, label: '상단 고정 ([공지])', widget: boolean, default: false }
       - name: url
         label: 원문 주소 (남의 소식일 때만)
@@ -42,7 +51,7 @@ collections:
 
   - name: network-orgs
     label: 함께하는 기관
-    description: 홈 하단과 센터소개 페이지의 함께하는 기관 배너, 그리고 소식 작성 시 "기관" 선택 목록에 표시됩니다.
+    description: 홈 하단과 센터소개 페이지의 함께하는 기관 배너, 그리고 소식 작성 시(발행 주체가 "협력기관"일 때) "기관" 선택 목록에 표시됩니다. 좋은비전 자체는 여기 등록하지 않습니다 — 소식의 "발행 주체"에서 따로 선택하세요.
     folder: src/content/network-orgs
     create: true
     fields:
@@ -51,11 +60,6 @@ collections:
         widget: string
         hint: '소식 작성 시 "기관" 선택 목록에 이 이름으로 나타납니다.'
       - { name: url, label: 기관 홈페이지, widget: string, required: false }
-      - name: internal
-        label: 내부 항목(파트너 배너 제외)
-        widget: boolean
-        default: false
-        hint: '좋은비전 자체처럼 외부 협력기관이 아니면 켜세요. 켜면 기관소개·홈의 배너 그리드에는 나오지 않지만, 소식 "기관" 선택 목록에는 계속 나옵니다.'
 
   - name: sponsors
     label: 후원기관
@@ -68,7 +72,7 @@ collections:
 
   - name: donation-reports
     label: 기부금 사용내역
-    description: 후원 안내 페이지의 기부금 사용내역 목록과, 보고서별 상세 페이지에 표시됩니다.
+    description: 후원 안내 페이지의 기부금 사용내역 목록(파일명 + PDF 다운로드)에 표시됩니다.
     label_singular: 기부금 사용내역 작성
     folder: src/content/donation-reports
     create: true
@@ -80,11 +84,6 @@ collections:
       - { name: year, label: 연도, widget: number, value_type: int }
       - { name: date, label: 게시일, widget: datetime, date_format: 'YYYY-MM-DD', time_format: false, required: false }
       - { name: pinned, label: 상단 고정, widget: boolean, default: false }
-      - name: body
-        label: 설명
-        widget: markdown
-        required: false
-        hint: '상세 페이지 "공시 내용"에 표시할 설명입니다.'
       - { name: file, label: PDF 파일, widget: file, accept: 'application/pdf,.pdf' }
 
   - name: impact

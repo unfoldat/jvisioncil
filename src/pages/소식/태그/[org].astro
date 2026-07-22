@@ -1,20 +1,21 @@
 ---
-// 방사의 실행 지점. 태그 = 정적 페이지. network-orgs에 등록된 기관 전체에 대해
-// 페이지를 만든다(글 0건이어도) — 필터 탭이 항상 유효한 목적지로 이어지도록.
+// 방사의 실행 지점. 태그 = 정적 페이지. 좋은비전(가상 항목) + network-orgs 등록 기관
+// 전체에 대해 페이지를 만든다(글 0건이어도) — 필터 탭이 항상 유효한 목적지로 이어지도록.
 import { getCollection } from 'astro:content';
 import BaseLayout from '../../../layouts/BaseLayout.astro';
 import NoticeList from '../../../components/NoticeList.astro';
-import { sortForList } from '../../../lib/notices';
+import { sortForList, filterTargets, belongsToTarget } from '../../../lib/notices';
 
 export async function getStaticPaths() {
   const notices = await getCollection('notices');
   const orgs = await getCollection('network-orgs');
+  const targets = filterTargets(orgs);
 
-  return orgs.map((org) => ({
-    params: { org: org.id },
+  return targets.map((target) => ({
+    params: { org: target.id },
     props: {
-      orgName: org.data.name,
-      notices: sortForList(notices.filter((n) => n.data.org.id === org.id)),
+      orgName: target.name,
+      notices: sortForList(notices.filter((n) => belongsToTarget(n, target.id))),
     },
   }));
 }

@@ -1,7 +1,9 @@
 ---
 // url 없는 글 = 우리가 원본(활동소식) → 내부 상세.
-import { getCollection, getEntry, render } from 'astro:content';
+import { getCollection, render } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import { noticeOrgDisplay } from '../../lib/notices';
+import { orgMap } from '../../lib/networkOrgs';
 
 export async function getStaticPaths() {
   const allNotices = await getCollection('notices');
@@ -11,9 +13,7 @@ export async function getStaticPaths() {
 
 const { notice } = Astro.props;
 const { Content } = await render(notice);
-const org = await getEntry(notice.data.org);
-const orgName = org?.data.name ?? notice.data.org.id;
-const orgUrl = org?.data.url;
+const { name: orgName, url: orgUrl } = noticeOrgDisplay(notice, await orgMap());
 const isoDate = notice.data.date.toISOString().slice(0, 10);
 ---
 
