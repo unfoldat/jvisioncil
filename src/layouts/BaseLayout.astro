@@ -62,7 +62,7 @@ const path = Astro.url.pathname;
                 <label for="site-search">페이지, 소식, 기관 또는 기능 검색</label>
                 <input id="site-search" type="search" name="q" required />
               </div>
-              <button type="submit">검색</button>
+              <button type="submit" class="btn">검색</button>
             </form>
             <p id="search-hub-status" class="sr-only" aria-live="polite"></p>
           </section>
@@ -383,12 +383,15 @@ const path = Astro.url.pathname;
     min-height: 2.3rem;
     padding: 0.25rem 0.45rem;
   }
-  .search-form button {
+  /* 검토 요청: 버튼이 세로로 좁고 진한 테두리라 어색했음 — .btn(초록 채움)을 쓰고
+     좌우 여백을 넉넉히 줘서 가로로 긴 버튼이 되게 한다. */
+  .search-form .btn {
     border-left: 0;
     border-radius: 0 0.25rem 0.25rem 0;
     min-height: 2.3rem;
-    padding: 0.2rem 0.6rem;
-    font-size: 0.84rem;
+    padding: 0.2rem 1.5rem;
+    font-size: 0.9rem;
+    white-space: nowrap;
   }
   .zoom {
     border-left: 1px solid var(--line);
