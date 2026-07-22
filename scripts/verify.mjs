@@ -54,9 +54,9 @@ for (const page of pages) {
   const main = html.split(/<main[^>]*>/)[1]?.split('</main>')[0] ?? '';
   const footer = html.split(/<footer[^>]*>/)[1]?.split('</footer>')[0] ?? '';
 
-  // E1. 편집창은 검색창 + 글자 배율 슬라이더, 정확히 2개(고정 계약).
+  // E1. 편집창은 검색창 하나뿐(글자 배율은 슬라이더 없이 버튼식), 정확히 1개(고정 계약).
   const inputs = [...html.matchAll(/<(input|textarea)\b/g)].length;
-  if (inputs !== 2) fail('E1', `입력 요소 ${inputs}개 (검색창+글자배율 슬라이더 2개여야 함)`);
+  if (inputs !== 1) fail('E1', `입력 요소 ${inputs}개 (검색창 1개여야 함)`);
 
   // E2. search 랜드마크 정확히 1개.
   const searchCount = [...html.matchAll(/role=["']search["']/g)].length;

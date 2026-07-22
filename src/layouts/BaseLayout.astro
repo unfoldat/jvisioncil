@@ -69,12 +69,14 @@ const path = Astro.url.pathname;
           <section class="zoom" aria-labelledby="zoom-title">
             <small class="review">검토 영역: 글자 크기 조절</small>
             <h2 id="zoom-title" class="tool-title">글자 배율</h2>
+            {/* 검토 요청: 슬라이더는 500%까지 밀면 손잡이·축소 버튼이 화면 밖으로 밀려
+                되돌리기 어려워짐(확대 장치가 제 몸집에 눌리는 문제) — 단계 버튼 방식으로 교체.
+                기본 크기 버튼은 항상 같은 자리에 보여서 몇 %에서든 한 번에 복귀 가능. */}
             <div class="zoom-row">
-              <button type="button" data-zoom="down">축소</button>
-              <input id="zoom-range" type="range" min="80" max="500" step="10" value="100" aria-label="글자 배율, 80퍼센트에서 500퍼센트" />
-              <button type="button" data-zoom="up">확대</button>
-              <button type="button" data-zoom="reset">100%</button>
-              <output id="zoom-output" for="zoom-range">100%</output>
+              <button type="button" id="zoom-down">축소</button>
+              <output id="zoom-output">100%</output>
+              <button type="button" id="zoom-up">확대</button>
+              <button type="button" id="zoom-reset">기본 크기</button>
             </div>
             <p id="zoom-status" class="sr-only" aria-live="polite"></p>
           </section>
@@ -110,13 +112,16 @@ const path = Astro.url.pathname;
     <script>
       (() => {
         const root = document.documentElement;
-        const range = document.getElementById('zoom-range') as HTMLInputElement;
         const output = document.getElementById('zoom-output') as HTMLOutputElement;
         const status = document.getElementById('zoom-status') as HTMLParagraphElement;
+        const downButton = document.getElementById('zoom-down') as HTMLButtonElement;
+        const upButton = document.getElementById('zoom-up') as HTMLButtonElement;
+        const resetButton = document.getElementById('zoom-reset') as HTMLButtonElement;
+        let zoom = 100;
 
         const toggle = document.querySelector('.menu-toggle') as HTMLButtonElement;
         const menu = document.getElementById('main-menu') as HTMLUListElement;
-        const narrow = () => matchMedia('(max-width: 880px)').matches || Number(range.value) >= 180;
+        const narrow = () => matchMedia('(max-width: 880px)').matches || zoom >= 180;
         const closeMenu = (focus = false) => {
           toggle.setAttribute('aria-expanded', 'false');
           toggle.textContent = '☰ 주 메뉴 열기';
@@ -132,32 +137,25 @@ const path = Astro.url.pathname;
           }
         };
 
+        // 슬라이더 대신 20%씩 움직이는 단계 버튼(80~500) — 슬라이더는 고배율에서
+        // 손잡이·축소 버튼 자체가 화면 밖으로 밀려 되돌리기 어려웠다(검토 지적).
         const apply = (value: number | string, announce = false) => {
-          const next = Math.max(80, Math.min(500, Number(value) || 100));
-          root.style.setProperty('--zoom', String(next / 100));
-          root.dataset.zoom = next >= 180 ? 'wide' : '';
-          range.value = String(next);
-          output.textContent = `${next}%`;
-          localStorage.setItem('goodvision-zoom', String(next));
-          if (announce) status.textContent = `글자 배율 ${next}퍼센트`;
-          // 확대/축소/100% 버튼은 range.value를 코드로만 바꿔 'input' 이벤트가 안 뜬다 —
-          // 여기서 직접 안 부르면 500%에서 메뉴가 접힌 채로 100%까지 내려와도
-          // 메뉴가 계속 숨겨진 상태로 남는다(실측으로 재현·확인한 버그).
+          zoom = Math.max(80, Math.min(500, Number(value) || 100));
+          root.style.setProperty('--zoom', String(zoom / 100));
+          root.dataset.zoom = zoom >= 180 ? 'wide' : 'normal';
+          output.value = `${zoom}%`;
+          output.textContent = `${zoom}%`;
+          downButton.disabled = zoom <= 80;
+          upButton.disabled = zoom >= 500;
+          resetButton.disabled = zoom === 100;
+          localStorage.setItem('goodvision-zoom', String(zoom));
+          if (announce) status.textContent = `글자 배율 ${zoom}퍼센트`;
           syncMenu();
         };
         apply(localStorage.getItem('goodvision-zoom') || 100);
-        range.addEventListener('input', () => apply(range.value, true));
-        // button[data-zoom] (요소 태그까지 지정) — 위 apply()가 <html>에도
-        // data-zoom="" 속성을 남기는데, 그냥 [data-zoom]으로만 고르면 <html>도
-        // 걸려서 문서 전체 클릭이 버블링으로 <html>까지 올라가 축소 버튼처럼
-        // 동작해버렸다(아무 데나 클릭해도 배율이 줄어드는 원인 — 실측으로 확인).
-        document.querySelectorAll('button[data-zoom]').forEach((button) =>
-          button.addEventListener('click', () => {
-            const zoomAction = (button as HTMLElement).dataset.zoom;
-            if (zoomAction === 'reset') apply(100, true);
-            else apply(Number(range.value) + (zoomAction === 'up' ? 10 : -10), true);
-          }),
-        );
+        downButton.addEventListener('click', () => apply(zoom - 20, true));
+        upButton.addEventListener('click', () => apply(zoom + 20, true));
+        resetButton.addEventListener('click', () => apply(100, true));
 
         toggle.addEventListener('click', () => {
           const open = toggle.getAttribute('aria-expanded') === 'true';
@@ -419,21 +417,23 @@ const path = Astro.url.pathname;
     padding-left: 1.4rem;
   }
   .zoom-row {
-    grid-template-columns: auto minmax(7rem, 1fr) auto auto auto;
+    grid-template-columns: repeat(4, auto);
     align-items: center;
     gap: 0.35rem;
     display: grid;
-  }
-  .zoom-row input {
-    width: 100%;
-    accent-color: var(--green);
   }
   .zoom-row button {
     min-height: 2.2rem;
     padding: 0.12rem 0.42rem;
     font-size: 0.82rem;
   }
+  .zoom-row button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
   .zoom-row output {
+    min-width: 3.6rem;
+    text-align: center;
     white-space: nowrap;
     font-size: 0.83rem;
     font-weight: 850;
@@ -730,7 +730,6 @@ const path = Astro.url.pathname;
     .zoom-row {
       grid-template-columns: 1fr 1fr;
     }
-    .zoom-row input,
     .zoom-row output {
       grid-column: 1 / -1;
     }
