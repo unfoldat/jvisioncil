@@ -44,7 +44,7 @@ collections:
         required: false
         hint: '이 소식이 있는 정확한 글 주소를 붙여넣으세요 (기관 메인 홈페이지 아님).'
       - name: body
-        label: 내용 (우리 일일 때만)
+        label: 내용
         widget: markdown
         required: false
         hint: '이미지를 넣으면 대체 텍스트(alt)를 반드시 채우세요. 비어 있으면 빌드가 실패합니다.'

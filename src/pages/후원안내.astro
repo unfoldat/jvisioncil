@@ -70,13 +70,19 @@ const sponsors = (await getCollection('sponsors')).sort((a, b) => a.id.localeCom
 </BaseLayout>
 
 <style>
-  /* 검토 요청: 노란 강조 범위가 너무 넓었음 — 텍스트보다 살짝 여유 있는 정도로 축소. */
+  /* 검토 요청: 노란 강조 범위가 너무 넓었음 — 텍스트보다 살짝 여유 있는 정도로 축소.
+     이후 요청: 배경은 더 옅게, 계좌 정보(더미 텍스트)는 더 짙고 크게. */
   .donate-facts {
-    background: #fff9e6;
-    border: 1px solid #dfc983;
+    background: #fffdf2;
+    border: 1px solid #ecdea6;
     border-radius: 0.25rem;
     width: fit-content;
     padding: 0.3rem 0.85rem;
+  }
+  .donate-facts dd {
+    color: #1a1a1a;
+    font-size: 1.05rem;
+    font-weight: 800;
   }
 
   /* 검토 요청: 보고서가 여러 건 쌓일 예정 — 게시판처럼(소식 목록과 같은 시각 언어). */

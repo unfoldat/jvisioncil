@@ -90,12 +90,19 @@ const path = Astro.url.pathname;
       <div class="wrap">
         <small class="review">검토 영역: 푸터</small>
         <div class="footer-top">
-          <div>
-            <p><strong>{ORG_FULL_NAME}</strong></p>
-            <address>주소: {ADDRESS_PLACEHOLDER}<br />연락처: {PHONE.display} · 이메일: {EMAIL_PLACEHOLDER}</address>
+          <div class="footer-card">
+            <p class="footer-org-name"><strong>{ORG_FULL_NAME}</strong></p>
+            <dl class="facts footer-facts">
+              <div><dt>주소</dt><dd>{ADDRESS_PLACEHOLDER}</dd></div>
+              <div><dt>연락처</dt><dd>{PHONE.display}</dd></div>
+              <div><dt>이메일</dt><dd>{EMAIL_PLACEHOLDER}</dd></div>
+            </dl>
           </div>
           {/* 검토 요청: 실연결 없는 표시용 텍스트(플레이스홀더 번호) — 링크 아님. */}
-          <p class="footer-phone">상담전화 02-123-4567</p>
+          <p class="footer-phone">
+            <span aria-hidden="true">📞</span> 상담전화<br />
+            <span class="footer-phone-number">02-123-4567</span>
+          </p>
         </div>
         <nav aria-label="푸터 메뉴">
           {FOOTER_MENU.map((item) => <a href={item.href}>{item.label}</a>)}
@@ -120,7 +127,11 @@ const path = Astro.url.pathname;
         };
         apply(localStorage.getItem('goodvision-zoom') || 100);
         range.addEventListener('input', () => apply(range.value, true));
-        document.querySelectorAll('[data-zoom]').forEach((button) =>
+        // button[data-zoom] (요소 태그까지 지정) — 위 apply()가 <html>에도
+        // data-zoom="" 속성을 남기는데, 그냥 [data-zoom]으로만 고르면 <html>도
+        // 걸려서 문서 전체 클릭이 버블링으로 <html>까지 올라가 축소 버튼처럼
+        // 동작해버렸다(아무 데나 클릭해도 배율이 줄어드는 원인 — 실측으로 확인).
+        document.querySelectorAll('button[data-zoom]').forEach((button) =>
           button.addEventListener('click', () => {
             const zoomAction = (button as HTMLElement).dataset.zoom;
             if (zoomAction === 'reset') apply(100, true);
@@ -371,6 +382,9 @@ const path = Astro.url.pathname;
   }
   .search-form {
     max-width: 28rem;
+    /* 검토 요청: 버튼이 라벨+입력칸 전체 높이로 늘어나 입력칸보다 훨씬 커 보였음 —
+       flex 기본값(stretch) 대신 아래쪽(입력칸 줄)에 맞춘다. */
+    align-items: flex-end;
     display: flex;
   }
   .search-form label {
@@ -603,15 +617,42 @@ const path = Astro.url.pathname;
     background: #e9e6da;
     padding: 2.5rem 0;
   }
-  .footer address {
-    font-style: normal;
+  /* 검토 요청: 검토 영역 표시를 푸터 안에서 좀 더 위쪽으로. */
+  .footer .review {
+    margin-top: -0.9rem;
   }
   .footer-top {
     flex-wrap: wrap;
     justify-content: space-between;
     align-items: flex-start;
-    gap: 0.75rem 1.5rem;
+    gap: 1rem 2rem;
     display: flex;
+  }
+  /* 검토 요청: 기관 정보를 명함처럼 — 이름을 크게, 항목은 라벨 | 값 행으로. */
+  .footer-card {
+    max-width: 26rem;
+  }
+  .footer-org-name {
+    margin: 0 0 0.6rem;
+    font-size: 1.4rem;
+  }
+  .footer-facts {
+    margin: 0;
+  }
+  .footer-facts div {
+    padding: 0.55rem 0;
+    font-size: 1.05rem;
+  }
+  /* 검토 요청: 전화 아이콘 + "상담전화" 한 줄, 번호는 아래 줄에 더 크게 — 링크 아님. */
+  .footer-phone {
+    text-align: right;
+    margin: 0;
+    font-size: 1.1rem;
+    font-weight: 700;
+  }
+  .footer-phone-number {
+    font-size: 1.6rem;
+    font-weight: 900;
   }
   .footer-phone {
     font-size: 1.15rem;
