@@ -2,7 +2,7 @@
 // 2026-07-21 최종 디자인 반영(전면 개편) — 독수리 검토 목업(좋은비전_최종_홈.html +
 // 좋은비전_최종_정적사이트.zip) 이식. "검토 영역" 표시는 내일 시연·피드백 수집용으로
 // 의도적으로 유지한다 — 임의로 지우지 않는다.
-import { SITE_NAME, SITE_DESCRIPTION, ORG_FULL_NAME, MAIN_MENU, FOOTER_MENU, NOINDEX, ADDRESS_PLACEHOLDER, EMAIL_PLACEHOLDER } from '../config';
+import { SITE_NAME, SITE_DESCRIPTION, ORG_FULL_NAME, MAIN_MENU, FOOTER_MENU, NOINDEX, ADDRESS_PLACEHOLDER, EMAIL_PLACEHOLDER, menuColorFor } from '../config';
 
 interface Props {
   pageName: string;
@@ -13,11 +13,19 @@ const { pageName, searchable = true } = Astro.props;
 
 const title = `${pageName} – ${SITE_NAME}`;
 const canonical = new URL(Astro.url.pathname, Astro.site);
-const path = Astro.url.pathname;
+// Astro.url.pathname은 한글 등 비ASCII 경로를 퍼센트 인코딩된 채로 준다
+// (예: /상담안내/ → /%EC%83%81...%2F). item.href(MAIN_MENU의 리터럴 한글 문자열)와
+// 비교하려면 디코딩해야 한다 — 안 하면 실제 URL(href 구성)에는 문제없지만
+// 이 값으로 하는 모든 문자열 비교(현재 메뉴 표시 등)가 항상 실패한다
+// (실측 확인: 홈 제외 모든 한글 경로 페이지에서 aria-current가 전혀 안 붙고 있었음).
+const path = decodeURIComponent(Astro.url.pathname);
+// 데모: 주 메뉴 색 테마 — 배정된 페이지에서만 --page-accent를 심고, 없는 페이지는
+// 기존 브랜드 기본색(초록)을 그대로 쓴다.
+const pageColor = menuColorFor(path);
 ---
 
 <!doctype html>
-<html lang="ko">
+<html lang="ko" style={pageColor ? `--page-accent:${pageColor}` : undefined} data-page-color={pageColor}>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -345,7 +353,8 @@ const path = Astro.url.pathname;
   .nav-list a {
     min-height: 2.75rem;
     color: var(--ink);
-    border-bottom: 0.28rem solid transparent;
+    border: 0.16rem solid transparent;
+    border-radius: 0.4rem;
     align-items: center;
     padding: 0.35rem 1rem;
     font-weight: 760;
@@ -356,8 +365,9 @@ const path = Astro.url.pathname;
     background: #fff;
     text-decoration: underline;
   }
+  /* 데모: 메뉴별 배정색 — 없으면(홈 등) 기존 초록 유지. */
   .nav-list a[aria-current='page'] {
-    border-bottom-color: var(--green);
+    border-color: var(--page-accent, var(--green));
     background: #fff;
     font-weight: 900;
   }
@@ -445,6 +455,13 @@ const path = Astro.url.pathname;
   .main > article > section {
     overflow-wrap: anywhere;
     margin-bottom: 3.3rem;
+  }
+  /* 데모: 메뉴 색 테마 — 배정된 페이지의 첫 section에만 상단 강조선을 얹는다
+     (배정 없는 페이지는 이 규칙 자체가 안 걸려 기존 모습 그대로). */
+  html[data-page-color] .main > section:first-of-type,
+  html[data-page-color] .main > article > section:first-of-type {
+    border-top: 0.45rem solid var(--page-accent);
+    padding-top: 1.1rem;
   }
   h1,
   h2,

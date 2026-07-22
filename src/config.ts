@@ -20,6 +20,24 @@ export const MAIN_MENU = [
   { label: '후원', href: '/후원안내/' },
 ];
 
+// 데모: 주 메뉴(홈 제외) 5항목에 순서대로 배정한 색 — 그 메뉴 클릭 시 활성 표시
+// 박스 색과 페이지 상단 강조선 색으로 함께 씀. 홈은 배정 없음(브랜드 기본색 유지).
+export const MENU_COLORS: Record<string, string> = {
+  '/기관소개/': '#D97736', // 주황 — 테라코타 / 버트 오렌지
+  '/상담안내/': '#6C9A9C', // 하늘 — 세이지 스카이 / 둔 하늘
+  '/소식/': '#8E7193', // 보라 — 더스티 플럼 / 라벤더 그레이
+  '/강의/': '#E3A857', // 버터 옐로우 / 크림 옐로우
+  '/후원안내/': '#C87A7A', // 로즈 브라운 / 코랄 더스티 로즈
+};
+
+// 위 항목의 하위 경로(예: /소식/2026-.../, /소식/태그/...)도 같은 색을 물려받도록
+// 가장 긴 접두사로 매칭한다.
+export function menuColorFor(path: string): string | undefined {
+  return Object.entries(MENU_COLORS)
+    .filter(([href]) => path.startsWith(href))
+    .sort((a, b) => b[0].length - a[0].length)[0]?.[1];
+}
+
 // 푸터 메뉴 — 주 메뉴와 별도, 4항목만.
 export const FOOTER_MENU = [
   { label: '센터소개', href: '/기관소개/' },
