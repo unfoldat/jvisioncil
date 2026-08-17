@@ -88,10 +88,24 @@ const leadership = defineCollection({
   }),
 });
 
+// 확정 스키마 결정(2026-08-17) — 메인갤러리는 소식과 분리된 별도 컬렉션.
+// 노출 위치 체크박스(메인/소식/후원, 기본값 3개 다 체크) — 지금은 3곳이 완전히 같은
+// 사진 목록을 쓰지만, 나중에 특정 위치만 다른 사진을 쓰고 싶어지면 코드 수정 없이
+// 이 체크박스 해제만으로 처리된다.
+const gallery = defineCollection({
+  loader: glob({ pattern: '**/*.md', base: './src/content/gallery' }),
+  schema: z.object({
+    photo: z.string(),
+    alt: z.string().min(1),
+    showOn: z.array(z.enum(['home', 'news', 'donate'])).default(['home', 'news', 'donate']),
+  }),
+});
+
 export const collections = {
   notices,
   'network-orgs': networkOrgs,
   sponsors,
   'donation-reports': donationReports,
   leadership,
+  gallery,
 };

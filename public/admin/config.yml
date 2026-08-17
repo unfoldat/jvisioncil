@@ -84,6 +84,28 @@ collections:
       - { name: file, label: 첨부파일(PDF), widget: file, accept: 'application/pdf,.pdf' }
       - { name: body, label: 본문내용(선택), widget: markdown, required: false, hint: '연도별 상세 설명이 있으면 적으세요. 비워두면 목록·다운로드만 표시됩니다.' }
 
+  - name: gallery
+    label: 메인갤러리
+    description: 홈 "활동 사진", 소식 상단, 후원 하단의 흐르는 사진 갤러리에 표시됩니다. 소식 게시글 사진과는 별개입니다 — 여기 등록해야만 갤러리에 노출됩니다.
+    label_singular: 갤러리 사진
+    folder: src/content/gallery
+    create: true
+    identifier_field: alt
+    summary: '{{alt}}'
+    fields:
+      - { name: photo, label: 사진, widget: image }
+      - { name: alt, label: 사진 설명(대체텍스트), widget: string, hint: '스크린리더 이용자에게는 이 글자가 사진입니다. 사진 속 상황을 구체적으로 설명하세요.' }
+      - name: showOn
+        label: 노출 위치
+        widget: select
+        multiple: true
+        options:
+          - { label: '메인 (활동 사진)', value: home }
+          - { label: '소식 (상단 흐르는 사진)', value: news }
+          - { label: '후원 (후원으로 이어진 활동)', value: donate }
+        default: [home, news, donate]
+        hint: '이 사진을 노출할 위치를 고르세요. 기본값은 세 곳 모두입니다.'
+
   - name: leadership
     label: 센터장·부센터장
     description: 센터소개 페이지의 센터장·부센터장 프로필에 표시됩니다. 정확히 두 명 고정이라 새 항목을 추가하거나 삭제할 수 없습니다 — 각 항목만 편집하세요.
