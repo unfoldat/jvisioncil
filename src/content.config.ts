@@ -71,9 +71,27 @@ const donationReports = defineCollection({
   }),
 });
 
+// 확정 스키마 결정(2026-08-17) — 센터장·부센터장 = 파일형(고정 2명, 폴더형 금지).
+// Sveltia CMS의 files: 컬렉션으로 CMS 화면에 항목 추가/삭제 버튼 자체가 없게 만든다
+// (glob 로더 입장에서는 이 폴더에 파일이 director.md/deputy-director.md 두 개뿐인
+// 평범한 폴더 컬렉션이지만, 실수로 3번째가 생기는 경로는 CMS 쪽에서 막혀 있다).
+const leadership = defineCollection({
+  loader: glob({ pattern: '**/*.md', base: './src/content/leadership' }),
+  schema: z.object({
+    role: z.string(),
+    name: z.string(),
+    photo: z.string(),
+    photoAlt: z.string().min(1),
+    bio: z.array(z.string()).min(1),
+    // object-position 값(예: "center 20%"). 비우면 페이지 쪽에서 기본값 적용.
+    photoPos: z.string().optional(),
+  }),
+});
+
 export const collections = {
   notices,
   'network-orgs': networkOrgs,
   sponsors,
   'donation-reports': donationReports,
+  leadership,
 };

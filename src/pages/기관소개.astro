@@ -1,30 +1,14 @@
 ---
 // 2026-08-17 디자인 목업 반영 — 센터소개(URL은 /기관소개/ 유지, 표시 라벨만 "센터소개").
+import { getEntry } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import PartnerGrid from '../components/PartnerGrid.astro';
 
-const leaders = [
-  {
-    role: '센터장', name: '정금종', photo: '/images/director-jeong.jpg', photoAlt: '정금종 센터장 얼굴 사진', photoPos: 'center 20%',
-    bio: [
-      '대한장애인한궁연맹 중앙부회장',
-      '경기도한궁연맹 회장',
-      '대한장애인역도연맹 고문',
-      '대한장애인야구연맹 부회장',
-      '장애인올림픽 10회 출전(역도 금메달리스트)',
-    ],
-  },
-  {
-    role: '부센터장', name: '김기현', photo: '/images/director-kim.jpg', photoAlt: '김기현 부센터장 얼굴 사진', photoPos: 'center 15%',
-    bio: [
-      'Ph.D. Rehabilitation Counselor Education',
-      '미국·한국 재활상담사',
-      '명지대학교 객원교수',
-      '『마음의 눈으로 행복을 만지다』 저자',
-      '장애인식개선강사',
-    ],
-  },
-];
+// 확정 스키마 결정 — 센터장·부센터장은 파일형(고정 2명). getCollection의 파일시스템
+// 순회 순서에 기대지 않고 id를 직접 지정해 "센터장 → 부센터장" 순서를 코드로 보장한다.
+const director = await getEntry('leadership', 'director');
+const deputyDirector = await getEntry('leadership', 'deputy-director');
+const leaders = [director, deputyDirector];
 
 const mainPrograms = [
   { no: '01', name: '중도실명인을 위한 컨설팅', desc: '질병이나 사고 등으로 후천적으로 시력을 잃은 중도실명인이 변화된 생활환경에 적응하고 새로운 삶을 준비할 수 있도록 재활 컨설팅을 제공합니다. 개인의 상황과 필요에 따라 복지서비스, 교육, 직업, 여가 및 일상생활 적응에 필요한 정보와 지원 방향을 안내합니다.' },
@@ -80,14 +64,14 @@ const busStops = [
         {leaders.map((ld) => (
           <li class="leader-card">
             <div class="leader-profile">
-              <img class="leader-photo" src={ld.photo} alt={ld.photoAlt} style={`object-position:${ld.photoPos}`} />
+              <img class="leader-photo" src={ld.data.photo} alt={ld.data.photoAlt} style={`object-position:${ld.data.photoPos || 'center 20%'}`} />
               <div class="leader-info">
                 <h3>
-                  <span class="leader-role">{ld.role}</span>{' '}
-                  <span class="leader-name">{ld.name}</span>
+                  <span class="leader-role">{ld.data.role}</span>{' '}
+                  <span class="leader-name">{ld.data.name}</span>
                 </h3>
-                <ul class="leader-bio" role="list" aria-label={`${ld.name} ${ld.role} 주요 약력`}>
-                  {ld.bio.map((item) => <li>{item}</li>)}
+                <ul class="leader-bio" role="list" aria-label={`${ld.data.name} ${ld.data.role} 주요 약력`}>
+                  {ld.data.bio.map((item) => <li>{item}</li>)}
                 </ul>
               </div>
             </div>

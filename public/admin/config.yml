@@ -83,3 +83,28 @@ collections:
       - { name: year, label: 연도, widget: number, value_type: int }
       - { name: file, label: 첨부파일(PDF), widget: file, accept: 'application/pdf,.pdf' }
       - { name: body, label: 본문내용(선택), widget: markdown, required: false, hint: '연도별 상세 설명이 있으면 적으세요. 비워두면 목록·다운로드만 표시됩니다.' }
+
+  - name: leadership
+    label: 센터장·부센터장
+    description: 센터소개 페이지의 센터장·부센터장 프로필에 표시됩니다. 정확히 두 명 고정이라 새 항목을 추가하거나 삭제할 수 없습니다 — 각 항목만 편집하세요.
+    files:
+      - name: director
+        label: 센터장
+        file: src/content/leadership/director.md
+        fields:
+          - { name: role, label: 직위, widget: string, default: 센터장 }
+          - { name: name, label: 이름, widget: string }
+          - { name: photo, label: 사진, widget: image }
+          - { name: photoAlt, label: 사진 설명(대체텍스트), widget: string, hint: '스크린리더 이용자에게는 이 글자가 사진입니다. 예: "정금종 센터장 얼굴 사진"' }
+          - { name: bio, label: 주요 약력, widget: list, field: { name: item, label: 약력 항목, widget: string } }
+          - { name: photoPos, label: 사진 위치 조정(고급, 선택), widget: string, required: false, hint: '얼굴이 잘리면 조정하세요. 예: "center 20%". 비워두면 기본값 사용.' }
+      - name: deputy-director
+        label: 부센터장
+        file: src/content/leadership/deputy-director.md
+        fields:
+          - { name: role, label: 직위, widget: string, default: 부센터장 }
+          - { name: name, label: 이름, widget: string }
+          - { name: photo, label: 사진, widget: image }
+          - { name: photoAlt, label: 사진 설명(대체텍스트), widget: string, hint: '스크린리더 이용자에게는 이 글자가 사진입니다. 예: "김기현 부센터장 얼굴 사진"' }
+          - { name: bio, label: 주요 약력, widget: list, field: { name: item, label: 약력 항목, widget: string } }
+          - { name: photoPos, label: 사진 위치 조정(고급, 선택), widget: string, required: false, hint: '얼굴이 잘리면 조정하세요. 예: "center 15%". 비워두면 기본값 사용.' }
