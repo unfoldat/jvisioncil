@@ -271,6 +271,11 @@ const path = decodeURIComponent(Astro.url.pathname);
     --green: #17694f;
     --green-dark: #0f5238;
     font-size: calc(100% * var(--zoom));
+    /* 목업 원본 주석(그대로 옮김): 움직임 최소화 설정을 존중한다(원칙 38). 글자 크기
+       0.3초 전환은 본문 전체가 리플로우되며 커지는 큰 움직임이라 어지럼증·전정기관
+       장애가 있는 사용자에게는 부담이다 — 그래서 흐르는 갤러리처럼 이 전환도
+       prefers-reduced-motion:reduce에서 꺼져야 한다(아래 전역 규칙이 처리). */
+    transition: font-size 0.3s ease;
   }
   * { box-sizing: border-box; }
   html { scroll-behavior: smooth; }
@@ -376,6 +381,7 @@ const path = decodeURIComponent(Astro.url.pathname);
   .zoom-steps button, #hc-toggle {
     min-height: 0; padding: 7px 11px; border-radius: 8px; font: 600 0.84em/1.15 Pretendard, system-ui, sans-serif;
     background: #fff; color: #4a4530; border: 1.5px solid #d8cfae; white-space: nowrap;
+    transition: background 0.2s ease, color 0.2s ease;
   }
   .zoom-steps button[aria-pressed='true'] { background: var(--green); color: #fff; border-color: var(--green); font-weight: 800; }
   #hc-toggle { background: #1a1512; color: #fff; border: 2px solid #1a1512; font-weight: 600; }
