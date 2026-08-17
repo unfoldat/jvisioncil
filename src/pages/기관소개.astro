@@ -262,6 +262,11 @@ const busStops = [
   .way-label { display: flex; align-items: center; gap: 8px; font: 700 0.88em/1 Pretendard, system-ui, sans-serif; color: var(--green); margin: 0 0 8px; }
   .way-address { margin: 0 0 14px; font: 800 1.4em/1.55 Pretendard, system-ui, sans-serif; color: #664c27; letter-spacing: -0.01em; }
   .way-map-wrap { max-width: 100%; overflow-x: auto; border-radius: 12px; border: 1px solid #f9eedd; }
+  /* 목업 원본과 동일 — 지도 위젯이 자체적으로 그리는 주소·전화 캡션(.cont)은 옆 카드와
+     내용이 겹친다. JS 정리(900ms 지연)만 두면 그 사이 잠깐 보였다 사라지는 깜빡임이
+     생기므로, 렌더 즉시 CSS로 숨긴다(!important — 위젯이 자체 인라인 스타일로 보이려 함).
+     위젯이 런타임에 만드는 요소라 스코프 클래스가 안 붙어 :global() 필요. */
+  :global(.root_daum_roughmap .cont) { display: none !important; }
   .transit-card { margin: 0; background: #fff; border: 1px solid #f1d4ab; border-radius: 16px; overflow: hidden; }
   .transit-head { padding: 22px 30px 14px; border-bottom: 1px solid #f1d4ab; }
   .transit-head h3 { margin: 0; font: 700 1.13em/1.4 Pretendard, system-ui, sans-serif; color: #664c27; }
