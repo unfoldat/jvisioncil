@@ -1,7 +1,8 @@
 ---
-// 협력기관 배너 그리드 (2026-07-21 최종 디자인 반영) — 기관소개/홈 본문에 배치.
-// 배지 클릭 = 기관 홈페이지 직행, 새 탭. url 없으면 링크 없이 텍스트만.
-// network-orgs는 실제 협력기관만 담는다(좋은비전은 소식의 발행 주체로 별도 관리).
+// 협력기관 배너 그리드 (2026-08-17 디자인 목업 반영) — 기관소개/홈 본문에 배치.
+// 배지 클릭 = 기관 홈페이지로 같은 창에서 이동(새 창 아님 — 뒤로가기로 돌아올 수 있어야
+// 스크린리더 사용자가 탐색을 잃지 않는다는 것을 목업 스크린리더 테스트에서 확인했다).
+// url 없으면 링크 없이 텍스트만. network-orgs는 실제 협력기관만 담는다.
 import { partnerOrgs } from '../lib/networkOrgs';
 
 interface Props {
@@ -16,9 +17,7 @@ const orgs = await partnerOrgs();
   {orgs.map((org) => (
     <li>
       {org.data.url ? (
-        <a class="partner-banner" href={org.data.url} target="_blank" rel="noopener noreferrer">
-          {org.data.name}<span class="sr-only">, 공식 사이트, 새 창에서 열림</span>
-        </a>
+        <a class="partner-banner" href={org.data.url}>{org.data.name}</a>
       ) : (
         <span class="partner-banner">{org.data.name}<small>공식 주소 확인 중</small></span>
       )}
@@ -68,7 +67,7 @@ const orgs = await partnerOrgs();
   }
   @media (width <= 640px) {
     .partner-banners {
-      grid-template-columns: 1fr;
+      grid-template-columns: minmax(0, 1fr);
     }
   }
 </style>

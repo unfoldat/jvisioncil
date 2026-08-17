@@ -19,7 +19,7 @@ const disclosures = (await getCollection('disclosures')).sort((a, b) => b.id.loc
         <ul class="disclosure-list">
           {disclosures.map((d) => (
             <li>
-              <h2>{d.data.title}</h2>
+              <h2>{d.data.title}</h2>{' '}
               <a href={d.data.file} download>
                 {d.data.title} PDF 다운로드<span class="sr-only">, 새 창 없이 바로 내려받기</span>
               </a>
@@ -28,7 +28,7 @@ const disclosures = (await getCollection('disclosures')).sort((a, b) => b.id.loc
         </ul>
       )}
 
-      <p class="nts-note">국세청 공익법인 공시 자료는 <a href="https://www.nts.go.kr" target="_blank" rel="noopener noreferrer">국세청 홈페이지<span class="sr-only">, 새 창에서 열림</span></a>에서도 확인하실 수 있습니다.</p>
+      <p class="nts-note">국세청 공익법인 공시 자료는 <a href="https://www.nts.go.kr">국세청 홈페이지</a>에서도 확인하실 수 있습니다.</p>
       <p><a href="/후원안내/" class="standalone-link">← 후원 안내로 돌아가기</a></p>
     </div>
   </section>

@@ -64,11 +64,11 @@ const busStops = [
   <section aria-labelledby="about-title" class="intro">
     <div class="wrap">
       <p class="eyebrow"><span class="pill">센터소개</span></p>
-      <h1 id="about-title">"보는 방법은 달라도,<br />꿈을 바라보는 마음은 같습니다"</h1>
+      <h1 id="about-title">"보는 방법은 달라도, <br />꿈을 바라보는 마음은 같습니다"</h1>
       <div class="intro-body">
         <p>좋은비전장애인자립생활센터는 시각장애인과 특히 중도실명인이 실명 이후에도 자신의 삶을 스스로 선택하고 결정하며, 지역사회의 한 구성원으로 함께 살아갈 수 있도록 지원하는 센터입니다.</p>
         <p>갑작스러운 실명으로 새로운 삶에 적응해야 하는 중도시각장애인부터 지역사회에서 자신의 꿈을 펼쳐가는 한 사람 한 사람의 시각장애인의 삶과 가능성을 존중합니다. 우리가 생각하는 '좋은비전'은 단순히 눈으로 보는 것이 아닙니다. 자신의 미래를 바라보는 것, 새로운 가능성을 발견하는 것, 그리고 서로 다른 사람들이 지역사회에서 함께 살아가는 세상을 꿈꾸는 것입니다.</p>
-        <p class="intro-emph">장애가 삶의 한계가 되지 않는 사회, 장애인과 비장애인이 자연스럽게 함께 살아가는 지역사회.<br />좋은비전장애인자립생활센터가 그 길을 함께 만들어가겠습니다.</p>
+        <p class="intro-emph">장애가 삶의 한계가 되지 않는 사회, 장애인과 비장애인이 자연스럽게 함께 살아가는 지역사회. <br />좋은비전장애인자립생활센터가 그 길을 함께 만들어가겠습니다.</p>
       </div>
     </div>
   </section>
@@ -83,7 +83,7 @@ const busStops = [
               <img class="leader-photo" src={ld.photo} alt={ld.photoAlt} style={`object-position:${ld.photoPos}`} />
               <div class="leader-info">
                 <h3>
-                  <span class="leader-role">{ld.role}</span>
+                  <span class="leader-role">{ld.role}</span>{' '}
                   <span class="leader-name">{ld.name}</span>
                 </h3>
                 <ul class="leader-bio" role="list" aria-label={`${ld.name} ${ld.role} 주요 약력`}>
@@ -103,8 +103,8 @@ const busStops = [
       <ol class="program-grid">
         {mainPrograms.map((pg) => (
           <li class="program-card">
-            <div class="program-head"><span aria-hidden="true" class="program-no">{pg.no}</span><h3>{pg.name}</h3></div>
-            <span>{pg.desc}</span>
+            <div class="program-head"><span aria-hidden="true" class="program-no">{pg.no}</span>{' '}<h3>{pg.name}</h3></div>
+            {' '}<span>{pg.desc}</span>
           </li>
         ))}
       </ol>
@@ -115,17 +115,19 @@ const busStops = [
     <div class="wrap">
       <h2 id="about-special">특화 사업</h2>
       <p class="lead-sm">후원 기관과 함께 진행하는 사업입니다.</p>
-      <table class="special-table">
-        <caption>사업 내용과 후원 기관</caption>
-        <thead>
-          <tr><th scope="col">사업 내용</th><th scope="col">후원 기관</th></tr>
-        </thead>
-        <tbody>
-          {specialPrograms.map((sp) => (
-            <tr><td>{sp.name}</td><td>{sp.sponsor}</td></tr>
-          ))}
-        </tbody>
-      </table>
+      <div class="table-scroll">
+        <table class="special-table">
+          <caption>사업 내용과 후원 기관</caption>
+          <thead>
+            <tr><th scope="col">사업 내용</th><th scope="col">후원 기관</th></tr>
+          </thead>
+          <tbody>
+            {specialPrograms.map((sp) => (
+              <tr><td>{sp.name}</td><td>{sp.sponsor}</td></tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </div>
   </section>
 
@@ -142,8 +144,8 @@ const busStops = [
       <ol class="program-grid">
         {labFields.map((lf) => (
           <li class="program-card">
-            <div class="program-head"><span aria-hidden="true" class="program-no">{lf.no}</span><span class="program-title">{lf.name}</span></div>
-            <span>{lf.desc}</span>
+            <div class="program-head"><span aria-hidden="true" class="program-no">{lf.no}</span>{' '}<span class="program-title">{lf.name}</span></div>
+            {' '}<span>{lf.desc}</span>
           </li>
         ))}
       </ol>
@@ -155,11 +157,11 @@ const busStops = [
       <h2 id="about-way">오시는 길</h2>
       <div class="way-grid">
         <div class="way-card">
-          <p class="way-label">주소</p>
-          <h3 class="way-address">서울 은평구 응암로34길 24-8<br />한솔하이빌 101호</h3>
+          <h3 class="way-label">주소</h3>
+          <p class="way-address">서울 은평구 응암로34길 24-8 <br />한솔하이빌 101호</p>
         </div>
         <dl class="transit-card">
-          <div class="transit-head"><p>교통편 안내</p></div>
+          <div class="transit-head"><h3>교통편 안내</h3></div>
           <div class="transit-row">
             <span class="transit-icon" aria-hidden="true">6</span>
             <div>
@@ -230,7 +232,8 @@ const busStops = [
   .program-card h3, .program-title { margin: 0; font: 700 1.32em/1.4 Pretendard, system-ui, sans-serif; color: #664c27; text-wrap: pretty; }
   .program-card span:not(.program-no) { font: 400 1.06em/1.75 Pretendard, system-ui, sans-serif; color: var(--muted); text-wrap: pretty; }
 
-  .special-table { width: 100%; border-collapse: collapse; background: #fff; border: 1px solid #f1d4ab; border-radius: 14px; overflow: hidden; }
+  .table-scroll { max-width: 100%; overflow-x: auto; }
+  .special-table { width: 100%; min-width: 30em; border-collapse: collapse; background: #fff; border: 1px solid #f1d4ab; border-radius: 14px; overflow: hidden; }
   .special-table caption { text-align: left; padding: 0 0 12px; font: 400 0.94em/1.5 Pretendard, system-ui, sans-serif; color: var(--muted); }
   .special-table th { text-align: left; padding: 18px 22px; border-bottom: 1px solid #f1d4ab; font: 700 1.06em/1.4 Pretendard, system-ui, sans-serif; color: #664c27; background: #fcf6ee; }
   .special-table td { padding: 18px 22px; border-bottom: 1px solid #f9eedd; font: 400 1.06em/1.7 Pretendard, system-ui, sans-serif; color: var(--muted); text-wrap: pretty; }
@@ -247,7 +250,7 @@ const busStops = [
   .way-address { margin: 0; font: 800 1.4em/1.55 Pretendard, system-ui, sans-serif; color: #664c27; letter-spacing: -0.01em; }
   .transit-card { margin: 0; background: #fff; border: 1px solid #f1d4ab; border-radius: 16px; overflow: hidden; }
   .transit-head { padding: 22px 30px 14px; border-bottom: 1px solid #f1d4ab; }
-  .transit-head p { margin: 0; font: 700 1.13em/1.4 Pretendard, system-ui, sans-serif; color: #664c27; }
+  .transit-head h3 { margin: 0; font: 700 1.13em/1.4 Pretendard, system-ui, sans-serif; color: #664c27; }
   .transit-row { padding: 24px 30px; border-bottom: 1px solid #ece5d2; display: grid; grid-template-columns: auto 1fr; gap: 18px; align-items: center; }
   .transit-row:last-child { border-bottom: none; align-items: start; }
   .transit-icon { display: flex; align-items: center; justify-content: center; width: 2.4em; height: 2.4em; border-radius: 50%; background: #7b4a2a; color: #fff; font: 800 1em/1 Pretendard, system-ui, sans-serif; flex: none; }
@@ -259,9 +262,9 @@ const busStops = [
   .bus-routes { display: flex; gap: 6px; flex-wrap: wrap; }
   .bus-routes span { padding: 5px 12px; border-radius: 999px; background: #f9eedd; color: #664c27; font: 700 0.88em/1.4 Pretendard, system-ui, sans-serif; }
 
-  @media (max-width: 860px) { .leader-grid, .program-grid { grid-template-columns: 1fr; } }
+  @media (max-width: 860px) { .leader-grid, .program-grid { grid-template-columns: minmax(0, 1fr); } }
   @media (max-width: 760px) {
-    .leader-profile { grid-template-columns: 1fr; }
+    .leader-profile { grid-template-columns: minmax(0, 1fr); }
     .leader-photo { max-width: 200px; margin: 0 auto; }
   }
 </style>

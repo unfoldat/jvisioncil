@@ -24,8 +24,8 @@ const tutors = [
       <p class="eyebrow"><span class="pill">강의 안내</span></p>
       <h1 id="lc-title">현장에서 바로 쓰이는 장애인식개선 교육</h1>
       <p class="lead-lg">한국장애인고용공단 직장 내 장애인 인식개선 교육 지정 수행기관이며, 한국장애인개발원 강사양성과정을 수료한 전문 강사진이 대상별 특성에 맞춰 교육을 진행합니다.</p>
-      <a href="https://forms.gle/CaqAgMm5jQyH2bHR7" class="btn btn-lg" target="_blank" rel="noopener noreferrer">
-        강의 신청하기 <span class="sr-only">, Google Forms로 이동, 새 창에서 열림</span>
+      <a href="https://forms.gle/CaqAgMm5jQyH2bHR7" class="btn btn-lg">
+        강의 신청하기 <span class="sr-only">, Google Forms로 이동</span>
       </a>
     </div>
   </section>
@@ -36,9 +36,9 @@ const tutors = [
       <ul class="lecture-grid">
         {lectures.map((l) => (
           <li class="lecture-card">
-            <span class="lecture-target">{l.target}</span>
-            <h3>{l.title}</h3>
-            <span class="lecture-desc">{l.desc}</span>
+            <span class="lecture-target">{l.target}</span>{' '}
+            <h3>{l.title}</h3>{' '}
+            <span class="lecture-desc">{l.desc}</span>{' '}
             <span class="lecture-meta">{l.meta}</span>
           </li>
         ))}
@@ -67,8 +67,8 @@ const tutors = [
           <li class="tutor-card">
             <div class="tutor-photo" aria-hidden="true">강사 사진 자리</div>
             <div class="tutor-body">
-              <h3>{t.name}</h3>
-              <span class="tutor-role">{t.role}</span>
+              <h3>{t.name}</h3>{' '}
+              <span class="tutor-role">{t.role}</span>{' '}
               <span class="tutor-bio">{t.bio}</span>
             </div>
           </li>
@@ -111,6 +111,6 @@ const tutors = [
   .tutor-bio { display: block; font: 400 1.06em/1.75 Pretendard, system-ui, sans-serif; color: var(--muted); text-wrap: pretty; }
 
   @media (max-width: 860px) { .lecture-grid, .tutor-grid { grid-template-columns: repeat(2, 1fr); } }
-  @media (max-width: 760px) { .lab-grid { grid-template-columns: 1fr; } }
-  @media (max-width: 640px) { .lecture-grid, .tutor-grid { grid-template-columns: 1fr; } }
+  @media (max-width: 760px) { .lab-grid { grid-template-columns: minmax(0, 1fr); } }
+  @media (max-width: 640px) { .lecture-grid, .tutor-grid { grid-template-columns: minmax(0, 1fr); } }
 </style>

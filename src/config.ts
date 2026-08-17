@@ -22,12 +22,11 @@ export const MAIN_MENU = [
   { label: '후원', href: '/후원안내/' },
 ];
 
-// 푸터 메뉴 — 목업 푸터 링크(기부금 공시·오시는 길·부설연구소) + CMS 진입점(콘텐츠 관리).
+// 푸터 메뉴 — 목업 푸터 링크 그대로(기부금 공시·오시는 길·부설연구소), 그 외 추가 없음.
 export const FOOTER_MENU = [
   { label: '기부금 공시 내역', href: '/기부금-공시/' },
   { label: '오시는 길', href: '/기관소개/#about-way' },
   { label: '부설연구소', href: '/기관소개/#about-lab' },
-  { label: '콘텐츠 관리', href: '/admin/' },
 ];
 
 // 연습 배포 기간에만 true. 실도메인 전환 시 false로 바꾸는 커밋을 따로 낸다.

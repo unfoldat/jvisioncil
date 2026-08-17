@@ -93,7 +93,7 @@ const path = Astro.url.pathname;
             <span>{ORG_FULL_NAME}</span>
           </div>
           <address>
-            {ADDRESS}<br />
+            {ADDRESS} <br />
             부설 좋은비전재활상담연구소
           </address>
           <nav aria-label="푸터 메뉴" class="footer-nav">
@@ -147,6 +147,23 @@ const path = Astro.url.pathname;
           t.focus();
           window.scrollTo(0, t.getBoundingClientRect().top + window.scrollY - 8);
         });
+
+        // 다른 페이지의 #앵커로 이동(푸터 "오시는 길"·"부설연구소")할 때 — 일반 다중 페이지
+        // 이동은 브라우저가 포커스를 새로 초기화해 스크린리더가 새 <title>을 읽지만,
+        // #해시가 붙은 이동은 브라우저가 스크롤만 하고 포커스는 안 옮기는 경우가 많다
+        // (표준 동작이 아니라 브라우저마다 다름). 목업의 performJump()처럼 해시 대상
+        // 제목으로 직접 초점을 옮겨 시각적 위치와 읽기 위치를 일치시킨다.
+        const jumpToHash = () => {
+          const id = decodeURIComponent(location.hash.slice(1));
+          if (!id) return;
+          const target = document.getElementById(id);
+          if (!target) return;
+          if (target.getAttribute('tabindex') === null) target.setAttribute('tabindex', '-1');
+          target.focus({ preventScroll: true });
+          window.scrollTo(0, target.getBoundingClientRect().top + window.scrollY - 24);
+        };
+        if (location.hash) requestAnimationFrame(jumpToHash);
+        window.addEventListener('hashchange', jumpToHash);
 
         // 읽기 위치 표시 — 스크린리더 가상 커서(화살표 이동)는 DOM 포커스를 옮기지 않아
         // :focus-visible이 안 걸린다. selectionchange로 가상 커서 위치를 따라간다.
@@ -203,9 +220,9 @@ const path = Astro.url.pathname;
           });
           list.innerHTML = results
             .map(
-              (r) => `<li><a href="${r.href}"${r.external ? ' target="_blank" rel="noopener noreferrer"' : ''}>
+              (r) => `<li><a href="${r.href}">
                 <span class="search-page-label">${r.page} 페이지</span>
-                <span class="search-title">${r.title}${r.external ? '<span class="sr-only">, 원문, 새 창에서 열림</span>' : ''}</span>
+                <span class="search-title">${r.title}${r.external ? '<span class="sr-only">, 원문</span>' : ''}</span>
                 <span class="search-snippet">${r.snippet}</span>
               </a></li>`,
             )
@@ -288,6 +305,7 @@ const path = Astro.url.pathname;
     color: var(--ink);
   }
 
+  main h2[id], main h3[id] { scroll-margin-top: 24px; }
   :focus-visible { outline: 3px solid #1a1512; outline-offset: 2px; box-shadow: 0 0 0 5px #fff; }
   nav[aria-label='주 메뉴'] a:focus-visible, .footer :focus-visible { outline: 3px solid #fff; outline-offset: 2px; box-shadow: 0 0 0 5px #1a1512; }
   main:focus:not(:focus-visible) { outline: none; }
@@ -336,14 +354,14 @@ const path = Astro.url.pathname;
   /* 헤더 */
   .site-header { background: #fff; border-bottom: 1px solid var(--line); }
   .head { padding: 24px 28px; display: flex; align-items: center; justify-content: space-between; gap: 24px; flex-wrap: wrap; }
-  .brand { display: flex; align-items: center; gap: 18px; text-decoration: none; color: inherit; }
+  .brand { display: flex; align-items: center; gap: 18px; flex-wrap: wrap; text-decoration: none; color: inherit; min-width: 0; }
   .brand-logo { height: 4.4em; width: auto; flex: none; display: block; }
-  .brand-name { font: 800 2.1em/1.2 NanumSquareRound, Pretendard, sans-serif; letter-spacing: -0.03em; color: #332e1e; }
+  .brand-name { font: 800 2.1em/1.2 NanumSquareRound, Pretendard, sans-serif; letter-spacing: -0.03em; color: #332e1e; min-width: 0; overflow-wrap: anywhere; }
   .head-tools { display: flex; flex-direction: column; gap: 14px; align-items: flex-end; }
-  .search-form { display: flex; align-items: center; gap: 10px; }
+  .search-form { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; width: 100%; }
   .search-form label { font: 700 0.88em/1 Pretendard, system-ui, sans-serif; color: var(--muted); }
   .search-form input {
-    width: 17em; max-width: 60vw; padding: 12px 14px; border: 1.5px solid #d8cfae;
+    width: 17em; flex: 1 1 12em; min-width: 0; padding: 12px 14px; border: 1.5px solid #d8cfae;
     border-radius: 9px; background: #fff; font: 400 1em/1.2 Pretendard, system-ui, sans-serif; color: var(--ink);
   }
   .search-form .btn { padding: 12px 18px; font-size: 0.94em; white-space: nowrap; min-height: 0; }
@@ -391,10 +409,10 @@ const path = Astro.url.pathname;
 
   /* 푸터 */
   .footer { background: #3a3626; color: #efe7cf; }
-  .footer-grid { padding: 48px 28px 40px; display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 40px; align-items: start; }
-  .footer-brand { display: flex; align-items: center; gap: 16px; margin-bottom: 20px; }
+  .footer-grid { padding: 48px 28px 40px; display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 0.8fr); gap: 40px; align-items: start; }
+  .footer-brand { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; margin-bottom: 20px; }
   .footer-logo { height: 3.4em; width: auto; flex: none; display: block; }
-  .footer-brand span { font: 800 1.5em/1.3 NanumSquareRound, Pretendard, sans-serif; color: #fff; }
+  .footer-brand span { font: 800 1.5em/1.3 NanumSquareRound, Pretendard, sans-serif; color: #fff; min-width: 0; overflow-wrap: anywhere; }
   .footer address { font-style: normal; font: 400 1.06em/1.9 Pretendard, system-ui, sans-serif; color: #d6cbac; }
   .footer-nav { margin: 20px 0 0; display: flex; gap: 18px; flex-wrap: wrap; font: 400 1em/1.6 Pretendard, system-ui, sans-serif; }
   .footer-nav a { color: #e5dcc0; }
@@ -426,9 +444,10 @@ const path = Astro.url.pathname;
     .sz-name { display: none; }
     .zoom-steps button, #hc-toggle { font-size: 0.86em; padding: 11px 10px; }
     #fontsize-label { display: none; }
-    .zoom-steps { gap: 4px; flex-wrap: nowrap; }
-    .footer-grid { grid-template-columns: 1fr; padding: 30px 16px; gap: 24px; }
+    .zoom-steps { gap: 4px; }
+    .footer-grid { grid-template-columns: minmax(0, 1fr); padding: 30px 16px; gap: 24px; }
     .footer-contact { text-align: left; }
+    .footer-phone { font-size: 2em; }
     .footer-bottom p { padding: 16px; }
     .wrap { width: calc(100% - 32px); }
   }

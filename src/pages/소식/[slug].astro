@@ -22,7 +22,7 @@ const isoDate = notice.data.date.toISOString().slice(0, 10);
     <section class="post-head">
       <div class="wrap">
         {orgUrl ? (
-          <a class="tag" href={orgUrl} target="_blank" rel="noopener noreferrer">{orgName}<span class="sr-only">, 공식 사이트, 새 창에서 열림</span></a>
+          <a class="tag" href={orgUrl}>{orgName}</a>
         ) : (
           <span class="tag">{orgName}</span>
         )}

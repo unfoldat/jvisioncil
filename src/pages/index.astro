@@ -1,12 +1,10 @@
 ---
-// 2026-08-17 디자인 목업 반영 — 홈.
+// 2026-08-17 디자인 목업 반영 — 홈. 섹션 구성은 목업과 완전히 동일하게 유지하고,
+// 기부금 공시 작업지시서 §3(홈 하단 최신 3건 미리보기)만 목업에 없던 내용으로 별도 추가한다.
 import { getCollection } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
-import NoticeList from '../components/NoticeList.astro';
 import PartnerGrid from '../components/PartnerGrid.astro';
-import { sortForList } from '../lib/notices';
 
-const notices = sortForList(await getCollection('notices')).slice(0, 3);
 const disclosures = (await getCollection('disclosures')).sort((a, b) => b.id.localeCompare(a.id)).slice(0, 3);
 const PHOTOS = ['합창단 공연', '가을 산행', '정기 총회', '낭독 녹음', '도자기 교실', '트레킹'];
 const galleryLoop = PHOTOS.concat(PHOTOS);
@@ -17,8 +15,8 @@ const galleryLoop = PHOTOS.concat(PHOTOS);
     <div class="wrap hero-grid">
       <div>
         <h1 id="home-hero">
-          <span class="hero-lead">보는 방법은 달라도,</span>
-          <span class="hero-strong">꿈을 바라보는<br />마음은 같습니다</span>
+          <span class="hero-lead">보는 방법은 달라도,</span>{' '}
+          <span class="hero-strong">꿈을 바라보는 <br />마음은 같습니다</span>
         </h1>
         <p class="hero-copy">
           좋은비전장애인자립생활센터는 시각장애인과 특히 중도실명인이 실명 이후에도 자신의 삶을 스스로 선택하고 결정하며, 지역사회의 한 구성원으로 함께 살아갈 수 있도록 지원합니다.
@@ -35,22 +33,22 @@ const galleryLoop = PHOTOS.concat(PHOTOS);
       <h2 id="home-cards">주요 서비스</h2>
       <div class="card-grid card-grid-4">
         <a href="/상담안내/" class="service-card sc-orange">
-          <h3>전문상담</h3>
-          <span>중도실명 컨설팅, 심리평가, 청소년 진로상담을 안내합니다.</span>
+          <h3>전문상담</h3>{' '}
+          <span>중도실명 컨설팅, 심리평가, 청소년 진로상담을 안내합니다.</span>{' '}
           <span class="service-card-cta">상담 안내 보기 →</span>
         </a>
         <a href="/강의/" class="service-card sc-rose">
-          <h3>강의 신청</h3>
-          <span>직장 내·사회적 장애인식개선 교육, 실명예방 교육을 신청합니다.</span>
+          <h3>강의 신청</h3>{' '}
+          <span>직장 내·사회적 장애인식개선 교육, 실명예방 교육을 신청합니다.</span>{' '}
           <span class="service-card-cta">강의 안내 보기 →</span>
         </a>
-        <a href="https://www.1365.go.kr/vols/P9140/srvcinfo/volsDnttInfo.do?titleNm=%EC%83%81%EC%84%B8%EB%B3%B4%EA%B8%B0&type=show&nanmmbyId=30757747" class="service-card sc-green" target="_blank" rel="noopener noreferrer">
-          <h3>봉사 신청</h3>
-          <span>외출 동행, 오디오북 제작, 행사 진행 등을 지원합니다.</span>
-          <span class="service-card-cta">1365 자원봉사포털에서 신청하기<span class="sr-only">, 새 창에서 열림</span> →</span>
+        <a href="https://www.1365.go.kr/vols/P9140/srvcinfo/volsDnttInfo.do?titleNm=%EC%83%81%EC%84%B8%EB%B3%B4%EA%B8%B0&type=show&nanmmbyId=30757747" class="service-card sc-green">
+          <h3>봉사 신청</h3>{' '}
+          <span>외출 동행, 오디오북 제작, 행사 진행 등을 지원합니다.</span>{' '}
+          <span class="service-card-cta">1365 자원봉사포털에서 신청하기 →</span>
         </a>
         <a href="/후원안내/" class="service-card sc-teal">
-          <h3>후원</h3>
+          <h3>후원</h3>{' '}
           <span class="service-card-cta">후원 안내 보기 →</span>
         </a>
       </div>
@@ -70,16 +68,6 @@ const galleryLoop = PHOTOS.concat(PHOTOS);
     </div>
   </section>
 
-  <section aria-labelledby="home-news">
-    <div class="wrap">
-      <div class="section-head">
-        <h2 id="home-news">최근 소식</h2>
-        <a href="/소식/"><strong>소식 전체 보기</strong></a>
-      </div>
-      <NoticeList notices={notices} variant="home" empty="아직 소식이 없습니다." />
-    </div>
-  </section>
-
   <section aria-labelledby="home-donate">
     <div class="wrap">
       <div class="donate-cta">
@@ -95,7 +83,7 @@ const galleryLoop = PHOTOS.concat(PHOTOS);
     <div class="marquee">
       <div class="marquee-track">
         {galleryLoop.map((label, i) => (
-          <div class="marquee-item" aria-hidden={i >= PHOTOS.length ? 'true' : undefined}>{label}<br />사진 자리</div>
+          <div class="marquee-item" aria-hidden={i >= PHOTOS.length ? 'true' : undefined}>{label} <br />사진 자리</div>
         ))}
       </div>
     </div>
@@ -105,17 +93,27 @@ const galleryLoop = PHOTOS.concat(PHOTOS);
     <div class="wrap">
       <h2 id="home-partners">함께하는 기관 <span class="section-sub">MOU 협력기관</span></h2>
       <PartnerGrid compact />
-      <div class="disclosure-box">
-        <p class="disclosure-box-title">기부금 공시 내역</p>
-        {disclosures.length > 0 && (
-          <ul class="disclosure-preview">
-            {disclosures.map((d) => (
-              <li><a href={d.data.file} download>{d.data.title} PDF 다운로드</a></li>
-            ))}
-          </ul>
-        )}
-        <a href="/기부금-공시/" class="disclosure-teaser-sub">연간 기부금 모금액과 활용실적 보고서 전체보기 →</a>
-      </div>
+      <a href="/기부금-공시/" class="disclosure-teaser">
+        <span class="disclosure-teaser-title">기부금 공시 내역</span>{' '}
+        <span class="disclosure-teaser-sub">연간 기부금 모금액과 활용실적 보고서 보기 →</span>
+      </a>
+    </div>
+  </section>
+
+  <!-- 목업엔 없던 섹션 — 기부금 공시 작업지시서 §3(홈 하단 최신 3건 미리보기)만 추가. -->
+  <section aria-labelledby="home-disclosures" class="band">
+    <div class="wrap">
+      <h2 id="home-disclosures">기부금 공시</h2>
+      {disclosures.length === 0 ? (
+        <p>공개된 기부금 공시 내역이 아직 없습니다.</p>
+      ) : (
+        <ul class="disclosure-preview">
+          {disclosures.map((d) => (
+            <li><a href={d.data.file} download>{d.data.title} PDF 다운로드</a></li>
+          ))}
+        </ul>
+      )}
+      <a href="/기부금-공시/" class="standalone-link">전체보기 →</a>
     </div>
   </section>
 </BaseLayout>
@@ -186,11 +184,11 @@ const galleryLoop = PHOTOS.concat(PHOTOS);
 
   @media (max-width: 860px) { .card-grid-4 { grid-template-columns: repeat(2, 1fr); } }
   @media (max-width: 760px) {
-    .hero-grid, .band-grid { grid-template-columns: 1fr; padding: 30px 0; }
+    .hero-grid, .band-grid { grid-template-columns: minmax(0, 1fr); padding: 30px 0; }
     #home-hero { font-size: 1.9em; }
     .hero-lead { font-size: 1.15em; line-height: 1.45; }
     .hero-strong { font-size: 1.7em; line-height: 1.3; }
     .hero-copy { font-size: 1.06em; line-height: 1.75; padding-left: 14px; }
   }
-  @media (max-width: 640px) { .card-grid-4 { grid-template-columns: 1fr; } }
+  @media (max-width: 640px) { .card-grid-4 { grid-template-columns: minmax(0, 1fr); } }
 </style>

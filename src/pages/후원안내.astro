@@ -12,7 +12,7 @@ const galleryLoop = PHOTOS.concat(PHOTOS);
     <div class="wrap">
       <p class="eyebrow"><span class="pill">후원</span></p>
       <h1 id="dn-title">후원 안내</h1>
-      <p class="lead-lg">여러분의 소중한 후원이<br />상담과 교육, 낭독도서 제작 활동을 이어갑니다.</p>
+      <p class="lead-lg">여러분의 소중한 후원이 <br />상담과 교육, 낭독도서 제작 활동을 이어갑니다.</p>
     </div>
   </section>
 
@@ -23,7 +23,7 @@ const galleryLoop = PHOTOS.concat(PHOTOS);
         <p class="letter-copy">좋은비전은 시력이 달라진 순간을 처음 마주한 분들의 이야기를 듣고, 필요한 복지서비스와 교육·직업 정보로 연결합니다. 후원은 중도실명인 컨설팅, 심리평가와 상담, 청소년 진로상담, 낭독도서 제작을 지속하는 데 쓰입니다.</p>
 
         <div class="account-box">
-          <p class="account-title">후원 계좌 안내</p>
+          <h3 class="account-title">후원 계좌 안내</h3>
           <p class="account-number">신한은행 140-012-078484</p>
           <p class="account-holder">예금주 좋은비전장애인자립생활센터</p>
           <p class="account-note">정기 후원(CMS)을 원하시면 센터로 전화 주시기 바랍니다.</p>
@@ -39,7 +39,7 @@ const galleryLoop = PHOTOS.concat(PHOTOS);
           <p class="receipt-contact">문의 <a href={`tel:${PHONE.tel}`}>{PHONE.display}</a></p>
         </div>
 
-        <p class="disclosure-note">연간 기부금 모금액과 활용실적은 <a href="/기부금-공시/">기부금 공시 내역</a>에서, 국세청 공시 자료는 <a href="https://www.nts.go.kr" target="_blank" rel="noopener noreferrer">국세청 홈페이지<span class="sr-only">, 새 창에서 열림</span></a>에서 확인하실 수 있습니다.</p>
+        <p class="disclosure-note">연간 기부금 모금액과 활용실적은 <a href="/기부금-공시/">기부금 공시 내역</a>에서, 국세청 공시 자료는 <a href="https://www.nts.go.kr">국세청 홈페이지</a>에서 확인하실 수 있습니다.</p>
       </div>
     </div>
   </section>
@@ -49,7 +49,7 @@ const galleryLoop = PHOTOS.concat(PHOTOS);
     <div class="marquee">
       <div class="marquee-track">
         {galleryLoop.map((label, i) => (
-          <div class="marquee-item" aria-hidden={i >= PHOTOS.length ? 'true' : undefined}>{label}<br />사진 자리</div>
+          <div class="marquee-item" aria-hidden={i >= PHOTOS.length ? 'true' : undefined}>{label} <br />사진 자리</div>
         ))}
       </div>
     </div>

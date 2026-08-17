@@ -1,5 +1,5 @@
 ---
-// 2026-08-17 디자인 목업 반영 — 데스크톱·모바일 공통 카드 그리드(NoticeList variant="board").
+// 2026-08-17 디자인 목업 반영 — 데스크톱·모바일 공통 카드 그리드(NoticeList).
 import { getCollection } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import NoticeList from '../../components/NoticeList.astro';
@@ -31,7 +31,7 @@ const filterOrgs = filterTargets(orgs);
           </ul>
         </nav>
       )}
-      <NoticeList notices={notices} variant="board" empty="아직 소식이 없습니다." />
+      <NoticeList notices={notices} empty="아직 소식이 없습니다." />
     </div>
   </section>
 </BaseLayout>
