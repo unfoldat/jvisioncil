@@ -6,8 +6,14 @@ import { SITE_NAME, SITE_DESCRIPTION, ORG_FULL_NAME, MAIN_MENU, FOOTER_MENU, NOI
 interface Props {
   pageName: string;
   searchable?: boolean;
+  // 목업 실측 — <main> 바로 아래, 뷰포트 폭까지 꽉 차는 배경색 wrapper(스크린리더 이름 없는
+  // 순수 시각 요소)가 각 페이지 색을 깔고, 그 안의 <section>들이 개별 배경을 덮어 그린다.
+  // 특정 section이 자기 배경을 안 칠하면 이 wrapper 색이 안전망으로 비친다. 지금까지는
+  // <main class="wrap">이 이 wrapper 역할까지 겸하면서 1200px로 콘텐츠 폭에 갇혀 있었다
+  // (모든 메뉴 페이지에서 배경색이 좌우 끝까지 안 퍼지고, 흐르는 갤러리도 잘리는 원인).
+  bg?: string;
 }
-const { pageName, searchable = true } = Astro.props;
+const { pageName, searchable = true, bg = 'var(--bg)' } = Astro.props;
 
 const title = `${pageName} – ${SITE_NAME}`;
 const canonical = new URL(Astro.url.pathname, Astro.site);
@@ -86,8 +92,10 @@ const path = decodeURIComponent(Astro.url.pathname);
       </div>
     </div>
 
-    <main id="main-content" class="main wrap" tabindex="-1" data-pagefind-body={searchable || undefined} data-pagefind-ignore={!searchable || undefined}>
-      <slot />
+    <main id="main-content" class="main" tabindex="-1" data-pagefind-body={searchable || undefined} data-pagefind-ignore={!searchable || undefined}>
+      <div class="page-bg" style={`background:${bg}`}>
+        <slot />
+      </div>
     </main>
 
     <footer class="footer">

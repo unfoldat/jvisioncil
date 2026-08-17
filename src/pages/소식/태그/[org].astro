@@ -22,7 +22,7 @@ export async function getStaticPaths() {
 const { orgName, notices } = Astro.props;
 ---
 
-<BaseLayout pageName={`${orgName} 소식`}>
+<BaseLayout pageName={`${orgName} 소식`} bg="#EDE8EE">
   <section aria-labelledby="nw-title" class="intro">
     <div class="wrap">
       <p class="eyebrow"><span class="pill">소식</span></p>
