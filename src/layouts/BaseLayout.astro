@@ -11,7 +11,10 @@ const { pageName, searchable = true } = Astro.props;
 
 const title = `${pageName} – ${SITE_NAME}`;
 const canonical = new URL(Astro.url.pathname, Astro.site);
-const path = Astro.url.pathname;
+// Astro.url.pathname은 한글 경로를 퍼센트 인코딩한 상태로 준다(/%ED%9B%84...) — MAIN_MENU의
+// href는 평문 한글이라 디코딩 없이 비교하면 절대 안 맞는다(모든 한글 라우트에서 현재 메뉴
+// 표시·aria-current가 계속 실패하고 있었음 — 실측으로 발견, 수정).
+const path = decodeURIComponent(Astro.url.pathname);
 ---
 
 <!doctype html>
@@ -62,9 +65,11 @@ const path = Astro.url.pathname;
 
       <nav aria-label="주 메뉴" class="primary-nav">
         <ul class="nav-list wrap">
-          {MAIN_MENU.map((item) => (
-            <li><a href={item.href} aria-current={path === item.href ? 'page' : undefined}>{item.label}</a></li>
-          ))}
+          {MAIN_MENU.map((item) => {
+            const active = path === item.href;
+            const style = active ? `--tab-bg:${item.tab};--tab-ink:${item.tabInk};--tab-page-bg:${item.pageBg}` : undefined;
+            return <li><a href={item.href} aria-current={active ? 'page' : undefined} style={style}>{item.label}</a></li>;
+          })}
         </ul>
       </nav>
     </header>
@@ -385,8 +390,8 @@ const path = Astro.url.pathname;
     border: 1px solid #8fc7ac; border-bottom-color: var(--green-dark); margin-bottom: -1px;
   }
   .nav-list a[aria-current='page'] {
-    background: #e3a857; color: #1a1512; font-weight: 800; padding: 20px 26px 22px;
-    border-color: #e3a857; border-bottom-color: var(--bg); margin-bottom: -1px;
+    background: var(--tab-bg); color: var(--tab-ink); font-weight: 800; padding: 20px 26px 22px;
+    border-color: var(--tab-bg); border-bottom-color: var(--tab-page-bg); margin-bottom: -1px;
   }
 
   /* 검색 결과 */
