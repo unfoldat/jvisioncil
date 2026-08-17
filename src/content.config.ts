@@ -59,43 +59,14 @@ const sponsors = defineCollection({
   }),
 });
 
-// 스펙 §5 — 법적 의무 문서(무보관 원칙의 유일한 예외).
-// 2026-07-21 최종 디자인 반영 — 보고서마다 HTML 상세 페이지가 생기면서 title/body 추가.
-const donationReports = defineCollection({
-  loader: glob({ pattern: '**/*.md', base: './src/content/donation-reports' }),
+// 작업지시서(기부금 공시 파일 첨부 기능) 스펙 — 법적 의무 문서(무보관 원칙의 유일한 예외).
+// 필드 3개만: 제목(연도 포함, 예 "2026년 내역입니다")·본문·PDF. 게시 순서는 슬러그의
+// 날짜 프리픽스(생성 시각 자동 기록, notices와 같은 방식)로 정해 편집자가 날짜를 안 적는다.
+const disclosures = defineCollection({
+  loader: glob({ pattern: '**/*.md', base: './src/content/disclosures' }),
   schema: z.object({
     title: z.string(),
-    year: z.number().int(),
-    date: z.coerce.date().optional(),
-    pinned: z.boolean().default(false),
     file: z.string(),
-  }),
-});
-
-// impact = 함께 만드는 변화: 좋은비전이 직접 수행한 활동·후원으로 만들어진 변화 아카이브.
-// notices(소식: 공지·행사안내·외부기관 소식)와는 목적이 분리된 별도 컬렉션 (독수리 지정).
-const impact = defineCollection({
-  loader: glob({ pattern: '**/*.md', base: './src/content/impact' }),
-  schema: z.object({
-    title: z.string(),
-    date: z.coerce.date(),
-    image: z.string(),
-    // 카드·상세 페이지 모두 이 값을 <img alt>로 그대로 쓴다 — 빈 문자열이면 CMS 필수 검증에서 막힌다.
-    image_alt: z.string().min(1),
-    summary: z.string(),
-    category: z.enum(['상담', '강연', '행사', '협력 활동', '후원 이야기', '기타']),
-    link: optionalUrl(),
-    status: z.enum(['draft', 'published']).default('draft'),
-  }),
-});
-
-// 2026-07-21 최종 디자인 반영 — first-guides = 처음 오신 분께 (신규, 이전엔 예약 상태였음).
-const firstGuides = defineCollection({
-  loader: glob({ pattern: '**/*.md', base: './src/content/first-guides' }),
-  schema: z.object({
-    title: z.string(),
-    date: z.coerce.date().optional(),
-    pinned: z.boolean().default(false),
   }),
 });
 
@@ -103,7 +74,5 @@ export const collections = {
   notices,
   'network-orgs': networkOrgs,
   sponsors,
-  'donation-reports': donationReports,
-  impact,
-  'first-guides': firstGuides,
+  disclosures,
 };

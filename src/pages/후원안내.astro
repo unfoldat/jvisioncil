@@ -1,97 +1,105 @@
 ---
-// 2026-07-21 최종 디자인 반영. 기부금 PDF = 무보관 원칙의 유일한 보관 예외.
-import { getCollection } from 'astro:content';
+// 2026-08-17 디자인 목업 반영.
 import BaseLayout from '../layouts/BaseLayout.astro';
-import ImpactList from '../components/ImpactList.astro';
-import { sortForList as sortImpactForList } from '../lib/impact';
-import { sortForList as sortReportsForList } from '../lib/donationReports';
+import { PHONE } from '../config';
 
-const impactEntries = sortImpactForList(await getCollection('impact'));
-const reports = sortReportsForList(await getCollection('donation-reports'));
-const sponsors = (await getCollection('sponsors')).sort((a, b) => a.id.localeCompare(b.id));
+const PHOTOS = ['합창단 공연', '가을 산행', '정기 총회', '낭독 녹음', '도자기 교실', '트레킹'];
+const galleryLoop = PHOTOS.concat(PHOTOS);
 ---
 
 <BaseLayout pageName="후원 안내">
-  <section>
-    <small class="review">검토 영역: 후원 소개</small>
-    <h1>후원 안내</h1>
-    <p class="lead">좋은비전의 상담과 정보 연결 활동이 지속되도록 함께해주세요.</p>
-  </section>
-
-  <section aria-labelledby="changes-title">
-    <small class="review">검토 영역: 함께 만드는 변화</small>
-    <div class="section-head">
-      <h2 id="changes-title">함께 만드는 변화</h2>
+  <section aria-labelledby="dn-title" class="intro">
+    <div class="wrap">
+      <p class="eyebrow"><span class="pill">후원</span></p>
+      <h1 id="dn-title">후원 안내</h1>
+      <p class="lead-lg">여러분의 소중한 후원이<br />상담과 교육, 낭독도서 제작 활동을 이어갑니다.</p>
     </div>
-    <p>후원과 참여로 이어진 좋은비전의 활동을 전합니다.</p>
-    <ImpactList entries={impactEntries} empty="등록된 활동 이야기가 아직 없습니다." />
   </section>
 
-  <section aria-labelledby="donate-title">
-    <small class="review">검토 영역: 후원 안내</small>
-    <h2 id="donate-title">후원하기</h2>
-    <dl class="facts donate-facts">
-      <div><dt>은행</dt><dd>○○은행</dd></div>
-      <div><dt>계좌번호</dt><dd>123-456-123456</dd></div>
-      <div><dt>예금주</dt><dd>확인 후 입력</dd></div>
-    </dl>
+  <section aria-labelledby="dn-letter">
+    <div class="wrap letter-wrap">
+      <div class="letter-card">
+        <h2 id="dn-letter">함께 만드는 변화</h2>
+        <p class="letter-copy">좋은비전은 시력이 달라진 순간을 처음 마주한 분들의 이야기를 듣고, 필요한 복지서비스와 교육·직업 정보로 연결합니다. 후원은 중도실명인 컨설팅, 심리평가와 상담, 청소년 진로상담, 낭독도서 제작을 지속하는 데 쓰입니다.</p>
+
+        <div class="account-box">
+          <p class="account-title">후원 계좌 안내</p>
+          <p class="account-number">신한은행 140-012-078484</p>
+          <p class="account-holder">예금주 좋은비전장애인자립생활센터</p>
+          <p class="account-note">정기 후원(CMS)을 원하시면 센터로 전화 주시기 바랍니다.</p>
+          <p><a href={`tel:${PHONE.tel}`} class="account-phone">( {PHONE.display} )</a></p>
+        </div>
+
+        <div class="receipt-box">
+          <h3>기부금 영수증 신청 방법</h3>
+          <ol>
+            <li>입금 후 센터로 전화하거나 문자로 <strong>성명·생년월일·연락처</strong>를 알려주세요.</li>
+            <li>기부금 영수증은 <strong>연말정산 기간 전</strong>에 국세청 자료로 등록됩니다.</li>
+          </ol>
+          <p class="receipt-contact">문의 <a href={`tel:${PHONE.tel}`}>{PHONE.display}</a></p>
+        </div>
+
+        <p class="disclosure-note">연간 기부금 모금액과 활용실적은 <a href="/기부금-공시/">기부금 공시 내역</a>에서, 국세청 공시 자료는 <a href="https://www.nts.go.kr" target="_blank" rel="noopener noreferrer">국세청 홈페이지<span class="sr-only">, 새 창에서 열림</span></a>에서 확인하실 수 있습니다.</p>
+      </div>
+    </div>
   </section>
 
-  <section aria-labelledby="reports-title">
-    <h2 id="reports-title">기부금 사용내역</h2>
-    {reports.length === 0 ? (
-      <p>공개된 기부금 사용내역이 아직 없습니다.</p>
-    ) : (
-      <ul class="report-board">
-        {reports.map((report) => (
-          <li>
-            {report.data.pinned && (
-              <span class="pinned-label"><span aria-hidden="true">📌</span> 상단 고정</span>
-            )}
-            <a href={report.data.file} download>{report.data.title} PDF 다운로드</a>
-          </li>
+  <section aria-labelledby="dn-gallery" class="band">
+    <h2 id="dn-gallery" class="wrap">후원으로 이어진 활동</h2>
+    <div class="marquee">
+      <div class="marquee-track">
+        {galleryLoop.map((label, i) => (
+          <div class="marquee-item" aria-hidden={i >= PHOTOS.length ? 'true' : undefined}>{label}<br />사진 자리</div>
         ))}
-      </ul>
-    )}
-  </section>
-
-  <section aria-labelledby="sponsors-title">
-    <h2 id="sponsors-title">후원기관</h2>
-    {sponsors.length === 0 ? (
-      <p>후원기관 목록은 준비 중입니다.</p>
-    ) : (
-      <ul>
-        {sponsors.map((sponsor) => (
-          <li><a href={sponsor.data.url}>{sponsor.data.name}</a></li>
-        ))}
-      </ul>
-    )}
+      </div>
+    </div>
   </section>
 </BaseLayout>
 
 <style>
-  /* 검토 요청: 노란 강조 범위가 너무 넓었음 — 텍스트보다 살짝 여유 있는 정도로 축소. */
-  .donate-facts {
-    background: #fff9e6;
-    border: 1px solid #dfc983;
-    border-radius: 0.25rem;
-    width: fit-content;
-    padding: 0.3rem 0.85rem;
+  .intro { background: #e5eded; padding: 66px 0 0; text-align: center; }
+  .intro .wrap { max-width: 960px; }
+  .pill { display: inline-flex; padding: 6px 14px; border-radius: 999px; background: #6c9a9c; color: #000; font: 700 0.94em/1.3 Pretendard, system-ui, sans-serif; }
+  #dn-title { margin: 16px 0 0; font: 800 3.9em/1.25 NanumSquareRound, Pretendard, sans-serif; color: #332e1e; letter-spacing: -0.03em; }
+  .lead-lg { margin: 24px 0 0; font: 400 1.5em/1.7 NanumSquareRound, Pretendard, sans-serif; color: var(--muted); }
+
+  .letter-wrap { max-width: 960px; padding: 44px 0 66px; }
+  .letter-card { background: #fff; border: 3px solid #bdd2d2; border-radius: 20px; padding: 56px 52px; }
+  #dn-letter { margin: 0 0 20px; font: 800 2.25em/1.4 NanumSquareRound, Pretendard, sans-serif; color: #332e1e; text-align: center; }
+  .letter-copy { margin: 0 0 42px; font: 400 1.32em/1.95 NanumSquareRound, Pretendard, sans-serif; color: var(--muted); text-align: center; text-wrap: pretty; }
+
+  .account-box { border-top: 2px solid #bdd2d2; border-bottom: 2px solid #bdd2d2; padding: 46px 0; text-align: center; }
+  .account-title { margin: 0 0 22px; font: 800 1.75em/1.3 NanumSquareRound, Pretendard, sans-serif; color: #332e1e; }
+  .account-number { margin: 0 0 10px; font: 800 2.9em/1.3 NanumSquareRound, Pretendard, sans-serif; color: #332e1e; letter-spacing: -0.02em; }
+  .account-holder { margin: 0 0 28px; font: 700 1.5em/1.5 NanumSquareRound, Pretendard, sans-serif; color: var(--muted); }
+  .account-note { margin: 0; font: 400 1.25em/1.8 NanumSquareRound, Pretendard, sans-serif; color: #5b534f; }
+  .account-phone { font: 800 2.15em/1.5 NanumSquareRound, Pretendard, sans-serif; color: #332e1e; text-decoration: none; }
+
+  .receipt-box { margin-top: 46px; padding: 36px 34px; background: #f2f6f6; border: 2px solid #bdd2d2; border-radius: 16px; }
+  .receipt-box h3 { margin: 0 0 18px; font: 800 1.88em/1.35 NanumSquareRound, Pretendard, sans-serif; color: #332e1e; }
+  .receipt-box ol { margin: 0; padding-left: 1.4em; font: 400 1.32em/1.95 NanumSquareRound, Pretendard, sans-serif; color: var(--muted); }
+  .receipt-box li { margin-bottom: 8px; }
+  .receipt-contact { margin: 24px 0 0; font: 800 1.62em/1.5 NanumSquareRound, Pretendard, sans-serif; color: #332e1e; }
+  .receipt-contact a { color: #332e1e; text-decoration: none; }
+
+  .disclosure-note { margin: 38px 0 0; font: 400 1.06em/1.8 NanumSquareRound, Pretendard, sans-serif; color: #6b6550; text-align: center; text-wrap: pretty; }
+
+  .band { background: #f2f6f6; border-top: 1px solid #bdd2d2; padding: 54px 0 62px; }
+  #dn-gallery { margin: 0 0 22px; font: 800 1.7em/1.4 NanumSquareRound, Pretendard, sans-serif; color: #332e1e; }
+  .marquee { overflow: hidden; }
+  .marquee-track { display: flex; gap: 16px; width: max-content; animation: marquee 120s linear infinite; }
+  .marquee:hover .marquee-track, .marquee:focus-within .marquee-track { animation-play-state: paused; }
+  @media (prefers-reduced-motion: reduce) { .marquee-track { animation: none; } }
+  @keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+  .marquee-item {
+    width: 16.5em; height: 10.8em; flex: none; border: 2px dashed #bdd2d2; border-radius: 14px; background: #f2f6f6;
+    display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center;
+    font: 600 0.88em/1.5 NanumSquareRound, Pretendard, sans-serif; color: #415c5e; padding: 12px;
   }
 
-  /* 검토 요청: 보고서가 여러 건 쌓일 예정 — 게시판처럼(소식 목록과 같은 시각 언어). */
-  .report-board {
-    border-top: 2px solid var(--ink);
-    background: #fff;
-    padding: 0;
-    list-style: none;
-  }
-  .report-board li {
-    border-bottom: 1px solid var(--line);
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 0.4rem 1rem;
-    padding: 0.82rem 0.65rem;
-    display: flex;
+  @media (max-width: 760px) {
+    .letter-card { padding: 32px 24px; }
+    #dn-title { font-size: 2.4em; }
+    .account-number { font-size: 1.9em; }
   }
 </style>

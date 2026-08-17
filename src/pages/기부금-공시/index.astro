@@ -1,0 +1,52 @@
+---
+// 작업지시서(기부금 공시 파일 첨부 기능) §2 — 게시판 페이지. 목업 disclosure 화면 포팅.
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const disclosures = (await getCollection('disclosures')).sort((a, b) => b.id.localeCompare(a.id));
+---
+
+<BaseLayout pageName="기부금 공시">
+  <section aria-labelledby="dc-title" class="intro">
+    <div class="wrap">
+      <p class="breadcrumb"><a href="/후원안내/">후원</a> &gt; 기부금 공시</p>
+      <h1 id="dc-title">기부금 공시 내역</h1>
+      <p class="lead-sm">연간 기부금 모금액과 활용실적을 공시합니다.</p>
+
+      {disclosures.length === 0 ? (
+        <p>공개된 기부금 공시 내역이 아직 없습니다.</p>
+      ) : (
+        <ul class="disclosure-list">
+          {disclosures.map((d) => (
+            <li>
+              <h2>{d.data.title}</h2>
+              <a href={d.data.file} download>
+                {d.data.title} PDF 다운로드<span class="sr-only">, 새 창 없이 바로 내려받기</span>
+              </a>
+            </li>
+          ))}
+        </ul>
+      )}
+
+      <p class="nts-note">국세청 공익법인 공시 자료는 <a href="https://www.nts.go.kr" target="_blank" rel="noopener noreferrer">국세청 홈페이지<span class="sr-only">, 새 창에서 열림</span></a>에서도 확인하실 수 있습니다.</p>
+      <p><a href="/후원안내/" class="standalone-link">← 후원 안내로 돌아가기</a></p>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .intro { background: #f9f5ea; padding: 62px 0 66px; }
+  .intro .wrap { max-width: 960px; }
+  .breadcrumb { margin: 0 0 12px; font: 700 0.94em/1 NanumSquareRound, Pretendard, sans-serif; color: #6b6550; }
+  .breadcrumb a { color: #6b6550; }
+  #dc-title { margin: 0 0 20px; font: 800 2.5em/1.35 NanumSquareRound, Pretendard, sans-serif; color: #332e1e; }
+  .lead-sm { margin: 0 0 34px; font: 400 1.19em/1.8 NanumSquareRound, Pretendard, sans-serif; color: var(--muted); max-width: 36em; text-wrap: pretty; }
+
+  .disclosure-list { list-style: none; margin: 0 0 28px; padding: 0; border-top: 2px solid var(--ink); background: #fff; }
+  .disclosure-list li { border-bottom: 1px solid var(--line); padding: 18px 22px; display: flex; align-items: baseline; justify-content: space-between; gap: 1rem; flex-wrap: wrap; }
+  .disclosure-list h2 { margin: 0; font: 700 1.06em/1.6 NanumSquareRound, Pretendard, sans-serif; color: #3a3626; }
+  .disclosure-list a { font: 400 1.06em/1.6 NanumSquareRound, Pretendard, sans-serif; }
+
+  .nts-note { margin: 28px 0 0; font: 400 1.06em/1.8 NanumSquareRound, Pretendard, sans-serif; color: #6b6550; }
+  .standalone-link { display: inline-block; padding: 4px 0; margin-top: 22px; font: 700 1.13em/1 NanumSquareRound, Pretendard, sans-serif; }
+</style>

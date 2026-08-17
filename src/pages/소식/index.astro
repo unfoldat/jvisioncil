@@ -1,7 +1,5 @@
 ---
-// 2026-07-21 최종 디자인 반영 — 데스크톱 table + 좁은 화면 mobile-list.
-// 2026-07-22 — 기관 필터 탭은 좋은비전(가상 항목) + network-orgs 등록 기관 전체를
-// 항상 보여준다(글 수와 무관 — 태그가 자유 문자열이 아니라 관리되는 컬렉션이 됐기 때문).
+// 2026-08-17 디자인 목업 반영 — 데스크톱·모바일 공통 카드 그리드(NoticeList variant="board").
 import { getCollection } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import NoticeList from '../../components/NoticeList.astro';
@@ -13,41 +11,42 @@ const filterOrgs = filterTargets(orgs);
 ---
 
 <BaseLayout pageName="소식">
-  <section>
-    <small class="review">검토 영역: 소식 게시판</small>
-    <h1>소식</h1>
-    {filterOrgs.length > 0 && (
-      <nav aria-label="소식 기관 분류">
-        <ul class="tabs">
-          <li><a href="/소식/" aria-current="page">전체</a></li>
-          {filterOrgs.map((org) => (
-            <li><a href={태그경로(org.id)}>{org.name}</a></li>
-          ))}
-        </ul>
-      </nav>
-    )}
-    <NoticeList notices={notices} variant="table" empty="아직 소식이 없습니다." />
+  <section aria-labelledby="nw-title" class="intro">
+    <div class="wrap">
+      <p class="eyebrow"><span class="pill">소식</span></p>
+      <h1 id="nw-title">좋은비전의 활동을 전합니다</h1>
+    </div>
+  </section>
+
+  <section aria-labelledby="nw-board" class="tint">
+    <div class="wrap">
+      <h2 id="nw-board">전체 소식</h2>
+      {filterOrgs.length > 0 && (
+        <nav aria-label="소식 기관 분류" class="tabs-nav">
+          <ul class="tabs">
+            <li><a href="/소식/" aria-current="page">전체</a></li>
+            {filterOrgs.map((org) => (
+              <li><a href={태그경로(org.id)}>{org.name}</a></li>
+            ))}
+          </ul>
+        </nav>
+      )}
+      <NoticeList notices={notices} variant="board" empty="아직 소식이 없습니다." />
+    </div>
   </section>
 </BaseLayout>
 
 <style>
-  .tabs {
-    flex-wrap: wrap;
-    gap: 0.5rem;
-    padding: 0;
-    list-style: none;
-    display: flex;
-  }
+  .intro { background: #ede8ee; padding: 62px 0 34px; }
+  .pill { display: inline-flex; padding: 6px 14px; border-radius: 999px; background: #8e7193; color: #000; font: 700 0.94em/1.3 Pretendard, system-ui, sans-serif; }
+  #nw-title { margin: 12px 0 0; font: 800 2.75em/1.4 NanumSquareRound, Pretendard, sans-serif; color: #403342; }
+  .tint { background: #f6f4f6; border-top: 1px solid #d0c3d2; padding: 58px 0 66px; }
+  #nw-board { margin: 0 0 26px; font: 800 1.88em/1.4 NanumSquareRound, Pretendard, sans-serif; color: #403342; }
+  .tabs { flex-wrap: wrap; gap: 8px; padding: 0; margin: 0 0 26px; list-style: none; display: flex; }
   .tabs a {
-    border: 1px solid var(--line);
-    background: #fff;
-    align-items: center;
-    min-height: 2.5rem;
-    padding: 0.3rem 0.75rem;
-    display: inline-flex;
+    border: 1px solid #d0c3d2; background: #fff; align-items: center; min-height: 2.5rem;
+    padding: 10px 16px; display: inline-flex; text-decoration: none; color: var(--ink);
+    border-radius: 999px; font: 600 0.94em/1 Pretendard, system-ui, sans-serif;
   }
-  .tabs a[aria-current='page'] {
-    border-bottom: 0.3rem solid var(--green);
-    font-weight: 900;
-  }
+  .tabs a[aria-current='page'] { background: #403342; color: #fff; border-color: #403342; font-weight: 800; }
 </style>

@@ -12,41 +12,49 @@ const { compact = false } = Astro.props;
 const orgs = await partnerOrgs();
 ---
 
-<div class:list={['partner-banners', { compact }]}>
+<ul class:list={['partner-banners', { compact }]}>
   {orgs.map((org) => (
-    org.data.url ? (
-      <a class="partner-banner" href={org.data.url} target="_blank" rel="noopener noreferrer">
-        {org.data.name}<span class="sr-only">, 공식 사이트, 새 창에서 열림</span>
-      </a>
-    ) : (
-      <span class="partner-banner">{org.data.name}<small>공식 주소 확인 중</small></span>
-    )
+    <li>
+      {org.data.url ? (
+        <a class="partner-banner" href={org.data.url} target="_blank" rel="noopener noreferrer">
+          {org.data.name}<span class="sr-only">, 공식 사이트, 새 창에서 열림</span>
+        </a>
+      ) : (
+        <span class="partner-banner">{org.data.name}<small>공식 주소 확인 중</small></span>
+      )}
+    </li>
   ))}
-</div>
+</ul>
 
 <style>
   .partner-banners {
+    list-style: none;
+    margin: 0;
+    padding: 0;
     grid-template-columns: repeat(4, minmax(0, 1fr));
-    gap: 0.65rem;
+    gap: 10px;
+    align-items: stretch;
     display: grid;
   }
+  .partner-banners li { display: flex; }
   .partner-banner {
-    border: 1px solid var(--line);
-    min-height: 5rem;
-    color: var(--ink);
-    text-align: center;
-    background: #fff;
-    border-radius: 0.35rem;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    padding: 0.7rem;
-    font-weight: 850;
-    text-decoration: none;
+    flex: 1;
+    min-height: 4.8em;
     display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 14px 16px;
+    border: 1px solid #96876a;
+    border-radius: 10px;
+    background: #fff;
+    text-decoration: none;
+    color: var(--muted);
+    font: 600 0.97em/1.45 NanumSquareRound, Pretendard, sans-serif;
+    text-wrap: pretty;
   }
   .partner-banner:hover {
-    background: var(--green2);
+    background: #f3eed9;
   }
   .partner-banner small {
     color: var(--muted);
@@ -62,8 +70,5 @@ const orgs = await partnerOrgs();
     .partner-banners {
       grid-template-columns: 1fr;
     }
-  }
-  html[data-zoom='wide'] .partner-banners {
-    grid-template-columns: 1fr;
   }
 </style>

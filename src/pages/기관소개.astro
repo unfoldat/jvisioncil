@@ -1,67 +1,267 @@
 ---
-// 2026-07-21 최종 디자인 반영 — 센터소개(URL은 /기관소개/ 유지, 표시 라벨만 "센터소개").
+// 2026-08-17 디자인 목업 반영 — 센터소개(URL은 /기관소개/ 유지, 표시 라벨만 "센터소개").
 import BaseLayout from '../layouts/BaseLayout.astro';
 import PartnerGrid from '../components/PartnerGrid.astro';
-import { SITE_NAME } from '../config';
+
+const leaders = [
+  {
+    role: '센터장', name: '정금종', photo: '/images/director-jeong.jpg', photoAlt: '정금종 센터장 얼굴 사진', photoPos: 'center 20%',
+    bio: [
+      '대한장애인한궁연맹 중앙부회장',
+      '경기도한궁연맹 회장',
+      '대한장애인역도연맹 고문',
+      '대한장애인야구연맹 부회장',
+      '장애인올림픽 10회 출전(역도 금메달리스트)',
+    ],
+  },
+  {
+    role: '부센터장', name: '김기현', photo: '/images/director-kim.jpg', photoAlt: '김기현 부센터장 얼굴 사진', photoPos: 'center 15%',
+    bio: [
+      'Ph.D. Rehabilitation Counselor Education',
+      '미국·한국 재활상담사',
+      '명지대학교 객원교수',
+      '『마음의 눈으로 행복을 만지다』 저자',
+      '장애인식개선강사',
+    ],
+  },
+];
+
+const mainPrograms = [
+  { no: '01', name: '중도실명인을 위한 컨설팅', desc: '질병이나 사고 등으로 후천적으로 시력을 잃은 중도실명인이 변화된 생활환경에 적응하고 새로운 삶을 준비할 수 있도록 재활 컨설팅을 제공합니다. 개인의 상황과 필요에 따라 복지서비스, 교육, 직업, 여가 및 일상생활 적응에 필요한 정보와 지원 방향을 안내합니다.' },
+  { no: '02', name: '시각장애인 심리평가 및 상담', desc: '시각장애로 인해 경험할 수 있는 심리적 어려움과 정서적 스트레스를 이해하고 지원하기 위해 전문적인 심리평가와 그에 근거한 상담을 제공합니다.' },
+  { no: '03', name: '청소년 시각장애인을 위한 진로 및 심리상담', desc: '통합학급, 특수학급 및 특수학교에 재학 중인 시각장애 청소년을 대상으로 흥미, 강점, 적성 및 진로 탐색을 위한 전문적인 심리 및 직업 진로 평가와 상담을 제공합니다.' },
+  { no: '04', name: '직장 내 장애인 인식개선 교육', desc: '한국장애인고용공단의 직장 내 장애인 인식개선 교육 지정 수행기관으로, 사업주와 근로자를 대상으로 법정의무교육인 직장 내 장애인 인식개선 교육을 실시합니다.' },
+  { no: '05', name: '사회적 장애인식개선 교육', desc: '한국장애인개발원의 사회적 장애인식개선교육 강사양성과정을 수료한 전문 강사진이 유아·청소년·공공기관·지역사회 등 대상별 특성을 고려한 장애인식개선 교육을 제공합니다.' },
+  { no: '06', name: '「낭독하는 사람들」 낭독도서 제작 및 배포', desc: '시각장애인의 정보 접근과 독서문화 향유를 지원하기 위해 다양하게 읽을 컨텐츠들과 도서를 음성도서로 제작하여 배포합니다. 또한 시각장애인의 요청에 의해 듣기 원하는 글이나 책을 신청하면 오디오 녹음을 하여 파일로 제작해 드립니다.' },
+];
+
+const specialPrograms = [
+  { name: '"우리두리 모두누리": 장애·비장애인 통합 소모임 활동', sponsor: '서울스몰스파크, 서울복지재단' },
+  { name: '시각장애인 청소년과 시각장애인가정의 비장애인 청소년 영어 교류 캠프', sponsor: '좋은비전 자체사업' },
+  { name: '결혼, 출산, 양육 스트레스를 경험하는 시각장애인 여성 집단상담', sponsor: '성주재단' },
+  { name: '시각장애인 공무원 응시생 영어 공부방', sponsor: '사회복지공동모금회' },
+  { name: '시각장애인 유튜버 발굴 및 제작 사업', sponsor: '한국장애인재단' },
+  { name: '시각장애인과 함께 하는 "봄, 여름, 가을, 겨울": 계절별 트레킹·과일따기·음악회 등 문화 공연 행사', sponsor: '앤시스코리아' },
+  { name: '시각장애 직장인을 위한 이브닝 도자기 교실', sponsor: '우리들의 눈' },
+  { name: '시각장애인 아동을 위한 낭독 및 북나레이터 체험', sponsor: '낭독하는 사람들' },
+];
+
+const labFields = [
+  { no: '01', name: '재활상담 및 프로그램 개발 연구', desc: '장애인의 심리적 적응과 자립, 사회참여를 지원하기 위한 재활상담 프로그램을 개발하고, 상담 및 재활서비스의 효과성을 체계적으로 분석합니다.' },
+  { no: '02', name: '시각장애인의 고용 및 직업만족도 연구', desc: '시각장애인 안마사, 공무원, 교사, 음악인 등 다양한 직업군에 종사하는 시각장애인의 직업경험과 직업만족도, 직무환경, 직업유지 요인 및 삶의 질을 연구합니다.' },
+  { no: '03', name: '장애인 접근성 연구', desc: '이동·정보·교육·문화·디지털 환경 등 장애인의 일상생활과 사회참여에 영향을 미치는 다양한 영역의 접근성을 조사하고, 장애인의 관점에서 보다 포용적인 환경을 만들기 위한 개선방안을 모색합니다.' },
+  { no: '04', name: '방송·미디어와 장애인 인식 연구', desc: 'TV, 방송, 뉴스, 광고, 온라인 콘텐츠 등 미디어에서 장애인이 어떻게 표현되고 있는지를 분석하고, 장애에 대한 편견이나 고정관념, 차별적 표현 및 사례를 연구합니다. 이를 바탕으로 장애를 보다 존중하고 균형 있게 바라볼 수 있는 미디어 환경과 사회적 인식 개선 방안을 제안합니다.' },
+  { no: '05', name: '장애인 삶의 질 및 사회환경 연구', desc: '장애인의 심리적 안녕, 가족관계, 사회적 관계, 여가, 문화생활, 지역사회 참여 등 삶의 다양한 영역을 연구하고, 장애인의 삶의 질을 높이기 위한 지원체계와 사회환경 개선방안을 모색합니다.' },
+];
+
+const busStops = [
+  { name: '영락중학교입구 정류장', walk: '3분', routes: ['7019', '7734'] },
+  { name: '신진과학기술고등학교 정류장', walk: '5분', routes: ['761', '7025'] },
+];
 ---
 
 <BaseLayout pageName="센터소개">
-  <section class="slogan">
-    <small class="review">검토 영역: 기관 슬로건</small>
-    <h1>눈이 보이지 않아도,<br />비전으로 자신의 꿈을 볼 수 있습니다.</h1>
-    <p>{SITE_NAME}CIL</p>
-  </section>
-
-  <section>
-    <small class="review">검토 영역: 기관 소개</small>
-    <h2>{SITE_NAME} 소개</h2>
-    <p class="lead">
-      {SITE_NAME}장애인자립생활센터는 시각장애인과 가족에게 필요한 상담과 정보를 제공하고 적절한 서비스와 기관으로 연결합니다.
-    </p>
-    <p>달라진 일상에서 필요한 정보와 관계를 다시 찾고, 교육·문화·사회활동에 참여할 수 있도록 함께합니다.</p>
-  </section>
-
-  <section>
-    <small class="review">검토 영역: 센터장 · 부센터장 소개</small>
-    <h2>센터장 · 부센터장 소개</h2>
-    <div class="grid two">
-      <article class="card">
-        <div class="profile-photo" role="img" aria-label="센터장 공식 프로필 사진 자리">센터장 공식 사진<br />확인 후 교체</div>
-        <h3>센터장</h3>
-        <dl class="facts">
-          <div><dt>이름</dt><dd>공식 자료 확인 후 입력</dd></div>
-          <div><dt>직책</dt><dd>센터장</dd></div>
-          <div><dt>담당 업무</dt><dd>센터 운영과 주요 사업 총괄</dd></div>
-          <div><dt>주요 약력</dt><dd>공식 자료 확인 후 입력</dd></div>
-        </dl>
-      </article>
-      <article class="card">
-        <div class="profile-photo" role="img" aria-label="부센터장 공식 프로필 사진 자리">부센터장 공식 사진<br />확인 후 교체</div>
-        <h3>부센터장</h3>
-        <dl class="facts">
-          <div><dt>이름</dt><dd>공식 자료 확인 후 입력</dd></div>
-          <div><dt>직책</dt><dd>부센터장</dd></div>
-          <div><dt>담당 업무</dt><dd>전문상담, 센터 운영과 강의 활동</dd></div>
-          <div><dt>주요 약력</dt><dd>공식 자료 확인 후 입력</dd></div>
-        </dl>
-      </article>
+  <section aria-labelledby="about-title" class="intro">
+    <div class="wrap">
+      <p class="eyebrow"><span class="pill">센터소개</span></p>
+      <h1 id="about-title">"보는 방법은 달라도,<br />꿈을 바라보는 마음은 같습니다"</h1>
+      <div class="intro-body">
+        <p>좋은비전장애인자립생활센터는 시각장애인과 특히 중도실명인이 실명 이후에도 자신의 삶을 스스로 선택하고 결정하며, 지역사회의 한 구성원으로 함께 살아갈 수 있도록 지원하는 센터입니다.</p>
+        <p>갑작스러운 실명으로 새로운 삶에 적응해야 하는 중도시각장애인부터 지역사회에서 자신의 꿈을 펼쳐가는 한 사람 한 사람의 시각장애인의 삶과 가능성을 존중합니다. 우리가 생각하는 '좋은비전'은 단순히 눈으로 보는 것이 아닙니다. 자신의 미래를 바라보는 것, 새로운 가능성을 발견하는 것, 그리고 서로 다른 사람들이 지역사회에서 함께 살아가는 세상을 꿈꾸는 것입니다.</p>
+        <p class="intro-emph">장애가 삶의 한계가 되지 않는 사회, 장애인과 비장애인이 자연스럽게 함께 살아가는 지역사회.<br />좋은비전장애인자립생활센터가 그 길을 함께 만들어가겠습니다.</p>
+      </div>
     </div>
   </section>
 
-  <section>
-    <small class="review">검토 영역: 함께하는 기관</small>
-    <h2>협력 네트워크</h2>
-    <p class="lead">{SITE_NAME}이 함께 활동하며 정보와 서비스를 연결하는 기관입니다.</p>
-    <PartnerGrid />
+  <section aria-labelledby="about-people" class="panel">
+    <div class="wrap">
+      <h2 id="about-people">센터장 · 부센터장 소개</h2>
+      <ul class="leader-grid">
+        {leaders.map((ld) => (
+          <li class="leader-card">
+            <div class="leader-profile">
+              <img class="leader-photo" src={ld.photo} alt={ld.photoAlt} style={`object-position:${ld.photoPos}`} />
+              <div class="leader-info">
+                <h3>
+                  <span class="leader-role">{ld.role}</span>
+                  <span class="leader-name">{ld.name}</span>
+                </h3>
+                <ul class="leader-bio" role="list" aria-label={`${ld.name} ${ld.role} 주요 약력`}>
+                  {ld.bio.map((item) => <li>{item}</li>)}
+                </ul>
+              </div>
+            </div>
+          </li>
+        ))}
+      </ul>
+    </div>
   </section>
 
-  <section>
-    <h2>오시는 길</h2>
-    <p>기관 주소와 대중교통 안내 확인 후 입력</p>
+  <section aria-labelledby="about-main" class="panel">
+    <div class="wrap">
+      <h2 id="about-main">주요사업</h2>
+      <ol class="program-grid">
+        {mainPrograms.map((pg) => (
+          <li class="program-card">
+            <div class="program-head"><span aria-hidden="true" class="program-no">{pg.no}</span><h3>{pg.name}</h3></div>
+            <span>{pg.desc}</span>
+          </li>
+        ))}
+      </ol>
+    </div>
   </section>
 
-  <section>
-    <h2>문의</h2>
-    <p>기관 대표 연락처와 이메일은 페이지 아래 푸터에서 확인할 수 있습니다.</p>
+  <section aria-labelledby="about-special" class="tint">
+    <div class="wrap">
+      <h2 id="about-special">특화 사업</h2>
+      <p class="lead-sm">후원 기관과 함께 진행하는 사업입니다.</p>
+      <table class="special-table">
+        <caption>사업 내용과 후원 기관</caption>
+        <thead>
+          <tr><th scope="col">사업 내용</th><th scope="col">후원 기관</th></tr>
+        </thead>
+        <tbody>
+          {specialPrograms.map((sp) => (
+            <tr><td>{sp.name}</td><td>{sp.sponsor}</td></tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section aria-labelledby="about-lab" class="panel">
+    <div class="wrap">
+      <p class="eyebrow-sm">부설기관</p>
+      <h2 id="about-lab">좋은비전재활상담연구소</h2>
+      <div class="lab-body">
+        <p>좋은비전재활상담연구소는 상담과 연구가 장애인의 삶과 재활 현장에서 실질적인 변화로 이어질 수 있도록 장애인의 삶을 가까이에서 이해하고, 개인이 지닌 강점과 가능성을 발견하며, 더 나은 삶의 방향을 함께 모색하는 전문 상담·연구기관입니다.</p>
+        <p>장애와 재활을 개인의 문제에만 국한하지 않고 심리·직업·교육·문화·사회환경을 포괄하는 관점에서 바라보며, 현장에서 발견되는 다양한 문제와 요구를 체계적으로 연구하고 그 결과를 상담과 재활서비스, 프로그램 개발 및 장애인 정책과 실천에 활용하고자 합니다.</p>
+        <p>좋은비전재활상담연구소는 '현장에서 질문을 발견하고, 연구를 통해 근거를 만들며, 그 결과를 다시 현장으로 돌려보내는 연구'를 지향합니다. 장애인의 실제 경험과 목소리를 연구의 출발점으로 삼아 상담과 재활, 교육과 직업, 문화와 사회환경의 변화를 만들어가는 실천적인 연구를 이어가겠습니다.</p>
+      </div>
+      <h3 class="lab-fields-title">주요 연구 분야</h3>
+      <ol class="program-grid">
+        {labFields.map((lf) => (
+          <li class="program-card">
+            <div class="program-head"><span aria-hidden="true" class="program-no">{lf.no}</span><span class="program-title">{lf.name}</span></div>
+            <span>{lf.desc}</span>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  <section aria-labelledby="about-way" class="tint">
+    <div class="wrap">
+      <h2 id="about-way">오시는 길</h2>
+      <div class="way-grid">
+        <div class="way-card">
+          <p class="way-label">주소</p>
+          <h3 class="way-address">서울 은평구 응암로34길 24-8<br />한솔하이빌 101호</h3>
+        </div>
+        <dl class="transit-card">
+          <div class="transit-head"><p>교통편 안내</p></div>
+          <div class="transit-row">
+            <span class="transit-icon" aria-hidden="true">6</span>
+            <div>
+              <dt>지하철</dt>
+              <dd>응암역 4번 출구 <span class="transit-sub">· 도보 약 16분</span></dd>
+            </div>
+          </div>
+          <div class="transit-row">
+            <span class="transit-icon transit-icon-bus" aria-hidden="true">🚌</span>
+            <div>
+              <dt>버스</dt>
+              <div class="bus-list">
+                {busStops.map((stop) => (
+                  <div>
+                    <dd>{stop.name} <span class="transit-sub">· 도보 {stop.walk}</span></dd>
+                    <div class="bus-routes">
+                      {stop.routes.map((bus) => <span>{bus}</span>)}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </dl>
+      </div>
+    </div>
+  </section>
+
+  <section aria-labelledby="about-partners" class="panel">
+    <div class="wrap">
+      <h2 id="about-partners">협력 네트워크</h2>
+      <p class="lead-sm">좋은비전이 함께 활동하며 정보와 서비스를 연결하는 기관입니다.</p>
+      <PartnerGrid />
+    </div>
   </section>
 </BaseLayout>
+
+<style>
+  .intro { background: #f9eedd; padding: 62px 0 44px; }
+  .pill { display: inline-flex; padding: 6px 14px; border-radius: 999px; background: #e3a857; color: #000; font: 700 0.94em/1.3 Pretendard, system-ui, sans-serif; }
+  #about-title { margin: 12px 0 0; max-width: 30em; font: 800 2.75em/1.4 Pretendard, system-ui, sans-serif; letter-spacing: -0.035em; color: #664c27; text-wrap: pretty; }
+  .intro-body { margin-top: 26px; max-width: 44em; display: grid; gap: 18px; font: 400 1.19em/1.85 Pretendard, system-ui, sans-serif; color: var(--muted); }
+  .intro-body p { margin: 0; text-wrap: pretty; }
+  .intro-emph { font-weight: 700; color: #664c27; }
+
+  .panel { background: #fcf6ee; border-top: 1px solid #f1d4ab; padding: 58px 0; }
+  .tint { background: #f9eedd; border-top: 1px solid #f1d4ab; padding: 58px 0; }
+  .panel h2, .tint h2 { margin: 0 0 10px; font: 800 1.88em/1.4 Pretendard, system-ui, sans-serif; color: #664c27; }
+  section[aria-labelledby='about-main'] h2 { margin-bottom: 26px; }
+  .lead-sm { margin: 0 0 24px; font: 400 1.06em/1.7 Pretendard, system-ui, sans-serif; color: var(--muted); }
+
+  .leader-grid { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
+  .leader-card { border: 1px solid #f1d4ab; border-radius: 16px; background: #fcf6ee; padding: 24px; }
+  .leader-profile { display: grid; grid-template-columns: minmax(150px, 190px) minmax(0, 1fr); gap: clamp(14px, 3vw, 18px); align-items: start; }
+  .leader-photo { width: 100%; max-width: 190px; aspect-ratio: 3/4; object-fit: cover; border-radius: 12px; display: block; }
+  .leader-info { min-width: 0; }
+  .leader-info h3 { margin: 0; }
+  .leader-role { display: block; font: 500 0.95em/1.4 Pretendard, system-ui, sans-serif; color: var(--muted); }
+  .leader-name { display: block; font: 800 1.4em/1.3 Pretendard, system-ui, sans-serif; color: #664c27; margin-top: 4px; }
+  .leader-bio { list-style: none; margin: 1em 0 0; padding-left: 1.1em; display: grid; gap: 8px; }
+  .leader-bio li { position: relative; font: 400 1.06em/1.45 Pretendard, system-ui, sans-serif; color: var(--muted); text-wrap: pretty; }
+  .leader-bio li::before { content: ''; position: absolute; left: -1.1em; top: 0.62em; width: 5px; height: 5px; border-radius: 50%; background: #b08a5c; }
+
+  .program-grid { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
+  .program-card { display: flex; flex-direction: column; gap: 14px; padding: 30px 32px; border: 1.5px solid #f1d4ab; border-radius: 14px; background: #fcf6ee; }
+  .program-head { display: flex; align-items: baseline; gap: 14px; }
+  .program-no { font: 700 0.94em/1 Pretendard, system-ui, sans-serif; color: #8fa98e; flex: none; }
+  .program-card h3, .program-title { margin: 0; font: 700 1.32em/1.4 Pretendard, system-ui, sans-serif; color: #664c27; text-wrap: pretty; }
+  .program-card span:not(.program-no) { font: 400 1.06em/1.75 Pretendard, system-ui, sans-serif; color: var(--muted); text-wrap: pretty; }
+
+  .special-table { width: 100%; border-collapse: collapse; background: #fff; border: 1px solid #f1d4ab; border-radius: 14px; overflow: hidden; }
+  .special-table caption { text-align: left; padding: 0 0 12px; font: 400 0.94em/1.5 Pretendard, system-ui, sans-serif; color: var(--muted); }
+  .special-table th { text-align: left; padding: 18px 22px; border-bottom: 1px solid #f1d4ab; font: 700 1.06em/1.4 Pretendard, system-ui, sans-serif; color: #664c27; background: #fcf6ee; }
+  .special-table td { padding: 18px 22px; border-bottom: 1px solid #f9eedd; font: 400 1.06em/1.7 Pretendard, system-ui, sans-serif; color: var(--muted); text-wrap: pretty; }
+  .special-table td + td { font-weight: 600; }
+
+  .eyebrow-sm { margin: 0 0 10px; font: 700 0.94em/1 Pretendard, system-ui, sans-serif; color: var(--green); }
+  .lab-body { max-width: 52em; display: grid; gap: 18px; font: 400 1.13em/1.85 Pretendard, system-ui, sans-serif; color: var(--muted); }
+  .lab-body p { margin: 0; text-wrap: pretty; }
+  .lab-fields-title { margin: 38px 0 20px; font: 800 1.5em/1.4 Pretendard, system-ui, sans-serif; color: #664c27; }
+
+  .way-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(330px, 100%), 1fr)); gap: 34px; align-items: start; }
+  .way-card { background: #fff; border: 1px solid #f1d4ab; border-radius: 16px; padding: 22px 22px 24px; }
+  .way-label { display: flex; align-items: center; gap: 8px; font: 700 0.88em/1 Pretendard, system-ui, sans-serif; color: var(--green); margin: 0 0 8px; }
+  .way-address { margin: 0; font: 800 1.4em/1.55 Pretendard, system-ui, sans-serif; color: #664c27; letter-spacing: -0.01em; }
+  .transit-card { margin: 0; background: #fff; border: 1px solid #f1d4ab; border-radius: 16px; overflow: hidden; }
+  .transit-head { padding: 22px 30px 14px; border-bottom: 1px solid #f1d4ab; }
+  .transit-head p { margin: 0; font: 700 1.13em/1.4 Pretendard, system-ui, sans-serif; color: #664c27; }
+  .transit-row { padding: 24px 30px; border-bottom: 1px solid #ece5d2; display: grid; grid-template-columns: auto 1fr; gap: 18px; align-items: center; }
+  .transit-row:last-child { border-bottom: none; align-items: start; }
+  .transit-icon { display: flex; align-items: center; justify-content: center; width: 2.4em; height: 2.4em; border-radius: 50%; background: #7b4a2a; color: #fff; font: 800 1em/1 Pretendard, system-ui, sans-serif; flex: none; }
+  .transit-icon-bus { background: #f3eed9; }
+  .transit-row dt { font: 700 0.88em/1 Pretendard, system-ui, sans-serif; color: #6b6550; margin: 0 0 5px; }
+  .transit-row dd { margin: 0 0 8px; font: 600 1.13em/1.6 Pretendard, system-ui, sans-serif; color: var(--ink); }
+  .transit-sub { font-weight: 400; color: #6b6550; }
+  .bus-list { display: grid; gap: 14px; }
+  .bus-routes { display: flex; gap: 6px; flex-wrap: wrap; }
+  .bus-routes span { padding: 5px 12px; border-radius: 999px; background: #f9eedd; color: #664c27; font: 700 0.88em/1.4 Pretendard, system-ui, sans-serif; }
+
+  @media (max-width: 860px) { .leader-grid, .program-grid { grid-template-columns: 1fr; } }
+  @media (max-width: 760px) {
+    .leader-profile { grid-template-columns: 1fr; }
+    .leader-photo { max-width: 200px; margin: 0 auto; }
+  }
+</style>

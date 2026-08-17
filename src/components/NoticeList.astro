@@ -1,18 +1,17 @@
 ---
-// 2026-07-21 최종 디자인 반영 — 홈의 "최근 소식"(article 목록)과 소식 목록/태그 페이지
-// (데스크톱 table + 좁은 화면·글자 확대 시 mobile-list)가 이 한 컴포넌트에서 갈린다.
+// 2026-08-17 디자인 목업 반영 — 홈의 "최근 소식"(간단 목록)과 소식 목록/태그 페이지(카드 그리드)가
+// 이 한 컴포넌트에서 갈린다. 실제 소식에는 사진·요약 필드가 없어 목업의 사진 자리는 넣지 않는다.
 import type { CollectionEntry } from 'astro:content';
 import { noticeHref, noticeOrgDisplay } from '../lib/notices';
 import { orgMap } from '../lib/networkOrgs';
 
 interface Props {
   notices: CollectionEntry<'notices'>[];
-  variant?: 'home' | 'table';
+  variant?: 'home' | 'board';
   empty: string;
 }
-const { notices, variant = 'table', empty } = Astro.props;
+const { notices, variant = 'board', empty } = Astro.props;
 const iso = (d: Date) => d.toISOString().slice(0, 10);
-// 기관명이 바뀌어도 이 목록은 항상 network-orgs 최신값을 그대로 보여준다(참조 기반 렌더링).
 const orgs = await orgMap();
 const items = notices.map((notice) => {
   const org = noticeOrgDisplay(notice, orgs);
@@ -28,184 +27,75 @@ const items = notices.map((notice) => {
 ---
 
 {items.length === 0 ? (
-  <p>{empty}</p>
+  <p class="notice-empty">{empty}</p>
 ) : variant === 'home' ? (
-  <div class="home-news">
+  <ul class="notice-list-home">
     {items.map((item) => (
-      <article>
-        <div>
-          {item.pinned && (
-            <span class="pinned-label"><span aria-hidden="true">📌</span> 상단 고정</span>
-          )}
+      <li>
+        <div class="notice-line">
+          {item.pinned && <span class="pinned-label"><span aria-hidden="true">📌</span> 상단 고정</span>}
           {item.orgUrl ? (
-            <a class="tag" href={item.orgUrl} target="_blank" rel="noopener noreferrer">
-              {item.orgName}<span class="sr-only">, 공식 사이트, 새 창에서 열림</span>
-            </a>
+            <a class="tag" href={item.orgUrl} target="_blank" rel="noopener noreferrer">{item.orgName}<span class="sr-only">, 공식 사이트, 새 창에서 열림</span></a>
           ) : (
             <span class="tag">{item.orgName}</span>
           )}
-          <h3>
-            {item.external ? (
-              <a href={item.href} target="_blank" rel="noopener noreferrer">
-                {item.title}<span class="sr-only">, 원문, 새 창에서 열림</span>
-              </a>
-            ) : (
-              <a href={item.href}>{item.title}</a>
-            )}
-          </h3>
-          {item.external && <span class="external-link-label" aria-hidden="true">원문 · 새 창</span>}
+          {item.external ? (
+            <a href={item.href} target="_blank" rel="noopener noreferrer">{item.title}<span class="sr-only">, 원문, 새 창에서 열림</span></a>
+          ) : (
+            <a href={item.href}>{item.title}</a>
+          )}
         </div>
-        <p class="meta">{item.orgName} · <time datetime={iso(item.date)}>{iso(item.date)}</time></p>
-      </article>
+        <time datetime={iso(item.date)} class="notice-date">{iso(item.date)}</time>
+      </li>
     ))}
-  </div>
+  </ul>
 ) : (
-  <>
-    <table class="news-table">
-      <thead>
-        <tr>
-          <th scope="col">기관</th>
-          <th scope="col">제목</th>
-          <th scope="col">날짜</th>
-        </tr>
-      </thead>
-      <tbody>
-        {items.map((item) => (
-          <tr>
-            <td>
-              {item.pinned && (
-                <span class="pinned-label"><span aria-hidden="true">📌</span> 상단 고정</span>
-              )}
-              {item.orgUrl ? (
-                <a class="tag" href={item.orgUrl} target="_blank" rel="noopener noreferrer">
-                  {item.orgName}<span class="sr-only">, 공식 사이트, 새 창에서 열림</span>
-                </a>
-              ) : (
-                <span class="tag">{item.orgName}</span>
-              )}
-            </td>
-            <td>
-              {item.external ? (
-                <>
-                  <a href={item.href} target="_blank" rel="noopener noreferrer">
-                    {item.title}<span class="sr-only">, 원문, 새 창에서 열림</span>
-                  </a>
-                  <span class="external-link-label" aria-hidden="true">원문 · 새 창</span>
-                </>
-              ) : (
-                <a href={item.href}>{item.title}</a>
-              )}
-            </td>
-            <td><time datetime={iso(item.date)}>{iso(item.date)}</time></td>
-          </tr>
-        ))}
-      </tbody>
-    </table>
-    <div class="mobile-list">
-      {items.map((item) => (
-        <article class="mobile-post">
-          <p>
-            {item.pinned && (
-              <span class="pinned-label"><span aria-hidden="true">📌</span> 상단 고정</span>
-            )}
+  <ul class="notice-board">
+    {items.map((item) => (
+      <li class="notice-card">
+        <a href={item.href} target={item.external ? '_blank' : undefined} rel={item.external ? 'noopener noreferrer' : undefined}>
+          <span class="notice-card-body">
+            <time datetime={iso(item.date)} class="notice-card-date">{iso(item.date)}</time>
+            {item.pinned && <span class="pinned-label"><span aria-hidden="true">📌</span> 상단 고정</span>}
             {item.orgUrl ? (
-              <a class="tag" href={item.orgUrl} target="_blank" rel="noopener noreferrer">
-                {item.orgName}<span class="sr-only">, 공식 사이트, 새 창에서 열림</span>
-              </a>
+              <span class="tag">{item.orgName}</span>
             ) : (
               <span class="tag">{item.orgName}</span>
             )}
-          </p>
-          <h2>
-            {item.external ? (
-              <a href={item.href} target="_blank" rel="noopener noreferrer">
-                {item.title}<span class="sr-only">, 원문, 새 창에서 열림</span>
-              </a>
-            ) : (
-              <a href={item.href}>{item.title}</a>
-            )}
-          </h2>
-          {item.external && <span class="external-link-label" aria-hidden="true">원문 · 새 창</span>}
-          <p class="meta"><time datetime={iso(item.date)}>{iso(item.date)}</time></p>
-        </article>
-      ))}
-    </div>
-  </>
+            <h3>{item.title}{item.external && <span class="sr-only">, 원문, 새 창에서 열림</span>}</h3>
+            {item.external && <span class="external-link-label" aria-hidden="true">원문 · 새 창</span>}
+          </span>
+        </a>
+      </li>
+    ))}
+  </ul>
 )}
 
 <style>
-  .home-news {
-    border-top: 2px solid var(--ink);
-    background: #fff;
+  .notice-empty { font: 400 1.13em/1.75 Pretendard, system-ui, sans-serif; color: var(--muted); }
+  .pinned-label, .external-link-label, .tag {
+    display: inline-block; border-radius: 999px; font: 700 0.84em/1.4 Pretendard, system-ui, sans-serif; padding: 3px 10px;
   }
-  .home-news article {
-    border-bottom: 1px solid var(--line);
-    grid-template-columns: minmax(0, 1fr) auto;
-    align-items: center;
-    gap: 0.4rem 1rem;
-    padding: 0.75rem;
-    display: grid;
-  }
-  .home-news h3 {
-    margin: 0.25rem 0;
-    font-size: 1.03rem;
-  }
-  .home-news .meta {
-    white-space: nowrap;
-  }
-  .news-table {
-    border-collapse: collapse;
-    border-top: 2px solid var(--ink);
-    background: #fff;
-    width: 100%;
-  }
-  .news-table th,
-  .news-table td {
-    border-bottom: 1px solid var(--line);
-    text-align: left;
-    vertical-align: top;
-    padding: 0.82rem 0.65rem;
-  }
-  .news-table th {
-    color: #4d524b;
-    background: #f6f4ec;
-    font-size: 0.9rem;
-  }
-  .mobile-list {
-    display: none;
-  }
-  .mobile-post {
-    border: 1px solid var(--line);
-    background: #fff;
-    padding: 1rem;
-  }
-  .mobile-post h2 {
-    font-size: 1.12rem;
-  }
-  .pinned-label,
-  .external-link-label {
-    margin-right: 0.3rem;
-  }
-  @media (width <= 640px) {
-    .news-table {
-      display: none;
-    }
-    .mobile-list {
-      gap: 0.8rem;
-      display: grid;
-    }
-    .home-news article {
-      grid-template-columns: 1fr;
-    }
-    .home-news .meta {
-      white-space: normal;
-    }
-  }
-  html[data-zoom='wide'] .news-table {
-    display: none;
-  }
-  html[data-zoom='wide'] .mobile-list {
-    gap: 0.8rem;
-    display: grid;
-  }
+  .pinned-label { background: #f9eedd; color: #664c27; }
+  .external-link-label { background: #eeeaf4; color: #5f5571; }
+  .tag { background: #f3eed9; color: #5c5640; text-decoration: none; }
+  a.tag:hover { background: #ece2c4; }
+
+  .notice-list-home { list-style: none; margin: 0; padding: 0; border-top: 2px solid var(--ink); background: #fff; }
+  .notice-list-home li { border-bottom: 1px solid var(--line); padding: 0.85rem 0.4rem; display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap; }
+  .notice-line { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+  .notice-line a { font: 700 1.06em/1.4 Pretendard, system-ui, sans-serif; }
+  .notice-date { color: var(--muted); font-size: 0.92em; white-space: nowrap; }
+
+  .notice-board { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, 1fr); gap: 26px; }
+  .notice-card { border: 1px solid #d0c3d2; border-radius: 16px; background: #f6f4f6; overflow: hidden; }
+  .notice-card a { display: block; text-decoration: none; color: inherit; }
+  .notice-card a:hover { background: #efe9ef; }
+  .notice-card-body { display: block; padding: 24px 24px 28px; }
+  .notice-card-date { display: block; font: 700 0.94em/1 Pretendard, system-ui, sans-serif; color: #554458; margin-bottom: 10px; }
+  .notice-card .tag { margin-bottom: 10px; }
+  .notice-card h3 { margin: 10px 0 0; font: 800 1.38em/1.5 NanumSquareRound, Pretendard, sans-serif; color: #403342; text-wrap: pretty; }
+
+  @media (max-width: 860px) { .notice-board { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 640px) { .notice-board { grid-template-columns: 1fr; } .notice-list-home li { flex-direction: column; align-items: flex-start; } }
 </style>
