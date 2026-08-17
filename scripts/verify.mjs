@@ -89,10 +89,11 @@ for (const page of pages) {
     fail('noindex', '연습 배포인데 noindex 메타가 없음');
   }
 
-  // 이미지 alt 필수 (변화 없음).
+  // 이미지 alt 필수. alt=""는 Astro가 값 없는 빈 속성(alt)으로 렌더링한다 — 유효한 HTML
+  // (장식 이미지 표준 표기)이라 alt= 뒤에 값이 없어도 통과시킨다.
   const imgs = [...html.matchAll(/<img\b[^>]*>/g)];
   for (const img of imgs) {
-    if (!/\salt=/.test(img[0])) fail('alt', `alt 없는 이미지: ${img[0].slice(0, 60)}`);
+    if (!/\salt(=|[\s>])/.test(img[0])) fail('alt', `alt 없는 이미지: ${img[0].slice(0, 60)}`);
   }
 
   // E7. 막다른 페이지 방지: header 주 메뉴(6개) + footer 메뉴가 항상 존재.

@@ -3,7 +3,20 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { PHONE } from '../config';
 
-const PHOTOS = ['합창단 공연', '가을 산행', '정기 총회', '낭독 녹음', '도자기 교실', '트레킹'];
+// 활동 사진 — 페이지마다 독립된 배열(나중에 홈·후원안내를 다른 사진으로 바꾸기 쉽게 공유 lib로 묶지 않음).
+const PHOTOS = [
+  { src: '/images/gallery/01.jpg', alt: '정기총회 현장, 발표자가 마이크를 들고 인사말을 하는 모습과 박수치는 참석자들' },
+  { src: '/images/gallery/02.jpg', alt: '도자기 교실에서 참가자가 흙을 빚는 손 클로즈업' },
+  { src: '/images/gallery/03.jpg', alt: '실내 강연장에서 발표자가 스크린 앞에서 이야기하는 모습' },
+  { src: '/images/gallery/04.jpg', alt: '붉은 흙길 산행로를 걷는 참가자들, 흰지팡이를 든 참가자 포함' },
+  { src: '/images/gallery/05.jpg', alt: '두 사람이 협약서를 나란히 들고 있는 모습, 뒤로 음악회 포스터' },
+  { src: '/images/gallery/06.jpg', alt: '점자책을 손으로 짚어 읽는 시각장애인과 옆에서 함께 짚어주는 담당자, 흰지팡이가 탁자 위에 놓여 있음' },
+  { src: '/images/gallery/07.jpg', alt: '한궁 과녁과 사진 전시가 있는 실내 공간에서 참가자들이 대화하는 모습' },
+  { src: '/images/gallery/08.jpg', alt: '한옥 앞 단체사진, "좋은비전과 함께하는 봄,여름,가을,겨울 후원 앤시스코리아" 현수막을 흰지팡이를 든 참가자가 들고 있음' },
+  { src: '/images/gallery/09.jpg', alt: '두 사람이 장학증서를 함께 들고 있는 모습' },
+  { src: '/images/gallery/10.jpg', alt: '서울필로스합창단 단원들이 무대에서 합창하는 모습' },
+  { src: '/images/gallery/11.jpg', alt: '녹음 부스에서 여러 명이 원고를 들고 마이크 앞에 서 있는 모습(낭독 녹음)' },
+];
 const galleryLoop = PHOTOS.concat(PHOTOS);
 ---
 
@@ -48,8 +61,8 @@ const galleryLoop = PHOTOS.concat(PHOTOS);
     <h2 id="dn-gallery" class="wrap">후원으로 이어진 활동</h2>
     <div class="marquee">
       <div class="marquee-track">
-        {galleryLoop.map((label, i) => (
-          <div class="marquee-item" aria-hidden={i >= PHOTOS.length ? 'true' : undefined}>{label} <br />사진 자리</div>
+        {galleryLoop.map((photo, i) => (
+          <img class="marquee-item" src={photo.src} alt={i >= PHOTOS.length ? '' : photo.alt} aria-hidden={i >= PHOTOS.length ? 'true' : undefined} loading="lazy" />
         ))}
       </div>
     </div>
@@ -92,9 +105,8 @@ const galleryLoop = PHOTOS.concat(PHOTOS);
   @media (prefers-reduced-motion: reduce) { .marquee-track { animation: none; } }
   @keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
   .marquee-item {
-    width: 16.5em; height: 10.8em; flex: none; border: 2px dashed #bdd2d2; border-radius: 14px; background: #f2f6f6;
-    display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center;
-    font: 600 0.88em/1.5 NanumSquareRound, Pretendard, sans-serif; color: #415c5e; padding: 12px;
+    width: 16.5em; height: 10.8em; flex: none; border-radius: 14px; background: #f2f6f6;
+    object-fit: cover; display: block;
   }
 
   @media (max-width: 760px) {
