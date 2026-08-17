@@ -143,6 +143,34 @@ const busStops = [
         <div class="way-card">
           <h3 class="way-label">주소</h3>
           <p class="way-address">서울 은평구 응암로34길 24-8 <br />한솔하이빌 101호</p>
+          <div class="way-map-wrap">
+            <div id="daumRoughmapContainer1785386858595" class="root_daum_roughmap root_daum_roughmap_landing"></div>
+          </div>
+          <script is:inline src="https://ssl.daumcdn.net/dmaps/map_js_init/roughmapLoader.js"></script>
+          <script is:inline>
+            // 목업 원본의 Daum(카카오) 로드맵 위젯 그대로 이식 — timestamp/key는 이 주소
+            // (응암로34길 24-8)로 만들어 둔 지도를 가리키는 고정 식별자라 그대로 재사용
+            // 가능하다(세션 토큰 아님). roughmapLoader.js가 document.write로 실제 지도
+            // 스크립트(roughmapLander.js)를 끼워 넣는 구조라 — 파싱 중인 위치에 그대로
+            // 박혀 있는 일반 <script>(is:inline, 동적 주입 아님)여야 document.write가
+            // 막히지 않는다. 그래서 Lander는 바로 다음 줄에서 곧장 써도 이미 준비돼 있다.
+            new daum.roughmap.Lander({
+              timestamp: '1785386858595',
+              key: 'rptu8kud37r',
+              mapWidth: '640',
+              mapHeight: '360',
+            }).render();
+            // 지도와 조작 버튼만 남기고, 위젯 자체 주소·전화 표시는 숨긴다(옆 카드와 중복).
+            setTimeout(() => {
+              const el = document.getElementById('daumRoughmapContainer1785386858595');
+              const root = el.classList.contains('root_daum_roughmap') ? el : el.querySelector('.root_daum_roughmap') || el;
+              Array.prototype.forEach.call(root.children, (child) => {
+                const c = child.className || '';
+                const keep = /wrap_map|wrap_controllers|map_border|border_map/.test(c) || child.querySelector('img[src*="map"], canvas, iframe');
+                if (!keep) child.style.display = 'none';
+              });
+            }, 900);
+          </script>
         </div>
         <dl class="transit-card">
           <div class="transit-head"><h3>교통편 안내</h3></div>
@@ -232,7 +260,8 @@ const busStops = [
   .way-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(330px, 100%), 1fr)); gap: 34px; align-items: start; }
   .way-card { background: #fff; border: 1px solid #f1d4ab; border-radius: 16px; padding: 22px 22px 24px; }
   .way-label { display: flex; align-items: center; gap: 8px; font: 700 0.88em/1 Pretendard, system-ui, sans-serif; color: var(--green); margin: 0 0 8px; }
-  .way-address { margin: 0; font: 800 1.4em/1.55 Pretendard, system-ui, sans-serif; color: #664c27; letter-spacing: -0.01em; }
+  .way-address { margin: 0 0 14px; font: 800 1.4em/1.55 Pretendard, system-ui, sans-serif; color: #664c27; letter-spacing: -0.01em; }
+  .way-map-wrap { max-width: 100%; overflow-x: auto; border-radius: 12px; border: 1px solid #f9eedd; }
   .transit-card { margin: 0; background: #fff; border: 1px solid #f1d4ab; border-radius: 16px; overflow: hidden; }
   .transit-head { padding: 22px 30px 14px; border-bottom: 1px solid #f1d4ab; }
   .transit-head h3 { margin: 0; font: 700 1.13em/1.4 Pretendard, system-ui, sans-serif; color: #664c27; }

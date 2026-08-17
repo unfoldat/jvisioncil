@@ -41,12 +41,17 @@ for (const file of htmlFiles) {
 // Sveltia CMS 공식 CSP 빌더(sveltiacms.app/en/docs/security, GitHub 백엔드 선택)가
 // 제시한 값 그대로 채택 + 자체 호스팅이라 unpkg 의존은 남는 부분만(PDF.js/Prism 등
 // Sveltia 내부에서 여전히 unpkg를 쓰는 보조 기능) 유지.
+// 기관소개 페이지의 "오시는 길" — Daum(카카오) 로드맵 위젯(스크립트 3종: ssl.daumcdn.net
+// 로더 + t1.kakaocdn.net 지도 렌더러/타일 API, 스타일 1종, 지도 타일·마커 이미지 2종).
+// 실제 로드하는 리소스를 브라우저에서 실측해(performance.getEntriesByType('resource'))
+// 필요한 것만 최소로 추가했다 — 방문 로그 픽셀(stlog1-local.kakao.com)은 지도 기능에
+// 불필요한 트래킹이라 의도적으로 허용 목록에서 뺐다(CSP가 조용히 막아도 지도는 정상).
 const csp = [
   `default-src 'self'`,
-  `script-src 'self' 'wasm-unsafe-eval' https://unpkg.com ${[...scriptHashes].join(' ')}`,
-  `style-src 'self' 'unsafe-inline' https://fonts.googleapis.com`,
+  `script-src 'self' 'wasm-unsafe-eval' https://unpkg.com https://ssl.daumcdn.net https://t1.kakaocdn.net ${[...scriptHashes].join(' ')}`,
+  `style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://t1.kakaocdn.net`,
   `font-src 'self' https://fonts.gstatic.com`,
-  `img-src 'self' data: blob: https://*.githubusercontent.com`,
+  `img-src 'self' data: blob: https://*.githubusercontent.com https://t1.kakaocdn.net https://mts.kakaocdn.net`,
   `media-src blob:`,
   `frame-src blob:`,
   `connect-src 'self' blob: data: https://unpkg.com https://api.github.com https://www.githubstatus.com`,
