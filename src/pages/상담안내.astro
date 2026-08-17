@@ -1,7 +1,10 @@
 ---
 // 2026-08-17 디자인 목업 반영 — 전문상담(URL은 /상담안내/ 유지, 표시 라벨만 "전문상담").
+import { getEntry } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
-import { PHONE } from '../config';
+import { telHref } from '../lib/orgInfo';
+
+const orgInfo = await getEntry('org-info', 'info');
 
 const counselTopics = [
   { title: '중도실명인 재활 컨설팅', desc: '변화된 생활환경에 적응하고 새로운 삶을 준비하도록 복지서비스·교육·직업·여가·일상생활 적응 정보를 안내합니다.' },
@@ -31,7 +34,7 @@ const counselFlow = [
       <div class="call-card">
         <h2 id="cs-call">전화로 상담하기</h2>
         <p class="call-hours">평일 09:00 – 18:00 (점심 12:00 – 13:00)</p>
-        <a href={`tel:${PHONE.tel}`} class="call-number">{PHONE.display}</a>
+        <a href={telHref(orgInfo.data.phone)} class="call-number">{orgInfo.data.phone}</a>
         <p class="call-note">번호를 누르면 바로 전화가 걸립니다.</p>
       </div>
       <div class="call-card call-card-form">

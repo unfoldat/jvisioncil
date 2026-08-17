@@ -1,7 +1,12 @@
 ---
 // 2026-08-17 디자인 목업(design-mockup, 시안4) 포팅 — 목업 index.html의 헤더·nav·푸터·
 // 접근성 기능(포커스 이중 링·읽기 커서·고대비·글자 크기 4단계)을 그대로 이식한다.
-import { SITE_NAME, SITE_DESCRIPTION, ORG_FULL_NAME, MAIN_MENU, FOOTER_MENU, NOINDEX, PHONE, ADDRESS } from '../config';
+import { getEntry } from 'astro:content';
+import { SITE_NAME, SITE_DESCRIPTION, ORG_FULL_NAME, MAIN_MENU, FOOTER_MENU, NOINDEX } from '../config';
+import { telHref } from '../lib/orgInfo';
+
+// 확정 스키마 결정 — 주소·대표전화는 파일형 org-info 컬렉션에서 가져온다(하드코딩 폐지).
+const orgInfo = await getEntry('org-info', 'info');
 
 interface Props {
   pageName: string;
@@ -87,7 +92,7 @@ const path = decodeURIComponent(Astro.url.pathname);
           <button type="button" id="search-close" class="btn-outline">검색 결과 닫기</button>
         </div>
         <p id="search-status" class="sr-only" aria-live="polite"></p>
-        <p id="search-empty" class="search-empty" hidden>찾으시는 내용이 없습니다. 다른 낱말로 검색해보시거나, 전문상담 {PHONE.display}으로 전화 주시면 안내드립니다.</p>
+        <p id="search-empty" class="search-empty" hidden>찾으시는 내용이 없습니다. 다른 낱말로 검색해보시거나, 전문상담 {orgInfo.data.phone}으로 전화 주시면 안내드립니다.</p>
         <ul id="search-list" class="search-list"></ul>
       </div>
     </div>
@@ -106,7 +111,7 @@ const path = decodeURIComponent(Astro.url.pathname);
             <span>{ORG_FULL_NAME}</span>
           </div>
           <address>
-            {ADDRESS} <br />
+            {orgInfo.data.address} <br />
             부설 좋은비전재활상담연구소
           </address>
           <nav aria-label="푸터 메뉴" class="footer-nav">
@@ -115,7 +120,7 @@ const path = decodeURIComponent(Astro.url.pathname);
         </div>
         <div class="footer-contact">
           <p class="footer-contact-label">전문상담 · 대표전화</p>
-          <a href={`tel:${PHONE.tel}`} aria-label={`전문상담 대표전화 ${PHONE.display}, 선택하면 전화가 연결됩니다`} class="footer-phone">{PHONE.display}</a>
+          <a href={telHref(orgInfo.data.phone)} aria-label={`전문상담 대표전화 ${orgInfo.data.phone}, 선택하면 전화가 연결됩니다`} class="footer-phone">{orgInfo.data.phone}</a>
           <p class="footer-hours">평일 09:00 – 18:00</p>
         </div>
       </div>

@@ -117,6 +117,21 @@ const instructors = defineCollection({
   }),
 });
 
+// 확정 스키마 결정(2026-08-17) — 기관 주소·대표전화·계좌번호 = 파일형(리더 프로필과 동일
+// 이유: 기관에 하나뿐인 값이라 폴더형처럼 개수가 늘 이유가 없음). tel(전화 링크용 숫자만)은
+// 저장하지 않고 phone에서 계산한다(src/lib/orgInfo.ts) — 편집자가 표시용 번호만 바꾸고
+// tel: 링크를 깜빡 안 맞추는 사고를 원천 차단.
+const orgInfo = defineCollection({
+  loader: glob({ pattern: '**/*.md', base: './src/content/org-info' }),
+  schema: z.object({
+    address: z.string(),
+    phone: z.string(),
+    bankName: z.string(),
+    accountNumber: z.string(),
+    accountHolder: z.string(),
+  }),
+});
+
 export const collections = {
   notices,
   'network-orgs': networkOrgs,
@@ -125,4 +140,5 @@ export const collections = {
   leadership,
   gallery,
   instructors,
+  'org-info': orgInfo,
 };

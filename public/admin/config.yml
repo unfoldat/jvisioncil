@@ -145,3 +145,17 @@ collections:
           - { name: photoAlt, label: 사진 설명(대체텍스트), widget: string, hint: '스크린리더 이용자에게는 이 글자가 사진입니다. 예: "김기현 부센터장 얼굴 사진"' }
           - { name: bio, label: 주요 약력, widget: list, field: { name: item, label: 약력 항목, widget: string } }
           - { name: photoPos, label: 사진 위치 조정(고급, 선택), widget: string, required: false, hint: '얼굴이 잘리면 조정하세요. 예: "center 15%". 비워두면 기본값 사용.' }
+
+  - name: org-info
+    label: 기관정보
+    description: 주소·대표전화는 사이트 전체(푸터), 후원 계좌는 후원 안내 페이지에 표시됩니다. 기관에 하나뿐인 값이라 새 항목을 추가하거나 삭제할 수 없습니다.
+    files:
+      - name: info
+        label: 기관정보
+        file: src/content/org-info/info.md
+        fields:
+          - { name: address, label: 주소, widget: string }
+          - { name: phone, label: 대표전화, widget: string, hint: '예: "02-732-0105". 전화 걸기 링크(tel:)는 이 번호에서 자동으로 만들어집니다.' }
+          - { name: bankName, label: 후원 계좌 — 은행명, widget: string }
+          - { name: accountNumber, label: 후원 계좌 — 계좌번호, widget: string }
+          - { name: accountHolder, label: 후원 계좌 — 예금주, widget: string }

@@ -4,14 +4,6 @@ export const SITE_NAME = '좋은비전';
 export const ORG_FULL_NAME = '좋은비전장애인자립생활센터';
 export const SITE_DESCRIPTION = '좋은비전장애인자립생활센터';
 
-// 2026-08-17 디자인 목업(design-mockup) 반영 — 목업 전화번호로 확정.
-export const PHONE = {
-  display: '02-732-0105',
-  tel: '0227320105',
-};
-
-export const ADDRESS = '서울 은평구 응암로34길 24-8 한솔하이빌 101호';
-
 // 2026-08-17 목업 PAGES 순서·라벨·색상 그대로 — 활성 탭은 그 페이지 고유의 강조색으로
 // "책갈피"처럼 튀어야 한다(전부 같은 색이면 안 됨). tab/tabInk는 목업 PAGES 배열의
 // tab/tabInk, pageBg는 그 페이지 본문 최상단 배경색(활성 탭 밑선이 본문과 이어져 보이게).
