@@ -70,16 +70,14 @@ const galleryLoop = PHOTOS.concat(PHOTOS);
     </div>
   </section>
 
-  <section aria-labelledby="home-first" class="band">
-    <div class="wrap band-grid">
+  <section aria-labelledby="home-first" class="band first-visit">
+    <div class="wrap first-visit-banner">
       <div>
         <h2 id="home-first">처음 오셨나요? (상담/Q&A)</h2>
-        <p>갑작스러운 실명으로 새로운 삶에 적응해야 하는 시기에는 무엇부터 확인해야 할지 막막합니다. 복지서비스, 교육, 직업, 일상생활 적응까지 순서대로 안내합니다.</p>
+        <p>갑작스러운 실명 이후 무엇부터 해야 할지 순서대로 안내해드립니다.</p>
         <a href="/상담안내/" class="btn">처음 오신 분 안내 보기</a>
       </div>
-      <div class="band-figure" aria-hidden="true">
-        <img src="/images/first-visit.png" alt="" />
-      </div>
+      <img src="/images/first-visit.png" alt="" aria-hidden="true" />
     </div>
   </section>
 
@@ -163,11 +161,14 @@ const galleryLoop = PHOTOS.concat(PHOTOS);
   .sc-teal { background: #e5eded; border-color: #6c9a9c; }
 
   .band { background: #f9f5ea; border-top: 1px solid #ece5d2; border-bottom: 1px solid #ece5d2; }
-  .band-grid { display: grid; grid-template-columns: 1.12fr 0.88fr; gap: 44px; align-items: center; }
-  #home-first { margin: 0 0 16px; font: 800 2.1em/1.4 NanumSquareRound, Pretendard, sans-serif; color: #332e1e; }
-  .band-grid p { margin: 0 0 26px; font: 400 1.25em/1.8 NanumSquareRound, Pretendard, sans-serif; color: var(--muted); max-width: 30em; text-wrap: pretty; }
-  .band-figure { border: 1px solid var(--line); border-radius: 16px; background: #f9f5ea; min-height: 14em; display: flex; align-items: center; justify-content: center; padding: 24px; }
-  .band-figure img { width: 100%; max-width: 26em; height: auto; display: block; border-radius: 8px; }
+
+  /* "처음 오셨나요?" — 주요 서비스를 보조하는 배너로 읽히도록 압축(작업지시서 반영).
+     히어로급 대형 섹션이 아니라 작은 온보딩 배너가 목표라 padding·이미지 폭을 크게 줄인다. */
+  .first-visit.band > .wrap { padding: 20px 28px; }
+  .first-visit-banner { display: grid; grid-template-columns: 1fr minmax(140px, 220px); align-items: center; gap: 24px; }
+  #home-first { margin: 0 0 8px; font: 800 1.5em/1.35 NanumSquareRound, Pretendard, sans-serif; color: #332e1e; }
+  .first-visit-banner p { margin: 0 0 14px; font: 400 1.06em/1.6 NanumSquareRound, Pretendard, sans-serif; color: var(--muted); text-wrap: pretty; }
+  .first-visit-banner img { width: 100%; aspect-ratio: 4 / 3; object-fit: cover; border-radius: 12px; display: block; }
 
   .section-head { display: flex; align-items: baseline; justify-content: space-between; gap: 1rem; margin-bottom: 22px; }
   .section-head h2 { margin: 0; font: 800 1.7em/1.4 NanumSquareRound, Pretendard, sans-serif; color: #332e1e; }
@@ -196,15 +197,24 @@ const galleryLoop = PHOTOS.concat(PHOTOS);
   .disclosure-box-title { margin: 0 0 10px; font: 800 1.13em/1.4 NanumSquareRound, Pretendard, sans-serif; }
   .disclosure-preview { list-style: none; margin: 0 0 12px; padding: 0; display: grid; gap: 6px; }
   .disclosure-preview a { font: 600 0.97em/1.5 NanumSquareRound, Pretendard, sans-serif; }
+  .disclosure-teaser {
+    display: flex; align-items: baseline; gap: 14px; flex-wrap: wrap; margin-top: 26px; padding: 18px 24px;
+    border: 1.5px solid #bdd2d2; border-radius: 12px; background: #f2f6f6; text-decoration: none; color: #3a3626;
+  }
+  .disclosure-teaser:hover { background: #fbf1ee; }
+  .disclosure-teaser-title { font: 800 1.13em/1.4 NanumSquareRound, Pretendard, sans-serif; }
   .disclosure-teaser-sub { display: inline-block; font: 400 0.94em/1.5 NanumSquareRound, Pretendard, sans-serif; color: #6b6550; }
 
   @media (max-width: 860px) { .card-grid-4 { grid-template-columns: repeat(2, 1fr); } }
   @media (max-width: 760px) {
-    .hero-grid, .band-grid { grid-template-columns: minmax(0, 1fr); padding: 30px 0; }
+    .hero-grid { grid-template-columns: minmax(0, 1fr); padding: 30px 0; }
     #home-hero { font-size: 1.9em; }
     .hero-lead { font-size: 1.15em; line-height: 1.45; }
     .hero-strong { font-size: 1.7em; line-height: 1.3; }
     .hero-copy { font-size: 1.06em; line-height: 1.75; padding-left: 14px; }
   }
-  @media (max-width: 640px) { .card-grid-4 { grid-template-columns: minmax(0, 1fr); } }
+  @media (max-width: 640px) {
+    .card-grid-4 { grid-template-columns: minmax(0, 1fr); }
+    .first-visit-banner { grid-template-columns: minmax(0, 1fr); }
+  }
 </style>
