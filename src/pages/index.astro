@@ -4,8 +4,9 @@
 import { getCollection } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import PartnerGrid from '../components/PartnerGrid.astro';
+import { reportTitle, sortForList, fileSizeLabel } from '../lib/donationReports';
 
-const disclosures = (await getCollection('disclosures')).sort((a, b) => b.id.localeCompare(a.id)).slice(0, 3);
+const reports = sortForList(await getCollection('donation-reports')).slice(0, 3);
 
 // 활동 사진 — 페이지마다 독립된 배열(나중에 홈·후원안내를 다른 사진으로 바꾸기 쉽게 공유 lib로 묶지 않음).
 const PHOTOS = [
@@ -118,13 +119,15 @@ const galleryLoop = PHOTOS.concat(PHOTOS);
   <section aria-labelledby="home-disclosures" class="band">
     <div class="wrap">
       <h2 id="home-disclosures">기부금 공시</h2>
-      {disclosures.length === 0 ? (
+      {reports.length === 0 ? (
         <p>공개된 기부금 공시 내역이 아직 없습니다.</p>
       ) : (
         <ul class="disclosure-preview">
-          {disclosures.map((d) => (
-            <li><a href={d.data.file} download>{d.data.title} PDF 다운로드</a></li>
-          ))}
+          {reports.map((report) => {
+            const title = reportTitle(report);
+            const size = fileSizeLabel(report.data.file);
+            return <li><a href={report.data.file} download>{title} PDF 다운로드 ({size})</a></li>;
+          })}
         </ul>
       )}
       <a href="/기부금-공시/" class="standalone-link">전체보기 →</a>

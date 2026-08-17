@@ -59,13 +59,14 @@ const sponsors = defineCollection({
   }),
 });
 
-// 작업지시서(기부금 공시 파일 첨부 기능) 스펙 — 법적 의무 문서(무보관 원칙의 유일한 예외).
-// 필드 3개만: 제목(연도 포함, 예 "2026년 내역입니다")·본문·PDF. 게시 순서는 슬러그의
-// 날짜 프리픽스(생성 시각 자동 기록, notices와 같은 방식)로 정해 편집자가 날짜를 안 적는다.
-const disclosures = defineCollection({
-  loader: glob({ pattern: '**/*.md', base: './src/content/disclosures' }),
+// 작업지시서(기부금 공시 파일 첨부 기능) — 기존 donation-reports 컬렉션을 갈아엎지 않고
+// 확장한다: year·file은 기존 그대로, body(본문)만 신규 선택 필드로 추가. 제목은 별도
+// 필드로 저장하지 않고 "{year}년 내역입니다" 형태로 코드에서 만든다. 법적 의무 문서
+// (무보관 원칙의 유일한 예외).
+const donationReports = defineCollection({
+  loader: glob({ pattern: '**/*.md', base: './src/content/donation-reports' }),
   schema: z.object({
-    title: z.string(),
+    year: z.number().int(),
     file: z.string(),
   }),
 });
@@ -74,5 +75,5 @@ export const collections = {
   notices,
   'network-orgs': networkOrgs,
   sponsors,
-  disclosures,
+  'donation-reports': donationReports,
 };

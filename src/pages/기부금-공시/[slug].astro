@@ -1,0 +1,54 @@
+---
+// 작업지시서(기부금 공시 파일 첨부 기능) §2 — "목록에서 제목 클릭 시 상세 화면에 표시".
+import { getCollection, render } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { reportTitle, fileSizeLabel } from '../../lib/donationReports';
+
+export async function getStaticPaths() {
+  const reports = await getCollection('donation-reports');
+  return reports.map((report) => ({ params: { slug: report.id }, props: { report } }));
+}
+
+const { report } = Astro.props;
+const { Content } = await render(report);
+const title = reportTitle(report);
+const size = fileSizeLabel(report.data.file);
+const hasBody = report.body && report.body.trim().length > 0;
+---
+
+<BaseLayout pageName={title}>
+  <section class="intro">
+    <div class="wrap">
+      <p class="breadcrumb"><a href="/기부금-공시/">기부금 공시</a> &gt; {title}</p>
+      <h1>{title}</h1>
+      <p><a href={report.data.file} download class="btn">
+        {title} PDF 다운로드 ({size})<span class="sr-only">, 새 창 없이 바로 내려받기</span>
+      </a></p>
+    </div>
+  </section>
+  {hasBody && (
+    <section class="body-section">
+      <div class="wrap">
+        <Content />
+      </div>
+    </section>
+  )}
+  <section class="back-section">
+    <div class="wrap">
+      <p><a href="/기부금-공시/" class="standalone-link">← 기부금 공시 목록으로 돌아가기</a></p>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .intro { background: #f9f5ea; padding: 62px 0 44px; }
+  .intro .wrap, .body-section .wrap, .back-section .wrap { max-width: 960px; }
+  .breadcrumb { margin: 0 0 12px; font: 700 0.94em/1 NanumSquareRound, Pretendard, sans-serif; color: #6b6550; }
+  .breadcrumb a { color: #6b6550; }
+  h1 { margin: 0 0 24px; font: 800 2.5em/1.35 NanumSquareRound, Pretendard, sans-serif; color: #332e1e; }
+  .btn { display: inline-flex; margin-top: 0; }
+  .body-section { background: #fff; border-top: 1px solid var(--line); padding: 44px 0; }
+  .body-section :global(p) { font: 400 1.13em/1.85 Pretendard, system-ui, sans-serif; color: var(--muted); max-width: 44em; }
+  .back-section { padding: 28px 0 66px; }
+  .standalone-link { display: inline-block; padding: 4px 0; font: 700 1.13em/1 NanumSquareRound, Pretendard, sans-serif; }
+</style>

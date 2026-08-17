@@ -1,9 +1,11 @@
 ---
 // 작업지시서(기부금 공시 파일 첨부 기능) §2 — 게시판 페이지. 목업 disclosure 화면 포팅.
+// donation-reports 컬렉션 확장안 — 제목은 별도 필드 없이 연도에서 만든다.
 import { getCollection } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import { reportTitle, sortForList, fileSizeLabel } from '../../lib/donationReports';
 
-const disclosures = (await getCollection('disclosures')).sort((a, b) => b.id.localeCompare(a.id));
+const reports = sortForList(await getCollection('donation-reports'));
 ---
 
 <BaseLayout pageName="기부금 공시">
@@ -13,18 +15,22 @@ const disclosures = (await getCollection('disclosures')).sort((a, b) => b.id.loc
       <h1 id="dc-title">기부금 공시 내역</h1>
       <p class="lead-sm">연간 기부금 모금액과 활용실적을 공시합니다.</p>
 
-      {disclosures.length === 0 ? (
+      {reports.length === 0 ? (
         <p>공개된 기부금 공시 내역이 아직 없습니다.</p>
       ) : (
         <ul class="disclosure-list">
-          {disclosures.map((d) => (
-            <li>
-              <h2>{d.data.title}</h2>{' '}
-              <a href={d.data.file} download>
-                {d.data.title} PDF 다운로드<span class="sr-only">, 새 창 없이 바로 내려받기</span>
-              </a>
-            </li>
-          ))}
+          {reports.map((report) => {
+            const title = reportTitle(report);
+            const size = fileSizeLabel(report.data.file);
+            return (
+              <li>
+                <h2><a href={`/기부금-공시/${report.id}/`}>{title}</a></h2>{' '}
+                <a href={report.data.file} download>
+                  {title} PDF 다운로드 ({size})<span class="sr-only">, 새 창 없이 바로 내려받기</span>
+                </a>
+              </li>
+            );
+          })}
         </ul>
       )}
 
@@ -44,8 +50,9 @@ const disclosures = (await getCollection('disclosures')).sort((a, b) => b.id.loc
 
   .disclosure-list { list-style: none; margin: 0 0 28px; padding: 0; border-top: 2px solid var(--ink); background: #fff; }
   .disclosure-list li { border-bottom: 1px solid var(--line); padding: 18px 22px; display: flex; align-items: baseline; justify-content: space-between; gap: 1rem; flex-wrap: wrap; }
-  .disclosure-list h2 { margin: 0; font: 700 1.06em/1.6 NanumSquareRound, Pretendard, sans-serif; color: #3a3626; }
-  .disclosure-list a { font: 400 1.06em/1.6 NanumSquareRound, Pretendard, sans-serif; }
+  .disclosure-list h2 { margin: 0; font: 700 1.06em/1.6 NanumSquareRound, Pretendard, sans-serif; }
+  .disclosure-list h2 a { color: #3a3626; }
+  .disclosure-list li > a { font: 400 1.06em/1.6 NanumSquareRound, Pretendard, sans-serif; }
 
   .nts-note { margin: 28px 0 0; font: 400 1.06em/1.8 NanumSquareRound, Pretendard, sans-serif; color: #6b6550; }
   .standalone-link { display: inline-block; padding: 4px 0; margin-top: 22px; font: 700 1.13em/1 NanumSquareRound, Pretendard, sans-serif; }
