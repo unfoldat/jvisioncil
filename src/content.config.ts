@@ -101,6 +101,22 @@ const gallery = defineCollection({
   }),
 });
 
+// 확정 스키마 결정(2026-08-17) — 강사 프로필은 폴더형(가변 개수). 강사를 추가/삭제하면
+// 강의 안내 페이지 카드가 그만큼 자동으로 늘고 준다. bio는 리더의 약력 리스트(bio[])와
+// 달리 목업에서 한 문단짜리 소개 텍스트였으므로 문자열 하나로 둔다.
+const instructors = defineCollection({
+  loader: glob({ pattern: '**/*.md', base: './src/content/instructors' }),
+  schema: z.object({
+    name: z.string(),
+    role: z.string(),
+    photo: z.string(),
+    photoAlt: z.string().min(1),
+    bio: z.string(),
+    // object-position 값. 비우면 페이지 쪽에서 기본값 적용(리더 프로필과 동일 패턴).
+    photoPos: z.string().optional(),
+  }),
+});
+
 export const collections = {
   notices,
   'network-orgs': networkOrgs,
@@ -108,4 +124,5 @@ export const collections = {
   'donation-reports': donationReports,
   leadership,
   gallery,
+  instructors,
 };

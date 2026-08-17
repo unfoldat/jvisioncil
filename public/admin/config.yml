@@ -106,6 +106,21 @@ collections:
         default: [home, news, donate]
         hint: '이 사진을 노출할 위치를 고르세요. 기본값은 세 곳 모두입니다.'
 
+  - name: instructors
+    label: 강사 프로필
+    description: 강의 안내 페이지의 강사 프로필 카드에 표시됩니다. 강사를 추가하거나 삭제하면 카드 개수가 그만큼 늘고 줍니다.
+    label_singular: 강사 프로필 작성
+    folder: src/content/instructors
+    create: true
+    identifier_field: name
+    fields:
+      - { name: name, label: 이름, widget: string }
+      - { name: role, label: 전문 분야/직함, widget: string, hint: '예: "장애인식개선 교육 강사"' }
+      - { name: photo, label: 사진, widget: image }
+      - { name: photoAlt, label: 사진 설명(대체텍스트), widget: string, hint: '스크린리더 이용자에게는 이 글자가 사진입니다.' }
+      - { name: bio, label: 약력 소개, widget: text }
+      - { name: photoPos, label: 사진 위치 조정(고급, 선택), widget: string, required: false, hint: '얼굴이 잘리면 조정하세요. 예: "center 20%". 비워두면 기본값 사용.' }
+
   - name: leadership
     label: 센터장·부센터장
     description: 센터소개 페이지의 센터장·부센터장 프로필에 표시됩니다. 정확히 두 명 고정이라 새 항목을 추가하거나 삭제할 수 없습니다 — 각 항목만 편집하세요.
