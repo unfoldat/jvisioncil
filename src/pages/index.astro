@@ -123,7 +123,12 @@ const galleryLoop = PHOTOS.concat(PHOTOS);
   .hero-mark { display: flex; align-items: center; justify-content: center; padding: 34px; background: #fff; border: 1px solid #cbe7d8; border-radius: 24px; }
   .hero-mark img { width: 100%; max-width: 15em; height: auto; display: block; }
 
-  section[aria-labelledby='home-cards'] h2, section[aria-labelledby='home-news'] h2, #home-gallery { margin: 0 0 22px; font: 800 1.7em/1.4 NanumSquareRound, Pretendard, sans-serif; color: #332e1e; }
+  section[aria-labelledby='home-cards'] h2, section[aria-labelledby='home-news'] h2 { margin: 0 0 22px; font: 800 1.7em/1.4 NanumSquareRound, Pretendard, sans-serif; color: #332e1e; }
+  /* #home-gallery는 h2 자체가 .wrap이라(마퀴는 wrap 밖에서 화면 끝까지 퍼져야 하니 h2만 wrap)
+     margin shorthand로 top/bottom만 정하면 안 된다 — 3값 shorthand는 left/right도 0으로
+     같이 지정해버려서 .wrap의 margin:auto 가운데 정렬을 ID 우선순위로 덮어쓰고, 결과적으로
+     제목이 화면 왼쪽 끝에 붙어버린다(실측으로 발견). top/bottom만 따로 지정해 좌우는 안 건드린다. */
+  #home-gallery { margin-top: 0; margin-bottom: 22px; font: 800 1.7em/1.4 NanumSquareRound, Pretendard, sans-serif; color: #332e1e; }
 
   .card-grid { display: grid; gap: 18px; }
   .card-grid-4 { grid-template-columns: repeat(4, 1fr); }
