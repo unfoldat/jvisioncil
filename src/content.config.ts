@@ -19,8 +19,8 @@ const notices = defineCollection({
   }),
 });
 
-// network-orgs = 함께하는 기관(실제 외부 협력기관만) — 기관소개/홈 배너 + 소식의
-// "협력기관" 발행 주체 선택 시 기관 선택(relation) + 태그 페이지 연결.
+// network-orgs = 함께하는 기관(실제 외부 협력기관만) — 기관소개/홈의 MOU 협력기관
+// 배너에 노출된다.
 const networkOrgs = defineCollection({
   loader: glob({ pattern: '**/*.md', base: './src/content/network-orgs' }),
   schema: z.object({

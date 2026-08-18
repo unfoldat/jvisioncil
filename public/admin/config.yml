@@ -45,10 +45,7 @@ collections:
     folder: src/content/network-orgs
     create: true
     fields:
-      - name: name
-        label: 기관명
-        widget: string
-        hint: '소식 작성 시 "기관" 선택 목록에 이 이름으로 나타납니다.'
+      - { name: name, label: 기관명, widget: string }
       - { name: url, label: 기관 홈페이지, widget: string, required: false }
 
   - name: sponsors
@@ -69,7 +66,10 @@ collections:
     identifier_field: alt
     summary: '{{alt}}'
     fields:
-      - { name: photo, label: 사진, widget: image }
+      # 이 사진들은 예전 정적 사이트에서 그대로 옮겨온 파일이라 전역 media_folder
+      # (public/uploads)가 아니라 public/images/gallery에 있음 — CMS 미리보기가
+      # 인식하도록 필드 단위로 경로를 덮어쓴다.
+      - { name: photo, label: 사진, widget: image, media_folder: 'public/images/gallery', public_folder: '/images/gallery' }
       - { name: alt, label: 사진 설명(대체텍스트), widget: string, hint: '스크린리더 이용자에게는 이 글자가 사진입니다. 사진 속 상황을 구체적으로 설명하세요.' }
       - name: showOn
         label: 노출 위치
@@ -132,7 +132,9 @@ collections:
         fields:
           - { name: role, label: 직위, widget: string, default: 센터장 }
           - { name: name, label: 이름, widget: string }
-          - { name: photo, label: 사진, widget: image }
+          # 예전 정적 사이트에서 옮겨온 파일이라 전역 media_folder(public/uploads)가
+          # 아니라 public/images에 있음 — CMS 미리보기가 인식하도록 필드 단위로 덮어쓴다.
+          - { name: photo, label: 사진, widget: image, media_folder: 'public/images', public_folder: '/images' }
           - { name: photoAlt, label: 사진 설명(대체텍스트), widget: string, hint: '스크린리더 이용자에게는 이 글자가 사진입니다. 예: "정금종 센터장 얼굴 사진"' }
           - { name: bio, label: 주요 약력, widget: list, field: { name: item, label: 약력 항목, widget: string } }
           - { name: photoPos, label: 사진 위치 조정(고급, 선택), widget: string, required: false, hint: '얼굴이 잘리면 조정하세요. 예: "center 20%". 비워두면 기본값 사용.' }
@@ -142,7 +144,7 @@ collections:
         fields:
           - { name: role, label: 직위, widget: string, default: 부센터장 }
           - { name: name, label: 이름, widget: string }
-          - { name: photo, label: 사진, widget: image }
+          - { name: photo, label: 사진, widget: image, media_folder: 'public/images', public_folder: '/images' }
           - { name: photoAlt, label: 사진 설명(대체텍스트), widget: string, hint: '스크린리더 이용자에게는 이 글자가 사진입니다. 예: "김기현 부센터장 얼굴 사진"' }
           - { name: bio, label: 주요 약력, widget: list, field: { name: item, label: 약력 항목, widget: string } }
           - { name: photoPos, label: 사진 위치 조정(고급, 선택), widget: string, required: false, hint: '얼굴이 잘리면 조정하세요. 예: "center 15%". 비워두면 기본값 사용.' }
