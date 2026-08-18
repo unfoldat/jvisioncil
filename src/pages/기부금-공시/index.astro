@@ -1,9 +1,8 @@
 ---
 // 작업지시서(기부금 공시 파일 첨부 기능) §2 — 게시판 페이지. 목업 disclosure 화면 포팅.
-// donation-reports 컬렉션 확장안 — 제목은 별도 필드 없이 연도에서 만든다.
 import { getCollection } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import { reportTitle, sortForList, fileSizeLabel } from '../../lib/donationReports';
+import { sortForList, fileSizeLabel, downloadAriaLabel } from '../../lib/donationReports';
 
 const reports = sortForList(await getCollection('donation-reports'));
 ---
@@ -20,13 +19,12 @@ const reports = sortForList(await getCollection('donation-reports'));
       ) : (
         <ul class="disclosure-list">
           {reports.map((report) => {
-            const title = reportTitle(report);
             const size = fileSizeLabel(report.data.file);
             return (
               <li>
-                <h2><a href={`/기부금-공시/${report.id}/`}>{title}</a></h2>{' '}
-                <a href={report.data.file} download>
-                  {title} PDF 다운로드 ({size})<span class="sr-only">, 새 창 없이 바로 내려받기</span>
+                <h2><a href={`/기부금-공시/${report.id}/`}>{report.data.title}</a></h2>{' '}
+                <a href={report.data.file} download aria-label={downloadAriaLabel(report)}>
+                  다운로드 ({size})
                 </a>
               </li>
             );

@@ -2,7 +2,7 @@
 // 작업지시서(기부금 공시 파일 첨부 기능) §2 — "목록에서 제목 클릭 시 상세 화면에 표시".
 import { getCollection, render } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import { reportTitle, fileSizeLabel } from '../../lib/donationReports';
+import { fileSizeLabel, downloadAriaLabel } from '../../lib/donationReports';
 
 export async function getStaticPaths() {
   const reports = await getCollection('donation-reports');
@@ -11,7 +11,7 @@ export async function getStaticPaths() {
 
 const { report } = Astro.props;
 const { Content } = await render(report);
-const title = reportTitle(report);
+const title = report.data.title;
 const size = fileSizeLabel(report.data.file);
 const hasBody = report.body && report.body.trim().length > 0;
 ---
@@ -21,8 +21,8 @@ const hasBody = report.body && report.body.trim().length > 0;
     <div class="wrap">
       <p class="breadcrumb"><a href="/기부금-공시/">기부금 공시</a> &gt; {title}</p>
       <h1>{title}</h1>
-      <p><a href={report.data.file} download class="btn">
-        {title} PDF 다운로드 ({size})<span class="sr-only">, 새 창 없이 바로 내려받기</span>
+      <p><a href={report.data.file} download class="btn" aria-label={downloadAriaLabel(report)}>
+        다운로드 ({size})
       </a></p>
     </div>
   </section>

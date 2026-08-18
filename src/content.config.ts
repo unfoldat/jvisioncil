@@ -59,14 +59,14 @@ const sponsors = defineCollection({
   }),
 });
 
-// 작업지시서(기부금 공시 파일 첨부 기능) — 기존 donation-reports 컬렉션을 갈아엎지 않고
-// 확장한다: year·file은 기존 그대로, body(본문)만 신규 선택 필드로 추가. 제목은 별도
-// 필드로 저장하지 않고 "{year}년 내역입니다" 형태로 코드에서 만든다. 법적 의무 문서
-// (무보관 원칙의 유일한 예외).
+// 2026-08-18 스키마 정정 — 이전 결정("title 필드 없음, {year}년 내역입니다로 자동생성")을
+// 뒤집는다. title은 편집자가 직접 쓰는 필드다(자동생성 아님). year·file은 기존 그대로,
+// body(본문)는 여전히 선택 필드. 법적 의무 문서(무보관 원칙의 유일한 예외).
 const donationReports = defineCollection({
   loader: glob({ pattern: '**/*.md', base: './src/content/donation-reports' }),
   schema: z.object({
     year: z.number().int(),
+    title: z.string(),
     file: z.string(),
   }),
 });

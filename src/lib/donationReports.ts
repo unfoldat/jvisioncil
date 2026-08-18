@@ -4,11 +4,16 @@ import type { CollectionEntry } from 'astro:content';
 
 type Report = CollectionEntry<'donation-reports'>;
 
-// 제목은 별도 필드로 저장하지 않고 연도에서 만든다 — 편집자가 매번 같은 문구를 입력하지 않게.
-export const reportTitle = (report: Report) => `${report.data.year}년 내역입니다`;
-
 export const sortForList = (reports: Report[]): Report[] =>
   [...reports].sort((a, b) => b.data.year - a.data.year);
+
+// "{year}년 {title} 다운로드" 형태 — title에 이미 연도가 들어있으면(흔한 표기,
+// 예: "2025년 내역입니다") 연도를 두 번 말하지 않는다.
+export function downloadAriaLabel(report: Report): string {
+  const yearPrefix = `${report.data.year}년`;
+  const title = report.data.title;
+  return title.includes(yearPrefix) ? `${title} 다운로드` : `${yearPrefix} ${title} 다운로드`;
+}
 
 // 다운로드 전 파일 용량을 알려주기 위해 public/ 아래 실제 파일 크기를 빌드 시점에 읽는다.
 export function fileSizeLabel(publicPath: string): string {
