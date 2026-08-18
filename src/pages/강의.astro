@@ -10,12 +10,21 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 const instructors = await getCollection('instructors');
 
 const lectures = [
-  { target: '사업주 · 근로자', title: '직장 내 장애인 인식개선 교육', desc: '한국장애인고용공단 지정 수행기관으로서 법정의무교육을 실시합니다.', meta: '법정의무교육 · 1시간 기준' },
-  { target: '유아 · 초등', title: '유아·아동 장애인식개선 교육', desc: '보고 듣고 만지는 체험 활동으로 시각장애를 이해합니다.', meta: '40~60분 · 체험 활동 포함' },
-  { target: '청소년', title: '청소년 장애인식개선 교육', desc: '학교 생활에서 마주하는 상황을 중심으로 함께 살아가는 방법을 이야기합니다.', meta: '1차시 · 학급 단위' },
-  { target: '공공기관 · 지역사회', title: '사회적 장애인식개선 교육', desc: '한국장애인개발원 강사양성과정을 수료한 강사진이 대상별 특성에 맞춰 진행합니다.', meta: '기관 요청에 따라 조정' },
-  { target: '노인 · 경로당', title: '노인 실명예방 교육', desc: '노년기 눈 질환과 생활 관리, 시력 저하 시 이용할 수 있는 서비스를 안내합니다.', meta: '50분 · 자료 제공' },
-  { target: '기관 맞춤', title: '중도실명 이해 교육', desc: '중도실명 당사자의 경험을 바탕으로 응대 방법과 안내 보행을 배웁니다.', meta: '요청 주제에 맞춰 구성' },
+  { target: '사업주 및 근로자', title: '직장 내 장애인 인식개선 교육', desc: '법정의무교육입니다. 한국장애인고용공단 지정 교육기관으로 누적 500회 이상의 교육 진행 경험을 갖추고 있습니다.', meta: '1시간' },
+  { target: '영유아 및 초등학생', title: '유아·아동 장애인식개선 교육', desc: '법정의무교육이며, 체험활동·인형극·애니메이션 시청 등으로 진행합니다. 강사양성과정을 수료한 강사진이 연령과 발달 특성에 맞춰 구성합니다.', meta: '40~60분' },
+  { target: '청소년', title: '청소년 장애인식개선 교육', desc: '법정의무교육으로 학급 단위로 진행하며, 장애인 음악가의 연주·영화 장면 활용·토론·캠페인 활동 등으로 구성합니다. 강사양성과정을 수료한 강사진이 학교 문화와 요청에 맞게 구성합니다.', meta: '1차시' },
+  { target: '공공기관 및 지역사회', title: '사회적 장애인식개선 교육', desc: '법정의무교육이며, 스토리텔링·장애체험·장애감수성 교육 등 기관 요청에 따라 내용을 조정합니다. 한국장애인개발원 강사양성과정을 수료한 다양한 전문 강사진이 진행합니다.', meta: '1시간' },
+  { target: '중년 및 노인', title: '실명예방 교육', desc: '다양한 안질환과 일상생활 관리 방법, 시력 저하 시 이용할 수 있는 서비스를 안내하고 교육자료를 제공합니다. 전문지식을 갖춘 강사진이 100회 이상의 교육 경험을 보유하고 있습니다.', meta: '50분' },
+];
+
+// 2026-08-18 작업지시서 — 목업엔 없던 신규 섹션(명시 승인). 항목 3개 고정·개편 빈도
+// 낮음(강사 프로필처럼 자주 늘고 주는 데이터가 아님)이라 CMS 컬렉션화하지 않고 정적
+// 데이터로 둔다 — 나중에 항목이 늘거나 자주 바뀌면 강사 프로필과 같은 폴더형 컬렉션
+// 패턴을 그대로 적용하면 된다.
+const extraCourses = [
+  { no: '01', title: '기타 중도실명 이해 교육', desc: '중도실명 이후의 심리·생활 변화와 필요한 지원을 이해하는 교육' },
+  { no: '02', title: '활동지원사 양성교육', desc: '다양한 영역의 장애인의 특성과 효과적인 활동지원 방법을 다루는 실무 중심 교육' },
+  { no: '03', title: '동료상담사 양성교육', desc: '장애 당사자의 경험을 상담 자원으로 활용하기 위한 기본 역량 교육' },
 ];
 
 ---
@@ -45,6 +54,22 @@ const lectures = [
           </li>
         ))}
       </ul>
+    </div>
+  </section>
+
+  <section aria-labelledby="lc-extra" class="tint">
+    <div class="wrap">
+      <h2 id="lc-extra">기타 전문교육</h2>
+      <p class="lead-sm">기관의 목적과 참여자의 특성에 따라 교육 내용을 협의하여 구성합니다.</p>
+      <ol class="extra-grid">
+        {extraCourses.map((c) => (
+          <li class="extra-card">
+            <span aria-hidden="true" class="extra-no">{c.no}</span>{' '}
+            <h3>{c.title}</h3>{' '}
+            <span>{c.desc}</span>
+          </li>
+        ))}
+      </ol>
     </div>
   </section>
 
@@ -91,13 +116,19 @@ const lectures = [
   .lead-lg { margin: 22px 0 0; font: 400 1.32em/1.8 Pretendard, system-ui, sans-serif; color: var(--muted); max-width: 34em; text-wrap: pretty; }
   section[aria-labelledby='lc-title'] .btn { margin-top: 28px; font: 800 1.38em/1 Pretendard, system-ui, sans-serif !important; padding: 20px 36px; }
 
-  #lc-kinds, #lc-tutors { margin: 0 0 24px; font: 800 1.88em/1.4 Pretendard, system-ui, sans-serif; color: #5a3737; }
+  #lc-kinds, #lc-extra, #lc-tutors { margin: 0 0 24px; font: 800 1.88em/1.4 Pretendard, system-ui, sans-serif; color: #5a3737; }
   .lecture-grid { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
   .lecture-card { padding: 28px 26px; border: 1px solid #e5bfbf; border-radius: 16px; background: #faf2f2; }
   .lecture-target { display: block; font: 700 0.88em/1 Pretendard, system-ui, sans-serif; color: #784949; margin-bottom: 10px; }
   .lecture-card h3 { margin: 0 0 10px; font: 800 1.44em/1.4 Pretendard, system-ui, sans-serif; color: #5a3737; text-wrap: pretty; }
   .lecture-desc { display: block; font: 400 1.06em/1.75 Pretendard, system-ui, sans-serif; color: var(--muted); margin-bottom: 14px; text-wrap: pretty; }
   .lecture-meta { display: block; font: 600 0.94em/1.5 Pretendard, system-ui, sans-serif; color: var(--muted); }
+
+  .extra-grid { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+  .extra-card { display: flex; flex-direction: column; gap: 10px; padding: 28px 26px; border: 1px solid #e5bfbf; border-radius: 16px; background: #fff; }
+  .extra-no { font: 700 0.94em/1 Pretendard, system-ui, sans-serif; color: #c87a7a; }
+  .extra-card h3 { margin: 0; font: 800 1.25em/1.4 Pretendard, system-ui, sans-serif; color: #5a3737; text-wrap: pretty; }
+  .extra-card span:not(.extra-no) { font: 400 1.06em/1.75 Pretendard, system-ui, sans-serif; color: var(--muted); text-wrap: pretty; }
 
   .lab-grid { display: grid; grid-template-columns: 1.08fr 0.92fr; gap: 40px; align-items: center; }
   .eyebrow-sm { margin: 0 0 10px; font: 700 0.94em/1 Pretendard, system-ui, sans-serif; color: #784949; }
@@ -115,7 +146,7 @@ const lectures = [
   .tutor-role { display: block; font: 700 1em/1.4 Pretendard, system-ui, sans-serif; color: #784949; margin-bottom: 12px; }
   .tutor-bio { display: block; font: 400 1.06em/1.75 Pretendard, system-ui, sans-serif; color: var(--muted); text-wrap: pretty; }
 
-  @media (max-width: 860px) { .lecture-grid, .tutor-grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 860px) { .lecture-grid, .extra-grid, .tutor-grid { grid-template-columns: repeat(2, 1fr); } }
   @media (max-width: 760px) { .lab-grid { grid-template-columns: minmax(0, 1fr); } }
-  @media (max-width: 640px) { .lecture-grid, .tutor-grid { grid-template-columns: minmax(0, 1fr); } }
+  @media (max-width: 640px) { .lecture-grid, .extra-grid, .tutor-grid { grid-template-columns: minmax(0, 1fr); } }
 </style>
