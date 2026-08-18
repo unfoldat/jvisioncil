@@ -24,11 +24,14 @@ const strip = (html) => html.replace(/<[^>]+>/g, '').replace(/&gt;/g, '>').repla
 
 const escapeRegExp = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 
-// 협력기관 배지 검사의 정답지: network-orgs 컨텐츠 소스에서 name/url을 직접 읽는다
-// (렌더링 결과가 아니라 소스 진실을 기준으로 대조 — 회귀를 잡아내는 핵심).
+// 협력기관 배지 검사의 정답지: network-orgs·sponsors 컨텐츠 소스에서 name/url을 직접
+// 읽는다(렌더링 결과가 아니라 소스 진실을 기준으로 대조 — 회귀를 잡아내는 핵심).
 // network-orgs는 실제 협력기관만 담으므로(좋은비전은 소식의 발행 주체로 별도 관리) 전부 대조 대상.
-const readOrgs = (dir) =>
-  fs
+// 컬렉션이 0개면 git이 빈 디렉터리를 추적하지 않아 클론 직후엔 폴더 자체가 없을 수
+// 있다(2026-08-18 배포 실패로 확인) — 없으면 크래시 대신 빈 배열로 취급한다.
+const readOrgs = (dir) => {
+  if (!fs.existsSync(dir)) return [];
+  return fs
     .readdirSync(dir)
     .filter((f) => f.endsWith('.md'))
     .map((f) => {
@@ -38,6 +41,7 @@ const readOrgs = (dir) =>
         url: raw.match(/^url:\s*(.+)$/m)?.[1]?.trim(),
       };
     });
+};
 const networkOrgs = readOrgs('src/content/network-orgs');
 // sponsors(후원기관)도 같은 PartnerGrid 컴포넌트(class="partner-banner")를 재사용하므로
 // 정답지도 별도로 둔다 — 페이지별로 어느 컬렉션 배너인지는 렌더링된 이름으로 판별한다.
