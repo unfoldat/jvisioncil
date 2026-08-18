@@ -2,7 +2,6 @@
 // 2026-08-17 디자인 목업 반영 — 센터소개(URL은 /기관소개/ 유지, 표시 라벨만 "센터소개").
 import { getEntry } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
-import PartnerGrid from '../components/PartnerGrid.astro';
 
 // 확정 스키마 결정 — 센터장·부센터장은 파일형(고정 2명). getCollection의 파일시스템
 // 순회 순서에 기대지 않고 id를 직접 지정해 "센터장 → 부센터장" 순서를 코드로 보장한다.
@@ -204,13 +203,6 @@ const busStops = [
     </div>
   </section>
 
-  <section aria-labelledby="about-partners" class="panel">
-    <div class="wrap">
-      <h2 id="about-partners">협력 네트워크</h2>
-      <p class="lead-sm">좋은비전이 함께 활동하며 정보와 서비스를 연결하는 기관입니다.</p>
-      <PartnerGrid />
-    </div>
-  </section>
 </BaseLayout>
 
 <style>
