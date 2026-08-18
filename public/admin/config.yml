@@ -65,13 +65,16 @@ collections:
     label_singular: 갤러리 사진
     folder: src/content/gallery
     create: true
+    reorder: true
     identifier_field: alt
     summary: '{{alt}}'
     fields:
-      # 이 사진들은 예전 정적 사이트에서 그대로 옮겨온 파일이라 전역 media_folder
-      # (public/uploads)가 아니라 public/images/gallery에 있음 — CMS 미리보기가
-      # 인식하도록 필드 단위로 경로를 덮어쓴다.
-      - { name: photo, label: 사진, widget: image, media_folder: 'public/images/gallery', public_folder: '/images/gallery' }
+      # 2026-08-18 필드 단위 media_folder 오버라이드 제거 — 소식(notices) 사진 필드와
+      # 같은 미디어 라이브러리(전역 기본값 public/uploads)를 보게 해서 재업로드 없이
+      # 재선택 가능하게 함. 기존 11장(public/images/gallery에 있음)의 photo: 값은 그대로
+      # 유지되고 화면에도 영향 없음 — 다만 새 항목 만들 때 선택창에서 그 11장은 안 보임
+      # (감수하기로 한 트레이드오프).
+      - { name: photo, label: 사진, widget: image }
       - { name: alt, label: 사진 설명(대체텍스트), widget: string, required: false, hint: '스크린리더 이용자에게는 이 글자가 사진입니다. 사진 속 상황을 구체적으로 설명하세요. 비워두면 장식용으로 처리됩니다 — 되도록 채워주세요.' }
       - name: showOn
         label: 노출 위치

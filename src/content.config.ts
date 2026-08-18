@@ -87,6 +87,9 @@ const gallery = defineCollection({
     // 2026-08-18 필수→선택 전환(작업지시서) — leadership.photoAlt와 동일 이유·처리.
     alt: z.string().optional(),
     showOn: z.array(z.enum(['home', 'news', 'donate'])).default(['home', 'news', 'donate']),
+    // 2026-08-18 config.yml의 reorder:true가 CMS에서 드래그할 때 여기에 채워 넣는 값.
+    // 없는 항목(아직 한 번도 드래그로 정렬 안 된 것)은 화면 쪽 정렬에서 맨 뒤로 취급.
+    order: z.number().optional(),
   }),
 });
 
