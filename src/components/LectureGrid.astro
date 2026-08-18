@@ -1,0 +1,69 @@
+---
+// 2026-08-19 CMS 컬렉션 전환(작업지시서) — 강의.astro(강의 안내)와 종류/페이지/[page].astro가
+// 공유하는 "강의 종류" 카드 그리드(NoticeList.astro와 동일한 이유로 분리: 두 라우트가
+// 같은 카드 마크업을 각자 복제하면 나중에 하나만 고치고 잊어버리는 사고가 난다).
+import type { CollectionEntry } from 'astro:content';
+
+interface Props {
+  lectures: CollectionEntry<'lectures'>[];
+  currentPage?: number;
+  totalPages?: number;
+}
+const { lectures, currentPage = 1, totalPages = 1 } = Astro.props;
+const pageHref = (n: number) => (n === 1 ? '/강의/' : `/강의/종류/페이지/${n}/`);
+const pages = Array.from({ length: totalPages }, (_, i) => i + 1);
+---
+
+<ul class="lecture-grid">
+  {lectures.map((l) => (
+    <li class="lecture-card">
+      <span class="lecture-target">대상: {l.data.target}</span>{' '}
+      <span class:list={['lecture-badge', { 'lecture-badge-hidden': !l.data.mandatory }]} aria-hidden={l.data.mandatory ? undefined : 'true'}>
+        <svg aria-hidden="true" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"></path>
+          <path d="m9 12 2 2 4-4"></path>
+        </svg>
+        법정의무교육
+      </span>{' '}
+      <h3>{l.data.title}</h3>{' '}
+      <span class="lecture-desc">{l.data.desc}</span>{' '}
+      <span class="lecture-meta">교육시간: {l.data.meta}</span>
+    </li>
+  ))}
+</ul>
+
+{totalPages > 1 && (
+  <nav aria-label="강의 종류 쪽 이동" class="lecture-pagination">
+    {pages.map((n) => (
+      <a href={pageHref(n)} aria-current={n === currentPage ? 'page' : undefined}>{n}</a>
+    ))}
+  </nav>
+)}
+
+<style>
+  .lecture-grid { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+  .lecture-card { padding: 28px 26px; border: 1px solid #e5bfbf; border-radius: 16px; background: #faf2f2; display: flex; flex-direction: column; }
+  .lecture-target { display: block; font: 700 0.88em/1 Pretendard, system-ui, sans-serif; color: #784949; margin-bottom: 10px; }
+  .lecture-badge {
+    display: inline-flex; align-items: center; gap: 5px; width: fit-content; border-radius: 999px;
+    font: 700 0.84em/1.4 Pretendard, system-ui, sans-serif; padding: 3px 10px; background: #f4d9dc; color: #7a3b41; margin-bottom: 10px;
+  }
+  .lecture-badge svg { flex-shrink: 0; }
+  .lecture-badge-hidden { visibility: hidden; }
+  .lecture-card h3 { margin: 0 0 10px; font: 800 1.44em/1.4 Pretendard, system-ui, sans-serif; color: #5a3737; text-wrap: pretty; }
+  .lecture-desc { display: block; font: 400 1.06em/1.75 Pretendard, system-ui, sans-serif; color: var(--muted); margin-bottom: 14px; text-wrap: pretty; }
+  .lecture-meta { display: block; margin-top: auto; font: 600 0.94em/1.5 Pretendard, system-ui, sans-serif; color: var(--muted); }
+
+  .lecture-pagination { display: flex; gap: 10px; justify-content: center; margin: 32px 0 0; }
+  .lecture-pagination a {
+    display: inline-flex; align-items: center; justify-content: center; min-width: 2.8em; padding: 12px 14px;
+    border-radius: 10px; text-decoration: none; font: 700 1.13em/1 Pretendard, system-ui, sans-serif;
+    background: #fff; color: #784949; border: 1.5px solid #e5bfbf;
+  }
+  .lecture-pagination a[aria-current='page'] {
+    font-weight: 800; background: #5a3737; color: #fff; border-color: #5a3737;
+  }
+
+  @media (max-width: 860px) { .lecture-grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 640px) { .lecture-grid { grid-template-columns: minmax(0, 1fr); } }
+</style>

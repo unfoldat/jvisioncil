@@ -87,6 +87,35 @@ collections:
         default: [home, news, donate]
         hint: '이 사진을 노출할 위치를 고르세요. 기본값은 세 곳 모두입니다.'
 
+  - name: lectures
+    label: 강의 종류
+    description: 강의 안내 페이지의 "강의 종류" 카드에 표시됩니다. 항목을 추가하거나 삭제하면 카드 개수가 그만큼 늘고 줍니다.
+    label_singular: 강의 종류 작성
+    folder: src/content/lectures
+    create: true
+    reorder: true
+    identifier_field: title
+    summary: '{{title}}'
+    fields:
+      - { name: target, label: 대상, widget: string, hint: '예: 사업주 및 근로자' }
+      - { name: title, label: 강의명, widget: string }
+      - { name: desc, label: 주요내용·강점, widget: text }
+      - { name: meta, label: 교육시간, widget: string, hint: '예: 1시간, 40~60분, 1차시' }
+      - { name: mandatory, label: 법정의무교육 여부, widget: boolean, default: false }
+
+  - name: extra-courses
+    label: 기타 전문교육
+    description: 강의 안내 페이지의 "기타 전문교육" 카드에 표시됩니다. 카드 번호(01, 02...)는 순서에 따라 자동으로 매겨집니다.
+    label_singular: 기타 전문교육 작성
+    folder: src/content/extra-courses
+    create: true
+    reorder: true
+    identifier_field: title
+    summary: '{{title}}'
+    fields:
+      - { name: title, label: 제목, widget: string }
+      - { name: desc, label: 설명, widget: text }
+
   - name: instructors
     label: 강사 프로필
     description: 강의 안내 페이지의 강사 프로필 카드에 표시됩니다. 강사를 추가하거나 삭제하면 카드 개수가 그만큼 늘고 줍니다.

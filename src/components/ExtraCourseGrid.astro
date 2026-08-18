@@ -1,0 +1,56 @@
+---
+// 2026-08-19 CMS 컬렉션 전환(작업지시서) — 강의.astro(강의 안내)와 기타/페이지/[page].astro가
+// 공유하는 "기타 전문교육" 카드 그리드. 번호(01/02/03...)는 필드가 아니라 전체 목록에서의
+// 순서(startIndex + 화면 위치)로 계산한다 — 페이지를 넘겨도 번호가 이어진다(2페이지 첫
+// 항목이 "07"이 되는 식, 목록 순서 유지가 목적이므로 페이지마다 01부터 다시 시작하지 않음).
+import type { CollectionEntry } from 'astro:content';
+
+interface Props {
+  courses: CollectionEntry<'extra-courses'>[];
+  startIndex: number;
+  currentPage?: number;
+  totalPages?: number;
+}
+const { courses, startIndex, currentPage = 1, totalPages = 1 } = Astro.props;
+const pageHref = (n: number) => (n === 1 ? '/강의/' : `/강의/기타/페이지/${n}/`);
+const pages = Array.from({ length: totalPages }, (_, i) => i + 1);
+---
+
+<ol class="extra-grid">
+  {courses.map((c, i) => (
+    <li class="extra-card">
+      <span aria-hidden="true" class="extra-no">{String(startIndex + i + 1).padStart(2, '0')}</span>{' '}
+      <h3>{c.data.title}</h3>{' '}
+      <span>{c.data.desc}</span>
+    </li>
+  ))}
+</ol>
+
+{totalPages > 1 && (
+  <nav aria-label="기타 전문교육 쪽 이동" class="extra-pagination">
+    {pages.map((n) => (
+      <a href={pageHref(n)} aria-current={n === currentPage ? 'page' : undefined}>{n}</a>
+    ))}
+  </nav>
+)}
+
+<style>
+  .extra-grid { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+  .extra-card { display: flex; flex-direction: column; gap: 10px; padding: 28px 26px; border: 1px solid #e5bfbf; border-radius: 16px; background: #fff; }
+  .extra-no { font: 700 0.94em/1 Pretendard, system-ui, sans-serif; color: #c87a7a; }
+  .extra-card h3 { margin: 0; font: 800 1.25em/1.4 Pretendard, system-ui, sans-serif; color: #5a3737; text-wrap: pretty; }
+  .extra-card span:not(.extra-no) { font: 400 1.06em/1.75 Pretendard, system-ui, sans-serif; color: var(--muted); text-wrap: pretty; }
+
+  .extra-pagination { display: flex; gap: 10px; justify-content: center; margin: 32px 0 0; }
+  .extra-pagination a {
+    display: inline-flex; align-items: center; justify-content: center; min-width: 2.8em; padding: 12px 14px;
+    border-radius: 10px; text-decoration: none; font: 700 1.13em/1 Pretendard, system-ui, sans-serif;
+    background: #fff; color: #784949; border: 1.5px solid #e5bfbf;
+  }
+  .extra-pagination a[aria-current='page'] {
+    font-weight: 800; background: #5a3737; color: #fff; border-color: #5a3737;
+  }
+
+  @media (max-width: 860px) { .extra-grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 640px) { .extra-grid { grid-template-columns: minmax(0, 1fr); } }
+</style>

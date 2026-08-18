@@ -163,6 +163,32 @@ const qa = defineCollection({
   }),
 });
 
+// 2026-08-19 작업지시서 — 강의 안내 "강의 종류" 카드를 CMS 폴더형 컬렉션으로 전환.
+// 강사 프로필과 동일 이유(개수가 늘고 줌). order는 gallery와 동일 패턴(config.yml의
+// reorder:true가 드래그 시 채워 넣는 값, CMS 필드 목록엔 노출 안 함).
+const lectures = defineCollection({
+  loader: glob({ pattern: '**/*.md', base: './src/content/lectures' }),
+  schema: z.object({
+    target: z.string(),
+    title: z.string(),
+    desc: z.string(),
+    meta: z.string(),
+    mandatory: z.boolean().default(false),
+    order: z.number().optional(),
+  }),
+});
+
+// 2026-08-19 작업지시서 — "기타 전문교육" 카드도 동일하게 전환. 번호(01/02/03...)는
+// 필드로 저장하지 않고 화면 렌더링 시 순서 기준으로 계산한다(ExtraCourseGrid.astro).
+const extraCourses = defineCollection({
+  loader: glob({ pattern: '**/*.md', base: './src/content/extra-courses' }),
+  schema: z.object({
+    title: z.string(),
+    desc: z.string(),
+    order: z.number().optional(),
+  }),
+});
+
 export const collections = {
   notices,
   'network-orgs': networkOrgs,
@@ -173,4 +199,6 @@ export const collections = {
   instructors,
   'org-info': orgInfo,
   qa,
+  lectures,
+  'extra-courses': extraCourses,
 };

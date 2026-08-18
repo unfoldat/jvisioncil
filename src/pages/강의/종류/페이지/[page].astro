@@ -1,0 +1,121 @@
+---
+// 2026-08-19 페이지네이션(작업지시서) — "강의 종류" 섹션의 2페이지부터만 생성한다
+// (소식/기부금-공시와 동일 패턴). 강의 안내 페이지엔 "기타 전문교육" 섹션도 독립적으로
+// 페이지네이션되므로(강의/기타/페이지/[page].astro), 여기서는 기타 전문교육을 1페이지
+// 고정으로 보여준다 — 정적 사이트라 두 목록을 동시에 URL 하나로 표현할 수 없어서
+// 각 섹션의 "다른 페이지 보기"는 서로 독립된 경로를 쓴다.
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../../../layouts/BaseLayout.astro';
+import LectureGrid from '../../../../components/LectureGrid.astro';
+import ExtraCourseGrid from '../../../../components/ExtraCourseGrid.astro';
+import { sortForList as sortLectures, PAGE_SIZE as LECTURE_PAGE_SIZE, totalPages as lectureTotalPages } from '../../../../lib/lectures';
+import { sortForList as sortExtraCourses, PAGE_SIZE as EXTRA_PAGE_SIZE, totalPages as extraTotalPages } from '../../../../lib/extraCourses';
+
+export async function getStaticPaths() {
+  const allLectures = sortLectures(await getCollection('lectures'));
+  const pages = lectureTotalPages(allLectures.length);
+
+  const allExtraCourses = sortExtraCourses(await getCollection('extra-courses'));
+  const pageExtraCourses = allExtraCourses.slice(0, EXTRA_PAGE_SIZE);
+  const extraPages = extraTotalPages(allExtraCourses.length);
+
+  const instructors = await getCollection('instructors');
+
+  return Array.from({ length: Math.max(0, pages - 1) }, (_, i) => {
+    const page = i + 2;
+    return {
+      params: { page: String(page) },
+      props: {
+        pageLectures: allLectures.slice((page - 1) * LECTURE_PAGE_SIZE, page * LECTURE_PAGE_SIZE),
+        currentPage: page,
+        totalPages: pages,
+        pageExtraCourses,
+        extraPages,
+        instructors,
+      },
+    };
+  });
+}
+
+const { pageLectures, currentPage, totalPages: pages, pageExtraCourses, extraPages, instructors } = Astro.props;
+---
+
+<BaseLayout pageName={`강의 안내 - 강의 종류 ${currentPage}페이지`} bg="#F4E4E4">
+  <section aria-labelledby="lc-title" class="intro">
+    <div class="wrap">
+      <p class="eyebrow"><span class="pill">강의 안내</span></p>
+      <h1 id="lc-title">현장에서 바로 쓰이는 장애인식개선 교육</h1>
+      <p class="lead-lg">한국장애인고용공단 직장 내 장애인 인식개선 교육 지정 수행기관이며, 한국장애인개발원 강사양성과정을 수료한 전문 강사진이 대상별 특성에 맞춰 교육을 진행합니다.</p>
+      <a href="https://forms.gle/CaqAgMm5jQyH2bHR7" class="btn btn-lg">
+        강의 신청하기 <span class="sr-only">, Google Forms로 이동</span>
+      </a>
+    </div>
+  </section>
+
+  <section aria-labelledby="lc-kinds" class="tint">
+    <div class="wrap">
+      <h2 id="lc-kinds">강의 종류</h2>
+      <p class="lecture-note">기관 요청에 따라 교육 시간과 세부 구성을 조정할 수 있습니다.</p>
+      <LectureGrid lectures={pageLectures} currentPage={currentPage} totalPages={pages} />
+    </div>
+  </section>
+
+  <section aria-labelledby="lc-extra" class="tint">
+    <div class="wrap">
+      <h2 id="lc-extra">기타 전문교육</h2>
+      <p class="lead-sm">기관의 목적과 참여자의 특성에 따라 교육 내용을 협의하여 구성합니다.</p>
+      <ExtraCourseGrid courses={pageExtraCourses} startIndex={0} currentPage={1} totalPages={extraPages} />
+    </div>
+  </section>
+
+  <section aria-labelledby="lc-tutors" class="intro">
+    <div class="wrap">
+      <h2 id="lc-tutors">강사 프로필</h2>
+      {instructors.length === 0 ? (
+        <p class="lead-sm">아직 등록된 강사 프로필이 없습니다.</p>
+      ) : (
+        <ul class="tutor-grid">
+          {instructors.map((t) => (
+            <li class="tutor-card">
+              <img class="tutor-photo" src={t.data.photo} alt={t.data.photoAlt ?? ''} style={`object-position:${t.data.photoPos || 'center 20%'}`} />
+              <div class="tutor-body">
+                <h3>{t.data.name}</h3>{' '}
+                <span class="tutor-role">{t.data.role}</span>{' '}
+                <ul class="tutor-bio" role="list" aria-label={`${t.data.name} 약력`}>
+                  {t.data.bio.map((item) => <li>{item}</li>)}
+                </ul>
+              </div>
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .intro { background: #f4e4e4; padding: 62px 0 46px; }
+  .tint { background: #faf2f2; padding: 58px 0; }
+  .pill { display: inline-flex; padding: 6px 14px; border-radius: 999px; background: #c87a7a; color: #000; font: 700 0.94em/1.3 Pretendard, system-ui, sans-serif; }
+  #lc-title { margin: 12px 0 0; font: 800 2.75em/1.4 Pretendard, system-ui, sans-serif; letter-spacing: -0.035em; color: #5a3737; max-width: 24em; text-wrap: pretty; }
+  .lead-lg { margin: 22px 0 0; font: 400 1.32em/1.8 Pretendard, system-ui, sans-serif; color: var(--muted); max-width: 35em; text-wrap: pretty; }
+  section[aria-labelledby='lc-title'] .btn { margin-top: 28px; font: 800 1.38em/1 Pretendard, system-ui, sans-serif !important; padding: 20px 36px; }
+
+  #lc-extra, #lc-tutors { margin: 0 0 24px; font: 800 1.88em/1.4 Pretendard, system-ui, sans-serif; color: #5a3737; }
+  #lc-kinds { margin: 0 0 10px; font: 800 1.88em/1.4 Pretendard, system-ui, sans-serif; color: #5a3737; }
+  .lecture-note { margin: 0 0 32px; font: 400 0.92em/1.6 Pretendard, system-ui, sans-serif; color: #784949; }
+
+  .lead-sm { margin: 0 0 24px; font: 400 1.06em/1.7 Pretendard, system-ui, sans-serif; color: var(--muted); }
+  .tutor-grid { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+  .tutor-card { border: 1px solid #e5bfbf; border-radius: 16px; background: #faf2f2; overflow: hidden; }
+  .tutor-photo { width: 100%; height: 12.5em; border-bottom: 1px solid #e5bfbf; object-fit: contain; background: #faf2f2; display: block; }
+  .tutor-body { padding: 24px 26px 28px; }
+  .tutor-body h3 { margin: 0 0 6px; font: 800 1.38em/1.3 Pretendard, system-ui, sans-serif; color: #5a3737; }
+  .tutor-role { display: block; font: 700 1em/1.4 Pretendard, system-ui, sans-serif; color: #784949; margin-bottom: 12px; }
+  .tutor-bio { list-style: none; margin: 0; padding-left: 1.1em; display: grid; gap: 8px; }
+  .tutor-bio li { position: relative; font: 400 1.06em/1.45 Pretendard, system-ui, sans-serif; color: var(--muted); text-wrap: pretty; }
+  .tutor-bio li::before { content: ''; position: absolute; left: -1.1em; top: 0.62em; width: 5px; height: 5px; border-radius: 50%; background: #c87a7a; }
+
+  @media (max-width: 860px) { .tutor-grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 640px) { .tutor-grid { grid-template-columns: minmax(0, 1fr); } }
+</style>
