@@ -1,24 +1,40 @@
 ---
-// 2026-08-17 디자인 목업 반영 — 데스크톱·모바일 공통 카드 그리드(NoticeList).
+// 2026-08-18 페이지네이션(작업지시서) — 1페이지는 소식/index.astro가 맡고, 여기는
+// 2페이지부터만 생성(기부금-공시/페이지/[page].astro와 동일 패턴). 정적 사이트라
+// 존재하지 않는 페이지 번호는 애초에 빌드되지 않음 — 접근하면 기존 404.astro가 처리.
 import { getCollection } from 'astro:content';
-import BaseLayout from '../../layouts/BaseLayout.astro';
-import NoticeList from '../../components/NoticeList.astro';
-import { sortForList, PAGE_SIZE, totalPages } from '../../lib/notices';
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import NoticeList from '../../../components/NoticeList.astro';
+import { sortForList, PAGE_SIZE, totalPages } from '../../../lib/notices';
 
-const allNotices = sortForList(await getCollection('notices'));
-const pageNotices = allNotices.slice(0, PAGE_SIZE);
-const pages = totalPages(allNotices.length);
+export async function getStaticPaths() {
+  const allNotices = sortForList(await getCollection('notices'));
+  const pages = totalPages(allNotices.length);
 
-// 활동 사진 — 확정 스키마 결정: 소식과 분리된 공유 gallery 컬렉션, "노출 위치"
-// 체크박스로 페이지별 필터링(지금은 3곳 다 같은 사진이라 필터 결과도 동일).
-const PHOTOS = (await getCollection('gallery'))
-  .sort((a, b) => (a.data.order ?? Infinity) - (b.data.order ?? Infinity))
-  .filter((entry) => entry.data.showOn.includes('news'))
-  .map((entry) => ({ src: entry.data.photo, alt: entry.data.alt ?? '' }));
-const galleryLoop = PHOTOS.concat(PHOTOS);
+  const gallery = (await getCollection('gallery'))
+    .sort((a, b) => (a.data.order ?? Infinity) - (b.data.order ?? Infinity))
+    .filter((entry) => entry.data.showOn.includes('news'))
+    .map((entry) => ({ src: entry.data.photo, alt: entry.data.alt ?? '' }));
+
+  return Array.from({ length: Math.max(0, pages - 1) }, (_, i) => {
+    const page = i + 2;
+    return {
+      params: { page: String(page) },
+      props: {
+        pageNotices: allNotices.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE),
+        currentPage: page,
+        totalPages: pages,
+        gallery,
+      },
+    };
+  });
+}
+
+const { pageNotices, currentPage, totalPages: pages, gallery } = Astro.props;
+const galleryLoop = gallery.concat(gallery);
 ---
 
-<BaseLayout pageName="소식" bg="#EDE8EE">
+<BaseLayout pageName={`소식 - ${currentPage}페이지`} bg="#EDE8EE">
   <section aria-labelledby="nw-title" class="intro">
     <div class="wrap">
       <p class="eyebrow"><span class="pill">소식</span></p>
@@ -30,7 +46,7 @@ const galleryLoop = PHOTOS.concat(PHOTOS);
     <div class="marquee">
       <div class="marquee-track">
         {galleryLoop.map((photo, i) => (
-          <img class="marquee-item" src={photo.src} alt={i >= PHOTOS.length ? '' : photo.alt} aria-hidden={i >= PHOTOS.length ? 'true' : undefined} loading="lazy" />
+          <img class="marquee-item" src={photo.src} alt={i >= gallery.length ? '' : photo.alt} aria-hidden={i >= gallery.length ? 'true' : undefined} loading="lazy" />
         ))}
       </div>
     </div>
@@ -39,7 +55,7 @@ const galleryLoop = PHOTOS.concat(PHOTOS);
   <section aria-labelledby="nw-board" class="tint">
     <div class="wrap">
       <h2 id="nw-board">전체 소식</h2>
-      <NoticeList notices={pageNotices} empty="아직 소식이 없습니다." currentPage={1} totalPages={pages} />
+      <NoticeList notices={pageNotices} empty="아직 소식이 없습니다." currentPage={currentPage} totalPages={pages} />
     </div>
   </section>
 </BaseLayout>

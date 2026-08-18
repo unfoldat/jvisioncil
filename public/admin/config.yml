@@ -21,6 +21,7 @@ collections:
       - { name: pinned, label: '상단 고정 ([공지])', widget: boolean, default: false }
       - { name: image, label: 대표 사진, widget: image, required: false, hint: '목록 카드·상세 페이지 상단에 표시됩니다. 본문 안에 넣는 사진과는 별개예요. 비워두면 좋은비전 로고가 대신 표시됩니다.' }
       - { name: imageAlt, label: 대표 사진 설명(대체텍스트), widget: string, required: false, hint: '스크린리더 이용자에게는 이 글자가 사진입니다. 비워두면 장식용으로 처리됩니다 — 되도록 채워주세요.' }
+      - { name: summary, label: 목록 요약(한 줄), widget: string, required: false, hint: '소식 목록 카드에 제목 아래 짧게 표시됩니다. 예: "계절별로 떠나는 트레킹 프로그램의 세 번째 일정 참가자를 모집합니다." 비워두면 카드에 요약 없이 표시됩니다.' }
       - name: body
         label: 내용
         widget: markdown

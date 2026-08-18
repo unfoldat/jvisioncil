@@ -21,6 +21,11 @@ const notices = defineCollection({
     // 비어 있으면 프런트에서 로고를 기본 이미지(alt="")로 대신 표시한다.
     image: z.string().optional(),
     imageAlt: z.string().optional(),
+    // 2026-08-18 카드 목록용 한 줄 요약 — 목업의 소식 카드엔 날짜·제목 아래 짧은
+    // 요약 문장이 있었는데(예: "계절별로 떠나는 트레킹 프로그램의 세 번째 일정
+    // 참가자를 모집합니다.") 이 프로젝트엔 그 필드가 아예 없어서 카드에 요약이
+    // 안 보이고 있었다. 본문(body) 전체와는 별개, 비어 있으면 카드에서 생략.
+    summary: z.string().optional(),
   }),
 });
 

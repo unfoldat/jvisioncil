@@ -7,8 +7,12 @@ import { noticeHref } from '../lib/notices';
 interface Props {
   notices: CollectionEntry<'notices'>[];
   empty: string;
+  currentPage?: number;
+  totalPages?: number;
 }
-const { notices, empty } = Astro.props;
+const { notices, empty, currentPage = 1, totalPages = 1 } = Astro.props;
+const pageHref = (n: number) => (n === 1 ? '/소식/' : `/소식/페이지/${n}/`);
+const pages = Array.from({ length: totalPages }, (_, i) => i + 1);
 const iso = (d: Date) => d.toISOString().slice(0, 10);
 const items = notices.map((notice) => ({
   ...noticeHref(notice),
@@ -17,6 +21,7 @@ const items = notices.map((notice) => ({
   pinned: notice.data.pinned,
   image: notice.data.image,
   imageAlt: notice.data.imageAlt,
+  summary: notice.data.summary,
 }));
 ---
 
@@ -36,11 +41,20 @@ const items = notices.map((notice) => ({
             <time datetime={iso(item.date)} class="notice-card-date">{iso(item.date)}</time>{' '}
             {item.pinned && <span class="pinned-label"><span aria-hidden="true">📌</span> 상단 고정</span>}{' '}
             <h3>{item.title}</h3>
+            {item.summary && <span class="notice-card-summary">{item.summary}</span>}
           </span>
         </a>
       </li>
     ))}
   </ul>
+)}
+
+{totalPages > 1 && (
+  <nav aria-label="소식 목록 쪽 이동" class="notice-pagination">
+    {pages.map((n) => (
+      <a href={pageHref(n)} aria-current={n === currentPage ? 'page' : undefined}>{n}</a>
+    ))}
+  </nav>
 )}
 
 <style>
@@ -60,6 +74,17 @@ const items = notices.map((notice) => ({
   .notice-card-body { display: block; padding: 24px 24px 28px; }
   .notice-card-date { display: block; font: 700 0.94em/1 Pretendard, system-ui, sans-serif; color: #554458; margin-bottom: 10px; }
   .notice-card h3 { margin: 10px 0 0; font: 800 1.38em/1.5 NanumSquareRound, Pretendard, sans-serif; color: #403342; text-wrap: pretty; }
+  .notice-card-summary { display: block; margin: 10px 0 0; font: 400 1.06em/1.75 NanumSquareRound, Pretendard, sans-serif; color: var(--muted); text-wrap: pretty; }
+
+  .notice-pagination { display: flex; gap: 10px; justify-content: center; margin: 42px 0 0; }
+  .notice-pagination a {
+    display: inline-flex; align-items: center; justify-content: center; min-width: 2.8em; padding: 12px 14px;
+    border-radius: 10px; text-decoration: none; font: 600 1.13em/1 NanumSquareRound, Pretendard, sans-serif;
+    background: #fff; color: #554458; border: 1.5px solid #d0c3d2;
+  }
+  .notice-pagination a[aria-current='page'] {
+    font-weight: 800; background: #403342; color: #fff; border-color: #403342;
+  }
 
   @media (max-width: 860px) { .notice-board { grid-template-columns: repeat(2, 1fr); } }
   @media (max-width: 640px) { .notice-board { grid-template-columns: minmax(0, 1fr); } }

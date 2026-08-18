@@ -16,3 +16,8 @@ export function sortForList(notices: Notice[]): Notice[] {
     return byDateDesc(a, b);
   });
 }
+
+// 페이지네이션(작업지시서) — 목업 실측(design-mockup #/news, 6개/페이지)과 동일.
+// 기부금 공시 페이지네이션(src/lib/donationReports.ts)과 같은 패턴.
+export const PAGE_SIZE = 6;
+export const totalPages = (count: number): number => Math.max(1, Math.ceil(count / PAGE_SIZE));
