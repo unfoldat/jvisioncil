@@ -47,14 +47,15 @@ const extraCourses = [
       <ul class="lecture-grid">
         {lectures.map((l) => (
           <li class="lecture-card">
-            <span class="lecture-target">{l.target}</span>{' '}
+            <span class="lecture-target">대상: {l.target}</span>{' '}
             {l.mandatory && <span class="lecture-badge">법정의무교육</span>}{' '}
             <h3>{l.title}</h3>{' '}
             <span class="lecture-desc">{l.desc}</span>{' '}
-            <span class="lecture-meta">{l.meta}</span>
+            <span class="lecture-meta">교육시간: {l.meta}</span>
           </li>
         ))}
       </ul>
+      <p class="lecture-note">교육 문의 및 세부 구성은 기관 요청에 따라 협의 가능합니다.</p>
     </div>
   </section>
 
@@ -115,6 +116,7 @@ const extraCourses = [
   .lecture-card h3 { margin: 0 0 10px; font: 800 1.44em/1.4 Pretendard, system-ui, sans-serif; color: #5a3737; text-wrap: pretty; }
   .lecture-desc { display: block; font: 400 1.06em/1.75 Pretendard, system-ui, sans-serif; color: var(--muted); margin-bottom: 14px; text-wrap: pretty; }
   .lecture-meta { display: block; font: 600 0.94em/1.5 Pretendard, system-ui, sans-serif; color: var(--muted); }
+  .lecture-note { margin: 22px 0 0; font: 400 0.88em/1.7 Pretendard, system-ui, sans-serif; color: var(--muted); }
 
   .extra-grid { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
   .extra-card { display: flex; flex-direction: column; gap: 10px; padding: 28px 26px; border: 1px solid #e5bfbf; border-radius: 16px; background: #fff; }
