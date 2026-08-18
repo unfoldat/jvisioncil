@@ -7,6 +7,10 @@ type Report = CollectionEntry<'donation-reports'>;
 export const sortForList = (reports: Report[]): Report[] =>
   [...reports].sort((a, b) => b.data.year - a.data.year);
 
+// 2026-08-18 페이지네이션(작업지시서) — 한 페이지 6개년.
+export const PAGE_SIZE = 6;
+export const totalPages = (count: number): number => Math.max(1, Math.ceil(count / PAGE_SIZE));
+
 // "{year}년 {title} 다운로드" 형태 — title에 이미 연도가 들어있으면(흔한 표기,
 // 예: "2025년 내역입니다") 연도를 두 번 말하지 않는다.
 export function downloadAriaLabel(report: Report): string {

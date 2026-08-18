@@ -1,0 +1,61 @@
+---
+// 2026-08-18 페이지네이션 도입 — 기부금-공시/index.astro와 페이지/[page].astro가
+// 공유하는 목록 마크업(NoticeList.astro와 동일한 이유로 컴포넌트 분리: 두 라우트가
+// 같은 카드 마크업을 각자 복제하면 나중에 하나만 고치고 잊어버리는 사고가 난다).
+import type { CollectionEntry } from 'astro:content';
+import { fileSizeLabel, downloadAriaLabel, PAGE_SIZE } from '../lib/donationReports';
+
+interface Props {
+  reports: CollectionEntry<'donation-reports'>[];
+  currentPage: number;
+  totalPages: number;
+}
+const { reports, currentPage, totalPages } = Astro.props;
+
+const pageHref = (n: number) => (n === 1 ? '/기부금-공시/' : `/기부금-공시/페이지/${n}/`);
+const pages = Array.from({ length: totalPages }, (_, i) => i + 1);
+---
+
+{reports.length === 0 ? (
+  <p>공개된 기부금 공시 내역이 아직 없습니다.</p>
+) : (
+  <ul class="disclosure-list">
+    {reports.map((report) => {
+      const size = fileSizeLabel(report.data.file);
+      return (
+        <li>
+          <h2><a href={`/기부금-공시/${report.id}/`}>{report.data.title}</a></h2>{' '}
+          <a href={report.data.file} download aria-label={downloadAriaLabel(report)}>
+            다운로드 ({size})
+          </a>
+        </li>
+      );
+    })}
+  </ul>
+)}
+
+{totalPages > 1 && (
+  <nav aria-label="기부금 공시 목록 쪽 이동" class="disclosure-pagination">
+    {pages.map((n) => (
+      <a href={pageHref(n)} aria-current={n === currentPage ? 'page' : undefined}>{n}</a>
+    ))}
+  </nav>
+)}
+
+<style>
+  .disclosure-list { list-style: none; margin: 0 0 28px; padding: 0; border-top: 2px solid var(--ink); background: #fff; }
+  .disclosure-list li { border-bottom: 1px solid var(--line); padding: 18px 22px; display: flex; align-items: baseline; justify-content: space-between; gap: 1rem; flex-wrap: wrap; }
+  .disclosure-list h2 { margin: 0; font: 700 1.06em/1.6 NanumSquareRound, Pretendard, sans-serif; }
+  .disclosure-list h2 a { color: #3a3626; }
+  .disclosure-list li > a { font: 400 1.06em/1.6 NanumSquareRound, Pretendard, sans-serif; }
+
+  .disclosure-pagination { display: flex; gap: 10px; justify-content: center; margin: 0 0 28px; }
+  .disclosure-pagination a {
+    display: inline-flex; align-items: center; justify-content: center; min-width: 2.8em; padding: 12px 14px;
+    border-radius: 10px; text-decoration: none; font: 600 1.13em/1 NanumSquareRound, Pretendard, sans-serif;
+    background: #fff; color: var(--muted); border: 1.5px solid var(--line);
+  }
+  .disclosure-pagination a[aria-current='page'] {
+    font-weight: 800; background: var(--ink); color: #fff; border-color: var(--ink);
+  }
+</style>

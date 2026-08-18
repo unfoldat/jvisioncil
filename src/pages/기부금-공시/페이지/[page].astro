@@ -1,0 +1,54 @@
+---
+// 2026-08-18 페이지네이션(작업지시서) — 1페이지는 기부금-공시/index.astro가 맡고,
+// 여기는 2페이지부터만 생성한다(정적 사이트라 존재하지 않는 페이지 번호는 애초에
+// 빌드되지 않음 — 접근하면 기존 404.astro가 안전하게 처리, 별도 방어 코드 불필요).
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import DonationReportList from '../../../components/DonationReportList.astro';
+import { sortForList, PAGE_SIZE, totalPages } from '../../../lib/donationReports';
+
+export async function getStaticPaths() {
+  const allReports = sortForList(await getCollection('donation-reports'));
+  const pages = totalPages(allReports.length);
+  return Array.from({ length: Math.max(0, pages - 1) }, (_, i) => {
+    const page = i + 2;
+    return {
+      params: { page: String(page) },
+      props: {
+        pageReports: allReports.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE),
+        currentPage: page,
+        totalPages: pages,
+      },
+    };
+  });
+}
+
+const { pageReports, currentPage, totalPages: pages } = Astro.props;
+---
+
+<BaseLayout pageName={`기부금 공시 내역 - ${currentPage}페이지`} bg="#F9F5EA">
+  <section aria-labelledby="dc-title" class="intro">
+    <div class="wrap">
+      <p class="breadcrumb"><a href="/후원안내/">후원</a> &gt; <a href="/기부금-공시/">기부금 공시</a></p>
+      <h1 id="dc-title">기부금 공시 내역</h1>
+      <p class="lead-sm">연간 기부금 모금액과 활용실적을 공시합니다.</p>
+
+      <DonationReportList reports={pageReports} currentPage={currentPage} totalPages={pages} />
+
+      <p class="nts-note">국세청 공익법인 공시 자료는 <a href="https://www.nts.go.kr">국세청 홈페이지</a>에서도 확인하실 수 있습니다.</p>
+      <p><a href="/후원안내/" class="standalone-link">← 후원 안내로 돌아가기</a></p>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .intro { background: #f9f5ea; padding: 62px 0 66px; }
+  .intro .wrap { max-width: 960px; }
+  .breadcrumb { margin: 0 0 12px; font: 700 0.94em/1 NanumSquareRound, Pretendard, sans-serif; color: #6b6550; }
+  .breadcrumb a { color: #6b6550; }
+  #dc-title { margin: 0 0 20px; font: 800 2.5em/1.35 NanumSquareRound, Pretendard, sans-serif; color: #332e1e; }
+  .lead-sm { margin: 0 0 34px; font: 400 1.19em/1.8 NanumSquareRound, Pretendard, sans-serif; color: var(--muted); max-width: 36em; text-wrap: pretty; }
+
+  .nts-note { margin: 28px 0 0; font: 400 1.06em/1.8 NanumSquareRound, Pretendard, sans-serif; color: #6b6550; }
+  .standalone-link { display: inline-block; padding: 4px 0; margin-top: 22px; font: 700 1.13em/1 NanumSquareRound, Pretendard, sans-serif; }
+</style>
