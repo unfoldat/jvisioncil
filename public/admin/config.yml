@@ -24,7 +24,7 @@ collections:
       - name: body
         label: 내용
         widget: markdown
-        hint: '이미지·링크는 마크다운 문법으로 넣으면 됩니다. 이미지를 넣으면 대체 텍스트(alt)를 반드시 채우세요 — 비어 있으면 빌드가 실패합니다.'
+        hint: '이미지·링크는 마크다운 문법으로 넣으면 됩니다.'
 
   - name: donation-reports
     label: 기부금 공시
