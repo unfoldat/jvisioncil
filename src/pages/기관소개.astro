@@ -10,6 +10,8 @@ const director = await getEntry('leadership', 'director');
 const deputyDirector = await getEntry('leadership', 'deputy-director');
 const leaders = [director, deputyDirector];
 
+const orgInfo = await getEntry('org-info', 'info');
+
 const mainPrograms = [
   { no: '01', name: '중도실명인을 위한 컨설팅', desc: '질병이나 사고 등으로 후천적으로 시력을 잃은 중도실명인이 변화된 생활환경에 적응하고 새로운 삶을 준비할 수 있도록 재활 컨설팅을 제공합니다. 개인의 상황과 필요에 따라 복지서비스, 교육, 직업, 여가 및 일상생활 적응에 필요한 정보와 지원 방향을 안내합니다.' },
   { no: '02', name: '시각장애인 심리평가 및 상담', desc: '시각장애로 인해 경험할 수 있는 심리적 어려움과 정서적 스트레스를 이해하고 지원하기 위해 전문적인 심리평가와 그에 근거한 상담을 제공합니다.' },
@@ -142,7 +144,7 @@ const busStops = [
       <div class="way-grid">
         <div class="way-card">
           <h3 class="way-label">주소</h3>
-          <p class="way-address">서울 은평구 응암로34길 24-8 <br />한솔하이빌 101호</p>
+          <p class="way-address">{orgInfo.data.address}</p>
           <div class="way-map-wrap">
             <div id="daumRoughmapContainer1785386858595" class="root_daum_roughmap root_daum_roughmap_landing"></div>
           </div>
