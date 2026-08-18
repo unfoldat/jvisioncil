@@ -10,11 +10,11 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 const instructors = await getCollection('instructors');
 
 const lectures = [
-  { target: '사업주 및 근로자', title: '직장 내 장애인 인식개선 교육', desc: '법정의무교육입니다. 한국장애인고용공단 지정 교육기관으로 누적 500회 이상의 교육 진행 경험을 갖추고 있습니다.', meta: '1시간' },
-  { target: '영유아 및 초등학생', title: '유아·아동 장애인식개선 교육', desc: '법정의무교육이며, 체험활동·인형극·애니메이션 시청 등으로 진행합니다. 강사양성과정을 수료한 강사진이 연령과 발달 특성에 맞춰 구성합니다.', meta: '40~60분' },
-  { target: '청소년', title: '청소년 장애인식개선 교육', desc: '법정의무교육으로 학급 단위로 진행하며, 장애인 음악가의 연주·영화 장면 활용·토론·캠페인 활동 등으로 구성합니다. 강사양성과정을 수료한 강사진이 학교 문화와 요청에 맞게 구성합니다.', meta: '1차시' },
-  { target: '공공기관 및 지역사회', title: '사회적 장애인식개선 교육', desc: '법정의무교육이며, 스토리텔링·장애체험·장애감수성 교육 등 기관 요청에 따라 내용을 조정합니다. 한국장애인개발원 강사양성과정을 수료한 다양한 전문 강사진이 진행합니다.', meta: '1시간' },
-  { target: '중년 및 노인', title: '실명예방 교육', desc: '다양한 안질환과 일상생활 관리 방법, 시력 저하 시 이용할 수 있는 서비스를 안내하고 교육자료를 제공합니다. 전문지식을 갖춘 강사진이 100회 이상의 교육 경험을 보유하고 있습니다.', meta: '50분' },
+  { target: '사업주 및 근로자', title: '직장 내 장애인 인식개선 교육', mandatory: true, desc: '한국장애인고용공단 지정 교육기관으로 누적 500회 이상의 교육 진행 경험을 갖추고 있습니다.', meta: '1시간' },
+  { target: '영유아 및 초등학생', title: '유아·아동 장애인식개선 교육', mandatory: true, desc: '체험활동·인형극·애니메이션 시청 등으로 진행합니다. 강사양성과정을 수료한 강사진이 연령과 발달 특성에 맞춰 구성합니다.', meta: '40~60분' },
+  { target: '청소년', title: '청소년 장애인식개선 교육', mandatory: true, desc: '학급 단위로 진행하며, 장애인 음악가의 연주·영화 장면 활용·토론·캠페인 활동 등으로 구성합니다. 강사양성과정을 수료한 강사진이 학교 문화와 요청에 맞게 구성합니다.', meta: '1차시' },
+  { target: '공공기관 및 지역사회', title: '사회적 장애인식개선 교육', mandatory: true, desc: '스토리텔링·장애체험·장애감수성 교육 등 기관 요청에 따라 내용을 조정합니다. 한국장애인개발원 강사양성과정을 수료한 다양한 전문 강사진이 진행합니다.', meta: '1시간' },
+  { target: '중년 및 노인', title: '실명예방 교육', mandatory: false, desc: '다양한 안질환과 일상생활 관리 방법, 시력 저하 시 이용할 수 있는 서비스를 안내하고 교육자료를 제공합니다. 전문지식을 갖춘 강사진이 100회 이상의 교육 경험을 보유하고 있습니다.', meta: '50분' },
 ];
 
 // 2026-08-18 작업지시서 — 목업엔 없던 신규 섹션(명시 승인). 항목 3개 고정·개편 빈도
@@ -48,6 +48,7 @@ const extraCourses = [
         {lectures.map((l) => (
           <li class="lecture-card">
             <span class="lecture-target">{l.target}</span>{' '}
+            {l.mandatory && <span class="lecture-badge">법정의무교육</span>}{' '}
             <h3>{l.title}</h3>{' '}
             <span class="lecture-desc">{l.desc}</span>{' '}
             <span class="lecture-meta">{l.meta}</span>
@@ -110,6 +111,7 @@ const extraCourses = [
   .lecture-grid { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
   .lecture-card { padding: 28px 26px; border: 1px solid #e5bfbf; border-radius: 16px; background: #faf2f2; }
   .lecture-target { display: block; font: 700 0.88em/1 Pretendard, system-ui, sans-serif; color: #784949; margin-bottom: 10px; }
+  .lecture-badge { display: inline-block; border-radius: 999px; font: 700 0.84em/1.4 Pretendard, system-ui, sans-serif; padding: 3px 10px; background: #f9eedd; color: #664c27; margin-bottom: 10px; }
   .lecture-card h3 { margin: 0 0 10px; font: 800 1.44em/1.4 Pretendard, system-ui, sans-serif; color: #5a3737; text-wrap: pretty; }
   .lecture-desc { display: block; font: 400 1.06em/1.75 Pretendard, system-ui, sans-serif; color: var(--muted); margin-bottom: 14px; text-wrap: pretty; }
   .lecture-meta { display: block; font: 600 0.94em/1.5 Pretendard, system-ui, sans-serif; color: var(--muted); }
