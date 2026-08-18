@@ -27,17 +27,21 @@ const escapeRegExp = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 // 협력기관 배지 검사의 정답지: network-orgs 컨텐츠 소스에서 name/url을 직접 읽는다
 // (렌더링 결과가 아니라 소스 진실을 기준으로 대조 — 회귀를 잡아내는 핵심).
 // network-orgs는 실제 협력기관만 담으므로(좋은비전은 소식의 발행 주체로 별도 관리) 전부 대조 대상.
-const NETWORK_ORGS_DIR = 'src/content/network-orgs';
-const networkOrgs = fs
-  .readdirSync(NETWORK_ORGS_DIR)
-  .filter((f) => f.endsWith('.md'))
-  .map((f) => {
-    const raw = fs.readFileSync(path.join(NETWORK_ORGS_DIR, f), 'utf8');
-    return {
-      name: raw.match(/^name:\s*(.+)$/m)?.[1]?.trim(),
-      url: raw.match(/^url:\s*(.+)$/m)?.[1]?.trim(),
-    };
-  });
+const readOrgs = (dir) =>
+  fs
+    .readdirSync(dir)
+    .filter((f) => f.endsWith('.md'))
+    .map((f) => {
+      const raw = fs.readFileSync(path.join(dir, f), 'utf8');
+      return {
+        name: raw.match(/^name:\s*(.+)$/m)?.[1]?.trim(),
+        url: raw.match(/^url:\s*(.+)$/m)?.[1]?.trim(),
+      };
+    });
+const networkOrgs = readOrgs('src/content/network-orgs');
+// sponsors(후원기관)도 같은 PartnerGrid 컴포넌트(class="partner-banner")를 재사용하므로
+// 정답지도 별도로 둔다 — 페이지별로 어느 컬렉션 배너인지는 렌더링된 이름으로 판별한다.
+const sponsors = readOrgs('src/content/sponsors');
 
 const 검사 = [];
 const 실패 = [];
@@ -104,30 +108,44 @@ for (const page of pages) {
     fail('E7', '푸터 메뉴 링크 0개 (막다른 페이지)');
   }
 
-  // PARTNER-URL. 협력기관 배너가 렌더링된 곳(본문 어디든)에서, 배지 목적지가
-  // 소스(url 유무)와 일치하는지 대조. 위치는 더 이상 footer로 고정하지 않는다
-  // (이번 디자인은 기관소개·홈 본문에 배치) — 정합성만 검사.
+  // PARTNER-URL. 협력기관 배너(class="partner-banner")는 network-orgs(함께하는 기관)와
+  // sponsors(후원기관) 두 컬렉션이 같은 PartnerGrid 컴포넌트를 공유해 렌더링한다 —
+  // 페이지가 어느 쪽을 보여주는지는 실제로 렌더링된 이름으로 판별한다(렌더링된 이름이
+  // 전부 한 컬렉션에 속해야 함, 두 컬렉션이 섞이면 그 자체가 오류).
   if (html.includes('partner-banner')) {
-    for (const org of networkOrgs) {
-      if (!org.name) continue;
-      const bannerMatch = html.match(
-        new RegExp(
-          `<(a|span)\\s[^>]*class="partner-banner"[^>]*>((?:(?!</\\1>)[\\s\\S])*?${escapeRegExp(org.name)}(?:(?!</\\1>)[\\s\\S])*?)</\\1>`,
-        ),
-      );
-      if (!bannerMatch) {
-        fail('PARTNER', `"${org.name}" 배지가 없음`);
-        continue;
-      }
-      const fullTag = html.slice(bannerMatch.index, bannerMatch.index + bannerMatch[0].length);
-      const aHref = bannerMatch[1] === 'a' ? fullTag.match(/href="([^"]*)"/)?.[1] : undefined;
-      if (org.url) {
-        if (!aHref) fail('PARTNER', `"${org.name}": url이 있는데 배지가 링크가 아님`);
-        else if (aHref !== org.url) {
-          fail('PARTNER', `"${org.name}": 배지가 "${aHref}"로 나감 (기대값 "${org.url}")`);
+    const renderedNames = [
+      ...html.matchAll(/<(?:a|span)\s[^>]*class="partner-banner"[^>]*>([\s\S]*?)(?:<small>|<\/(?:a|span)>)/g),
+    ].map((m) => strip(m[1]));
+    const inCollection = (names, orgs) => names.every((n) => orgs.some((o) => o.name === n));
+    const source = inCollection(renderedNames, networkOrgs)
+      ? { label: '함께하는 기관', orgs: networkOrgs }
+      : inCollection(renderedNames, sponsors)
+        ? { label: '후원기관', orgs: sponsors }
+        : null;
+    if (!source) {
+      fail('PARTNER', `배너 이름이 network-orgs·sponsors 어느 쪽과도 전부 일치하지 않음: ${renderedNames.join(', ')}`);
+    } else {
+      for (const org of source.orgs) {
+        if (!org.name) continue;
+        const bannerMatch = html.match(
+          new RegExp(
+            `<(a|span)\\s[^>]*class="partner-banner"[^>]*>((?:(?!</\\1>)[\\s\\S])*?${escapeRegExp(org.name)}(?:(?!</\\1>)[\\s\\S])*?)</\\1>`,
+          ),
+        );
+        if (!bannerMatch) {
+          fail('PARTNER', `[${source.label}] "${org.name}" 배지가 없음`);
+          continue;
         }
-      } else if (bannerMatch[1] === 'a') {
-        fail('PARTNER', `"${org.name}": url이 없는데 배지가 링크로 렌더링됨 (텍스트만이어야 함)`);
+        const fullTag = html.slice(bannerMatch.index, bannerMatch.index + bannerMatch[0].length);
+        const aHref = bannerMatch[1] === 'a' ? fullTag.match(/href="([^"]*)"/)?.[1] : undefined;
+        if (org.url) {
+          if (!aHref) fail('PARTNER', `[${source.label}] "${org.name}": url이 있는데 배지가 링크가 아님`);
+          else if (aHref !== org.url) {
+            fail('PARTNER', `[${source.label}] "${org.name}": 배지가 "${aHref}"로 나감 (기대값 "${org.url}")`);
+          }
+        } else if (bannerMatch[1] === 'a') {
+          fail('PARTNER', `[${source.label}] "${org.name}": url이 없는데 배지가 링크로 렌더링됨 (텍스트만이어야 함)`);
+        }
       }
     }
   }

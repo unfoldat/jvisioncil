@@ -2,9 +2,14 @@
 // 2026-08-17 디자인 목업 반영.
 import { getCollection, getEntry } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
+import PartnerGrid from '../components/PartnerGrid.astro';
 import { telHref } from '../lib/orgInfo';
 
 const orgInfo = await getEntry('org-info', 'info');
+
+// 후원기관 — network-orgs(함께하는 기관)와 name/url 구조가 같아 PartnerGrid를 그대로
+// 재사용한다. 등록된 기관이 없으면 섹션 자체를 숨긴다(빈 배너를 보여주지 않는다).
+const sponsors = (await getCollection('sponsors')).sort((a, b) => a.id.localeCompare(b.id));
 
 // 활동 사진 — 확정 스키마 결정: 소식과 분리된 공유 gallery 컬렉션, "노출 위치"
 // 체크박스로 페이지별 필터링(지금은 3곳 다 같은 사진이라 필터 결과도 동일).
@@ -62,6 +67,15 @@ const galleryLoop = PHOTOS.concat(PHOTOS);
       </div>
     </div>
   </section>
+
+  {sponsors.length > 0 && (
+    <section aria-labelledby="dn-sponsors">
+      <div class="wrap">
+        <h2 id="dn-sponsors">후원 기관</h2>
+        <PartnerGrid orgs={sponsors} />
+      </div>
+    </section>
+  )}
 </BaseLayout>
 
 <style>
@@ -93,7 +107,7 @@ const galleryLoop = PHOTOS.concat(PHOTOS);
   .disclosure-note { margin: 38px 0 0; font: 400 1.06em/1.8 NanumSquareRound, Pretendard, sans-serif; color: #6b6550; text-align: center; text-wrap: pretty; }
 
   .band { background: #f2f6f6; border-top: 1px solid #bdd2d2; padding: 54px 0 62px; }
-  #dn-gallery { margin: 0 0 22px; font: 800 1.7em/1.4 NanumSquareRound, Pretendard, sans-serif; color: #332e1e; }
+  #dn-gallery { margin-top: 0; margin-bottom: 22px; font: 800 1.7em/1.4 NanumSquareRound, Pretendard, sans-serif; color: #332e1e; }
   .marquee { overflow: hidden; }
   .marquee-track { display: flex; gap: 16px; width: max-content; animation: marquee 120s linear infinite; }
   .marquee:hover .marquee-track, .marquee:focus-within .marquee-track { animation-play-state: paused; }
@@ -103,6 +117,9 @@ const galleryLoop = PHOTOS.concat(PHOTOS);
     width: 16.5em; height: 10.8em; flex: none; border-radius: 14px; background: #f2f6f6;
     object-fit: cover; display: block;
   }
+
+  section[aria-labelledby='dn-sponsors'] { padding: 48px 0 60px; }
+  #dn-sponsors { margin: 0 0 22px; font: 800 1.7em/1.4 NanumSquareRound, Pretendard, sans-serif; color: #332e1e; }
 
   @media (max-width: 760px) {
     .letter-card { padding: 32px 24px; }

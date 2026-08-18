@@ -58,7 +58,7 @@ collections:
     create: true
     fields:
       - { name: name, label: 기관명, widget: string }
-      - { name: url, label: 기관 홈페이지, widget: string }
+      - { name: url, label: 기관 홈페이지, widget: string, required: false }
 
   - name: gallery
     label: 메인갤러리

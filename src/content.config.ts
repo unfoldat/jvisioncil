@@ -44,7 +44,7 @@ const sponsors = defineCollection({
   loader: glob({ pattern: '**/*.md', base: './src/content/sponsors' }),
   schema: z.object({
     name: z.string(),
-    url: z.string().url(),
+    url: optionalUrl(),
   }),
 });
 

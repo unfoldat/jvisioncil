@@ -3,14 +3,18 @@
 // 배지 클릭 = 기관 홈페이지로 같은 창에서 이동(새 창 아님 — 뒤로가기로 돌아올 수 있어야
 // 스크린리더 사용자가 탐색을 잃지 않는다는 것을 목업 스크린리더 테스트에서 확인했다).
 // url 없으면 링크 없이 텍스트만. network-orgs는 실제 협력기관만 담는다.
+// orgs를 넘기지 않으면 기존처럼 network-orgs를 불러온다 — 후원기관(sponsors) 등
+// name/url 구조가 같은 다른 컬렉션의 데이터를 넘겨 이 컴포넌트를 그대로 재사용할 수 있다.
 import { partnerOrgs } from '../lib/networkOrgs';
+import type { CollectionEntry } from 'astro:content';
 
 interface Props {
   compact?: boolean;
+  orgs?: (CollectionEntry<'network-orgs'> | CollectionEntry<'sponsors'>)[];
 }
-const { compact = false } = Astro.props;
+const { compact = false, orgs: providedOrgs } = Astro.props;
 
-const orgs = await partnerOrgs();
+const orgs = providedOrgs ?? (await partnerOrgs());
 ---
 
 <ul class:list={['partner-banners', { compact }]}>
