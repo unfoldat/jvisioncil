@@ -21,6 +21,15 @@ const isoDate = notice.data.date.toISOString().slice(0, 10);
         <p class="post-meta"><time datetime={isoDate} data-pagefind-meta="date[datetime]">{isoDate}</time></p>
       </div>
     </section>
+    <section class="post-photo">
+      <div class="wrap">
+        <span class="post-photo-box">
+          {notice.data.image
+            ? <img class="post-photo-img" src={notice.data.image} alt={notice.data.imageAlt ?? ''} />
+            : <img class="post-photo-fallback" src="/images/logo-mark.png" alt="" />}
+        </span>
+      </div>
+    </section>
     <section class="post-body">
       <div class="wrap">
         <Content />
@@ -34,6 +43,10 @@ const isoDate = notice.data.date.toISOString().slice(0, 10);
   .post-head { background: #ede8ee; border-bottom: 1px solid #d0c3d2; padding: 62px 0 34px; }
   .post-head h1 { margin: 0; font: 800 2.5em/1.4 NanumSquareRound, Pretendard, sans-serif; color: #403342; }
   .post-meta { margin: 14px 0 0; color: var(--muted); }
+  .post-photo { padding: 34px 0 0; }
+  .post-photo-box { display: flex; align-items: center; justify-content: center; height: 22em; border: 1px solid #d0c3d2; border-radius: 16px; background: #fff; overflow: hidden; }
+  .post-photo-img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .post-photo-fallback { height: 40%; width: auto; object-fit: contain; display: block; }
   .post-body { padding: 44px 0 66px; }
   .post-body :global(p) { max-width: 44em; font: 400 1.13em/1.85 Pretendard, system-ui, sans-serif; color: var(--muted); }
 </style>

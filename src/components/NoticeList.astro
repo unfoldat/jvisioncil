@@ -1,6 +1,6 @@
 ---
 // 2026-08-17 디자인 목업 반영 — 소식 목록/태그 페이지의 카드 그리드.
-// 실제 소식에는 사진·요약 필드가 없어 목업의 사진 자리는 넣지 않는다.
+// 2026-08-18 대표 사진(image) 필드 추가 — 비어있으면 로고를 기본 이미지로 표시.
 import type { CollectionEntry } from 'astro:content';
 import { noticeHref } from '../lib/notices';
 
@@ -15,6 +15,8 @@ const items = notices.map((notice) => ({
   title: notice.data.title,
   date: notice.data.date,
   pinned: notice.data.pinned,
+  image: notice.data.image,
+  imageAlt: notice.data.imageAlt,
 }));
 ---
 
@@ -25,6 +27,11 @@ const items = notices.map((notice) => ({
     {items.map((item) => (
       <li class="notice-card">
         <a href={item.href}>
+          <span class="notice-card-photo">
+            {item.image
+              ? <img class="notice-card-photo-img" src={item.image} alt={item.imageAlt ?? ''} loading="lazy" />
+              : <img class="notice-card-photo-fallback" src="/images/logo-mark.png" alt="" loading="lazy" />}
+          </span>
           <span class="notice-card-body">
             <time datetime={iso(item.date)} class="notice-card-date">{iso(item.date)}</time>{' '}
             {item.pinned && <span class="pinned-label"><span aria-hidden="true">📌</span> 상단 고정</span>}{' '}
@@ -45,6 +52,9 @@ const items = notices.map((notice) => ({
 
   .notice-board { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, 1fr); gap: 26px; }
   .notice-card { border: 1px solid #d0c3d2; border-radius: 16px; background: #f6f4f6; overflow: hidden; }
+  .notice-card-photo { display: flex; align-items: center; justify-content: center; height: 12.5em; border-bottom: 1px solid #d0c3d2; background: #fff; }
+  .notice-card-photo-img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .notice-card-photo-fallback { height: 40%; width: auto; object-fit: contain; display: block; }
   .notice-card a { display: block; text-decoration: none; color: inherit; }
   .notice-card a:hover { background: #efe9ef; }
   .notice-card-body { display: block; padding: 24px 24px 28px; }

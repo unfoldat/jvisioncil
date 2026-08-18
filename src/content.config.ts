@@ -16,6 +16,11 @@ const notices = defineCollection({
     date: z.coerce.date(),
     // 목록 최상단 고정 + [공지] 표시. 날짜 정렬 자체는 안 바꾼다(이전글/다음글은 pinned 무관하게 날짜순).
     pinned: z.boolean().default(false),
+    // 2026-08-18 카드 대표 사진(작업지시서) — 본문(body) 안 마크다운 이미지와는 별개.
+    // 카드 목록·상세 페이지 상단에 항상 사진 자리가 있어야 하는 목업 구조 때문에 추가.
+    // 비어 있으면 프런트에서 로고를 기본 이미지(alt="")로 대신 표시한다.
+    image: z.string().optional(),
+    imageAlt: z.string().optional(),
   }),
 });
 
