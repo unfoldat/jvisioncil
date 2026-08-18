@@ -122,6 +122,31 @@ collections:
       - { name: bio, label: 약력 소개, widget: text }
       - { name: photoPos, label: 사진 위치 조정(고급, 선택), widget: string, required: false, hint: '얼굴이 잘리면 조정하세요. 예: "center 20%". 비워두면 기본값 사용.' }
 
+  - name: qa
+    label: Q&A
+    description: 홈 "처음 오셨나요?" 배너에서 연결되는 Q&A 게시판(/qa/)에 표시됩니다. 같은 분류(section) 안에서는 순서(order)가 작은 것부터 보여줍니다.
+    label_singular: Q&A 항목 작성
+    folder: src/content/qa
+    create: true
+    identifier_field: question
+    summary: '{{section}} · {{question}}'
+    fields:
+      - name: section
+        label: 분류
+        widget: select
+        options:
+          - { label: 시각장애의 이해, value: understanding-blindness }
+          - { label: 시각장애인 삶의 이해, value: daily-life }
+          - { label: 시각장애인에 대한 에티켓, value: etiquette }
+          - { label: 시각장애 수용의 이해, value: acceptance }
+          - { label: 자립 및 자립생활의 이해, value: independent-living }
+          - { label: 상담의 이해, value: counseling }
+          - { label: 오디오도서의 이해, value: audiobook }
+          - { label: 1365 자원봉사의 이해, value: volunteer1365 }
+      - { name: question, label: 질문(Q), widget: string }
+      - { name: order, label: 분류 안 순서, widget: number, value_type: int, hint: '같은 분류 안에서 작은 숫자가 먼저 보입니다.' }
+      - { name: body, label: 답변(A), widget: markdown, hint: '표·목록·굵게 등 마크다운 서식을 그대로 지원합니다.' }
+
   - name: leadership
     label: 센터장·부센터장
     description: 센터소개 페이지의 센터장·부센터장 프로필에 표시됩니다. 정확히 두 명 고정이라 새 항목을 추가하거나 삭제할 수 없습니다 — 각 항목만 편집하세요.

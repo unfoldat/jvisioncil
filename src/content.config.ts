@@ -132,6 +132,32 @@ const orgInfo = defineCollection({
   }),
 });
 
+// 2026-08-18 Q&A 게시판 신설 — 폴더형(질문 개수가 계속 늘 수 있음, 강사 프로필과 동일
+// 이유). section은 8개 값 고정(작업지시서 확정), order로 같은 section 안 순서를 매긴다.
+// answer는 마크다운(표 포함)을 그대로 렌더링해야 해서 notices/donation-reports와 같은
+// 관례대로 필드명을 "body"로 둔다 — Sveltia에서 위젯 라벨은 "답변(A)"으로 보이지만,
+// 실제로는 파일 마크다운 본문에 매핑돼 astro:content의 render()가 자동으로 처리하고
+// 전역 rehype-sanitize도 그대로 적용된다(별도 마크다운 파서를 새로 안 만들어도 됨).
+// 필드명을 answer로 따로 뒀다면 이 자동 새니타이즈 파이프라인을 못 타서 별도 처리가
+// 필요했을 것 — 기존 승인된 패턴 재사용이라 여기서 바로 결정.
+const qa = defineCollection({
+  loader: glob({ pattern: '**/*.md', base: './src/content/qa' }),
+  schema: z.object({
+    section: z.enum([
+      'understanding-blindness',
+      'daily-life',
+      'etiquette',
+      'acceptance',
+      'independent-living',
+      'counseling',
+      'audiobook',
+      'volunteer1365',
+    ]),
+    question: z.string(),
+    order: z.number().int(),
+  }),
+});
+
 export const collections = {
   notices,
   'network-orgs': networkOrgs,
@@ -141,4 +167,5 @@ export const collections = {
   gallery,
   instructors,
   'org-info': orgInfo,
+  qa,
 };
