@@ -36,7 +36,7 @@ collections:
     summary: '{{year}}년 · {{title}}'
     slug: '{{year}}'
     fields:
-      - { name: year, label: 연도, widget: number, value_type: int }
+      - { name: year, label: 연도, widget: number, value_type: string, hint: '연도 4자리만 입력하세요. 예: 2026' }
       - { name: title, label: 제목, widget: string }
       - { name: file, label: 첨부파일(PDF), widget: file, accept: 'application/pdf,.pdf' }
       - { name: body, label: 본문내용(선택), widget: markdown, required: false, hint: '연도별 상세 설명이 있으면 적으세요. 비워두면 목록·다운로드만 표시됩니다.' }

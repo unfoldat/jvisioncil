@@ -49,7 +49,12 @@ const sponsors = defineCollection({
 const donationReports = defineCollection({
   loader: glob({ pattern: '**/*.md', base: './src/content/donation-reports' }),
   schema: z.object({
-    year: z.number().int(),
+    // 2026-08-18 CMS 관리 화면(summary/slug 템플릿)에서 4자리 연도에 천 단위 쉼표가
+    // 잘못 붙던 문제 수정 — Sveltia CMS는 widget:number의 value_type이 int/float일 때
+    // 템플릿 렌더링 시 무조건 Intl.NumberFormat을 적용한다(끄는 옵션 없음, 번들 소스
+    // 확인). config.yml에서 value_type: string으로 바꿔 이 분기를 우회했고, 여기서는
+    // z.coerce.number()로 문자열("2026")·숫자(2026) 둘 다 안전하게 처리한다.
+    year: z.coerce.number().int(),
     title: z.string(),
     file: z.string(),
   }),
