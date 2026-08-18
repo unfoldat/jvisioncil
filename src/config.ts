@@ -13,7 +13,10 @@ export const MAIN_MENU = [
   { label: '전문상담', href: '/상담안내/', tab: '#D97736', tabInk: '#1A1512', pageBg: '#F6DECF' },
   { label: '강의 안내', href: '/강의/', tab: '#C87A7A', tabInk: '#1A1512', pageBg: '#F4E4E4' },
   { label: '소식', href: '/소식/', tab: '#8E7193', tabInk: '#000000', pageBg: '#EDE8EE' },
-  { label: '후원', href: '/후원안내/', tab: '#6C9A9C', tabInk: '#1A1512', pageBg: '#E5EDED' },
+  // extraActivePaths — URL이 이 탭의 href 밑에 중첩돼 있지 않지만(별도 최상위 경로)
+  // breadcrumb상으로는 이 탭의 하위인 페이지. 기부금 공시(/기부금-공시/)가 그 예:
+  // "후원 > 기부금 공시" breadcrumb은 있지만 URL은 /후원안내/ 밑이 아니다.
+  { label: '후원', href: '/후원안내/', tab: '#6C9A9C', tabInk: '#1A1512', pageBg: '#E5EDED', extraActivePaths: ['/기부금-공시/'] },
 ];
 
 // 푸터 메뉴 — 목업 푸터 링크 그대로(기부금 공시·오시는 길·부설연구소), 그 외 추가 없음.

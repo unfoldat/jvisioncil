@@ -33,6 +33,11 @@ const path = decodeURIComponent(Astro.url.pathname);
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <!-- 가장 넓게 쓰이는 굵기 2개만 preload — 본문(Pretendard Regular)과 제목(NanumSquareRound
+         ExtraBold, 대부분 페이지의 히어로/섹션 제목에 쓰여 LCP 후보가 됨). 나머지 굵기는
+         특정 구간에서만 쓰여서 전부 preload하면 오히려 초기 로딩 대역폭을 낭비한다. -->
+    <link rel="preload" href="/fonts/Pretendard-Regular.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/fonts/NanumSquareRoundEB.woff2" as="font" type="font/woff2" crossorigin />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     {NOINDEX && <meta name="robots" content="noindex" />}
     <title>{title}</title>
@@ -77,7 +82,13 @@ const path = decodeURIComponent(Astro.url.pathname);
       <nav aria-label="주 메뉴" class="primary-nav">
         <ul class="nav-list wrap">
           {MAIN_MENU.map((item) => {
-            const active = path === item.href;
+            // 페이지네이션처럼 /소식/페이지/2/ 같은 하위 경로도 "소식" 탭을 활성으로 표시해야
+            // 해서 접두사 매칭도 허용한다. MAIN_MENU의 href는 전부(홈 제외) 슬래시로 끝나므로
+            // "/소식-후기/" 같은 다른 이름의 페이지가 "/소식/"에 잘못 매칭될 일은 없다.
+            // extraActivePaths — URL이 href 밑에 중첩되지 않은 예외 하위 페이지(예: 기부금 공시).
+            const active = path === item.href
+              || (item.href !== '/' && path.startsWith(item.href))
+              || (item.extraActivePaths?.some((p) => path.startsWith(p)) ?? false);
             const style = active ? `--tab-bg:${item.tab};--tab-ink:${item.tabInk};--tab-page-bg:${item.pageBg}` : undefined;
             return <li><a href={item.href} aria-current={active ? 'page' : undefined} style={style}>{item.label}</a></li>;
           })}
