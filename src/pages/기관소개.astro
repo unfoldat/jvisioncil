@@ -66,7 +66,7 @@ const busStops = [
         {leaders.map((ld) => (
           <li class="leader-card">
             <div class="leader-profile">
-              <img class="leader-photo" src={ld.data.photo} alt={ld.data.photoAlt} style={`object-position:${ld.data.photoPos || 'center 20%'}`} />
+              <img class="leader-photo" src={ld.data.photo} alt={ld.data.photoAlt ?? ''} style={`object-position:${ld.data.photoPos || 'center 20%'}`} />
               <div class="leader-info">
                 <h3>
                   <span class="leader-role">{ld.data.role}</span>{' '}

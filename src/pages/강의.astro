@@ -83,7 +83,7 @@ const extraCourses = [
         <ul class="tutor-grid">
           {instructors.map((t) => (
             <li class="tutor-card">
-              <img class="tutor-photo" src={t.data.photo} alt={t.data.photoAlt} style={`object-position:${t.data.photoPos || 'center 20%'}`} />
+              <img class="tutor-photo" src={t.data.photo} alt={t.data.photoAlt ?? ''} style={`object-position:${t.data.photoPos || 'center 20%'}`} />
               <div class="tutor-body">
                 <h3>{t.data.name}</h3>{' '}
                 <span class="tutor-role">{t.data.role}</span>{' '}

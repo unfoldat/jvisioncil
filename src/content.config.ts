@@ -60,7 +60,11 @@ const leadership = defineCollection({
     role: z.string(),
     name: z.string(),
     photo: z.string(),
-    photoAlt: z.string().min(1),
+    // 2026-08-18 필수→선택 전환(작업지시서) — 편집자가 저장을 막히지 않고 나중에
+    // 채울 수 있게 함. 비어 있으면 alt=""(장식용 처리)로 렌더링되는 것까지 프런트에서
+    // 보장한다(각 페이지의 `?? ''` 처리 참고) — 대체텍스트 누락(alt 속성 자체가 빠지는
+    // 것)과는 다르다.
+    photoAlt: z.string().optional(),
     bio: z.array(z.string()).min(1),
     // object-position 값(예: "center 20%"). 비우면 페이지 쪽에서 기본값 적용.
     photoPos: z.string().optional(),
@@ -75,7 +79,8 @@ const gallery = defineCollection({
   loader: glob({ pattern: '**/*.md', base: './src/content/gallery' }),
   schema: z.object({
     photo: z.string(),
-    alt: z.string().min(1),
+    // 2026-08-18 필수→선택 전환(작업지시서) — leadership.photoAlt와 동일 이유·처리.
+    alt: z.string().optional(),
     showOn: z.array(z.enum(['home', 'news', 'donate'])).default(['home', 'news', 'donate']),
   }),
 });
@@ -89,7 +94,8 @@ const instructors = defineCollection({
     name: z.string(),
     role: z.string(),
     photo: z.string(),
-    photoAlt: z.string().min(1),
+    // 2026-08-18 필수→선택 전환(작업지시서) — leadership.photoAlt와 동일 이유·처리.
+    photoAlt: z.string().optional(),
     // 리더 프로필과 동일 패턴(항목별 리스트) — 이전엔 문자열 하나에 "-"를 직접 입력해
     // 리스트처럼 보이게 했으나 실제로는 줄바꿈 없이 이어지는 문단으로 렌더링됐다.
     bio: z.array(z.string()).min(1),
