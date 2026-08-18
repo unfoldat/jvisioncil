@@ -90,7 +90,9 @@ const instructors = defineCollection({
     role: z.string(),
     photo: z.string(),
     photoAlt: z.string().min(1),
-    bio: z.string(),
+    // 리더 프로필과 동일 패턴(항목별 리스트) — 이전엔 문자열 하나에 "-"를 직접 입력해
+    // 리스트처럼 보이게 했으나 실제로는 줄바꿈 없이 이어지는 문단으로 렌더링됐다.
+    bio: z.array(z.string()).min(1),
     // object-position 값. 비우면 페이지 쪽에서 기본값 적용(리더 프로필과 동일 패턴).
     photoPos: z.string().optional(),
   }),

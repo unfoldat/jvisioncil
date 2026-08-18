@@ -94,7 +94,7 @@ collections:
       - { name: role, label: 전문 분야/직함, widget: string, hint: '예: "장애인식개선 교육 강사"' }
       - { name: photo, label: 사진, widget: image }
       - { name: photoAlt, label: 사진 설명(대체텍스트), widget: string, hint: '스크린리더 이용자에게는 이 글자가 사진입니다.' }
-      - { name: bio, label: 약력 소개, widget: text }
+      - { name: bio, label: 약력 소개, widget: list, field: { name: item, label: 약력 항목, widget: string } }
       - { name: photoPos, label: 사진 위치 조정(고급, 선택), widget: string, required: false, hint: '얼굴이 잘리면 조정하세요. 예: "center 20%". 비워두면 기본값 사용.' }
 
   - name: qa
