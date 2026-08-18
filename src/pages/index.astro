@@ -103,8 +103,15 @@ const galleryLoop = PHOTOS.concat(PHOTOS);
 </BaseLayout>
 
 <style>
+  /* section[aria-labelledby] > .wrap의 범용 padding(바로 아래)이 이 페이지의 모든
+     .wrap을 잡는다. .hero-grid/.first-visit처럼 다른 padding이 필요한 곳은 specificity로
+     이기려 들면 계속 술래잡기가 된다(실측으로 확인: :not()/:where() 둘 다 Astro의 CSS
+     스코프 속성 부착 방식 때문에 예측과 다르게 계산됨) — 그래서 이 두 곳만 명확하게
+     !important로 예외 처리한다. */
+  section[aria-labelledby] > .wrap, section.band { padding: 46px 0 58px; }
+
   .hero { background: #f9f5ea; border-bottom: 1px solid var(--line); }
-  .hero-grid { padding: 70px 0 66px; display: grid; grid-template-columns: 1.35fr 0.65fr; gap: 48px; align-items: center; }
+  .hero-grid { padding: 70px 0 66px !important; display: grid; grid-template-columns: 1.35fr 0.65fr; gap: 48px; align-items: center; }
   #home-hero { margin: 0; font-family: NanumSquareRound, Pretendard, sans-serif; letter-spacing: -0.03em; max-width: 22em; }
   .hero-lead { display: block; font-weight: 400; font-size: 2.1em; line-height: 1.45; color: var(--muted); }
   .hero-strong { display: block; font-weight: 800; font-size: 3.1em; line-height: 1.3; color: #14513c; text-wrap: pretty; }
@@ -112,7 +119,6 @@ const galleryLoop = PHOTOS.concat(PHOTOS);
   .hero-mark { display: flex; align-items: center; justify-content: center; padding: 34px; background: #fff; border: 1px solid #cbe7d8; border-radius: 24px; }
   .hero-mark img { width: 100%; max-width: 15em; height: auto; display: block; }
 
-  section[aria-labelledby] > .wrap:not(.hero-grid), section.band { padding: 46px 0 58px; }
   section[aria-labelledby='home-cards'] h2, section[aria-labelledby='home-news'] h2, #home-gallery { margin: 0 0 22px; font: 800 1.7em/1.4 NanumSquareRound, Pretendard, sans-serif; color: #332e1e; }
 
   .card-grid { display: grid; gap: 18px; }
@@ -137,10 +143,10 @@ const galleryLoop = PHOTOS.concat(PHOTOS);
 
   /* "처음 오셨나요?" — 주요 서비스를 보조하는 배너로 읽히도록 압축(작업지시서 반영).
      히어로급 대형 섹션이 아니라 작은 온보딩 배너가 목표라 padding·이미지 폭을 크게 줄인다. */
-  .first-visit.band > .wrap { padding: 20px 28px; }
-  .first-visit-banner { display: grid; grid-template-columns: 1fr minmax(140px, 220px); align-items: center; gap: 24px; }
-  #home-first { margin: 0 0 8px; font: 800 1.5em/1.35 NanumSquareRound, Pretendard, sans-serif; color: #332e1e; }
-  .first-visit-banner p { margin: 0 0 14px; font: 400 1.06em/1.6 NanumSquareRound, Pretendard, sans-serif; color: var(--muted); text-wrap: pretty; }
+  .first-visit.band > .wrap { padding: 20px 28px !important; }
+  .first-visit-banner { display: grid; grid-template-columns: 1fr minmax(170px, 260px); align-items: center; gap: 24px; }
+  #home-first { margin: 0 0 8px; font: 800 1.75em/1.3 NanumSquareRound, Pretendard, sans-serif; color: #332e1e; }
+  .first-visit-banner p { margin: 0 0 14px; font: 400 1.19em/1.7 NanumSquareRound, Pretendard, sans-serif; color: var(--muted); text-wrap: pretty; }
   .first-visit-banner img { width: 100%; aspect-ratio: 4 / 3; object-fit: cover; border-radius: 12px; display: block; }
 
   .section-head { display: flex; align-items: baseline; justify-content: space-between; gap: 1rem; margin-bottom: 22px; }
@@ -173,7 +179,7 @@ const galleryLoop = PHOTOS.concat(PHOTOS);
 
   @media (max-width: 860px) { .card-grid-4 { grid-template-columns: repeat(2, 1fr); } }
   @media (max-width: 760px) {
-    .hero-grid { grid-template-columns: minmax(0, 1fr); padding: 30px 0; }
+    .hero-grid { grid-template-columns: minmax(0, 1fr); padding: 30px 0 !important; }
     #home-hero { font-size: 1.9em; }
     .hero-lead { font-size: 1.15em; line-height: 1.45; }
     .hero-strong { font-size: 1.7em; line-height: 1.3; }
