@@ -1,7 +1,6 @@
 import rss from '@astrojs/rss';
 import { getCollection } from 'astro:content';
-import { byDateDesc, noticeHref, noticeOrgDisplay } from '../lib/notices';
-import { orgMap } from '../lib/networkOrgs';
+import { byDateDesc, noticeHref } from '../lib/notices';
 import { SITE_NAME } from '../config';
 
 // 소식 + 칼럼 통합 예정 (스펙 §6). columns 컬렉션은 아직 스키마·콘텐츠가 없어서
@@ -9,19 +8,15 @@ import { SITE_NAME } from '../config';
 // 결과를 notices와 합쳐 date로 다시 정렬하면 된다 — 여기 구조를 바꿀 필요 없음.
 export async function GET(context) {
   const notices = (await getCollection('notices')).sort(byDateDesc);
-  const orgs = await orgMap();
 
   return rss({
     title: SITE_NAME,
     description: '좋은비전 소식',
     site: context.site,
-    items: notices.map((notice) => {
-      return {
-        title: notice.data.title,
-        pubDate: notice.data.date,
-        link: noticeHref(notice).href,
-        description: noticeOrgDisplay(notice, orgs).name,
-      };
-    }),
+    items: notices.map((notice) => ({
+      title: notice.data.title,
+      pubDate: notice.data.date,
+      link: noticeHref(notice).href,
+    })),
   });
 }

@@ -240,7 +240,7 @@ const path = decodeURIComponent(Astro.url.pathname);
             .map(
               (r) => `<li><a href="${r.href}">
                 <span class="search-page-label">${r.page} 페이지</span>
-                <span class="search-title">${r.title}${r.external ? '<span class="sr-only">, 원문</span>' : ''}</span>
+                <span class="search-title">${r.title}</span>
                 <span class="search-snippet">${r.snippet}</span>
               </a></li>`,
             )

@@ -2,8 +2,7 @@
 // 2026-08-17 디자인 목업 반영 — 소식 목록/태그 페이지의 카드 그리드.
 // 실제 소식에는 사진·요약 필드가 없어 목업의 사진 자리는 넣지 않는다.
 import type { CollectionEntry } from 'astro:content';
-import { noticeHref, noticeOrgDisplay } from '../lib/notices';
-import { orgMap } from '../lib/networkOrgs';
+import { noticeHref } from '../lib/notices';
 
 interface Props {
   notices: CollectionEntry<'notices'>[];
@@ -11,18 +10,12 @@ interface Props {
 }
 const { notices, empty } = Astro.props;
 const iso = (d: Date) => d.toISOString().slice(0, 10);
-const orgs = await orgMap();
-const items = notices.map((notice) => {
-  const org = noticeOrgDisplay(notice, orgs);
-  return {
-    ...noticeHref(notice),
-    title: notice.data.title,
-    orgName: org.name,
-    orgUrl: org.url,
-    date: notice.data.date,
-    pinned: notice.data.pinned,
-  };
-});
+const items = notices.map((notice) => ({
+  ...noticeHref(notice),
+  title: notice.data.title,
+  date: notice.data.date,
+  pinned: notice.data.pinned,
+}));
 ---
 
 {items.length === 0 ? (
@@ -35,9 +28,7 @@ const items = notices.map((notice) => {
           <span class="notice-card-body">
             <time datetime={iso(item.date)} class="notice-card-date">{iso(item.date)}</time>{' '}
             {item.pinned && <span class="pinned-label"><span aria-hidden="true">📌</span> 상단 고정</span>}{' '}
-            <span class="tag">{item.orgName}</span>{' '}
-            <h3>{item.title}{item.external && <span class="sr-only">, 원문</span>}</h3>
-            {item.external && <span class="external-link-label" aria-hidden="true">원문</span>}
+            <h3>{item.title}</h3>
           </span>
         </a>
       </li>
@@ -47,13 +38,10 @@ const items = notices.map((notice) => {
 
 <style>
   .notice-empty { font: 400 1.13em/1.75 Pretendard, system-ui, sans-serif; color: var(--muted); }
-  .pinned-label, .external-link-label, .tag {
+  .pinned-label {
     display: inline-block; border-radius: 999px; font: 700 0.84em/1.4 Pretendard, system-ui, sans-serif; padding: 3px 10px;
+    background: #f9eedd; color: #664c27;
   }
-  .pinned-label { background: #f9eedd; color: #664c27; }
-  .external-link-label { background: #eeeaf4; color: #5f5571; }
-  .tag { background: #f3eed9; color: #5c5640; text-decoration: none; }
-  a.tag:hover { background: #ece2c4; }
 
   .notice-board { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, 1fr); gap: 26px; }
   .notice-card { border: 1px solid #d0c3d2; border-radius: 16px; background: #f6f4f6; overflow: hidden; }
@@ -61,7 +49,6 @@ const items = notices.map((notice) => {
   .notice-card a:hover { background: #efe9ef; }
   .notice-card-body { display: block; padding: 24px 24px 28px; }
   .notice-card-date { display: block; font: 700 0.94em/1 Pretendard, system-ui, sans-serif; color: #554458; margin-bottom: 10px; }
-  .notice-card .tag { margin-bottom: 10px; }
   .notice-card h3 { margin: 10px 0 0; font: 800 1.38em/1.5 NanumSquareRound, Pretendard, sans-serif; color: #403342; text-wrap: pretty; }
 
   @media (max-width: 860px) { .notice-board { grid-template-columns: repeat(2, 1fr); } }
