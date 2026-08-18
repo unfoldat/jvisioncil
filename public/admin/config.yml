@@ -49,6 +49,20 @@ collections:
         required: false
         hint: '이미지를 넣으면 대체 텍스트(alt)를 반드시 채우세요. 비어 있으면 빌드가 실패합니다.'
 
+  - name: donation-reports
+    label: 기부금 공시
+    description: 홈 하단 기부금 공시 미리보기와 기부금 공시 게시판(/기부금-공시/)에 표시됩니다. 제목은 연도에서 자동으로 만들어져 따로 입력하지 않습니다.
+    label_singular: 기부금 공시 작성
+    folder: src/content/donation-reports
+    create: true
+    identifier_field: year
+    summary: '{{year}}년 내역입니다'
+    slug: '{{year}}'
+    fields:
+      - { name: year, label: 연도, widget: number, value_type: int }
+      - { name: file, label: 첨부파일(PDF), widget: file, accept: 'application/pdf,.pdf' }
+      - { name: body, label: 본문내용(선택), widget: markdown, required: false, hint: '연도별 상세 설명이 있으면 적으세요. 비워두면 목록·다운로드만 표시됩니다.' }
+
   - name: network-orgs
     label: 함께하는 기관
     description: 홈 하단과 센터소개 페이지의 함께하는 기관 배너, 그리고 소식 작성 시(발행 주체가 "협력기관"일 때) "기관" 선택 목록에 표시됩니다. 좋은비전 자체는 여기 등록하지 않습니다 — 소식의 "발행 주체"에서 따로 선택하세요.
@@ -69,20 +83,6 @@ collections:
     fields:
       - { name: name, label: 기관명, widget: string }
       - { name: url, label: 기관 홈페이지, widget: string }
-
-  - name: donation-reports
-    label: 기부금 공시
-    description: 홈 하단 기부금 공시 미리보기와 기부금 공시 게시판(/기부금-공시/)에 표시됩니다. 제목은 연도에서 자동으로 만들어져 따로 입력하지 않습니다.
-    label_singular: 기부금 공시 작성
-    folder: src/content/donation-reports
-    create: true
-    identifier_field: year
-    summary: '{{year}}년 내역입니다'
-    slug: '{{year}}'
-    fields:
-      - { name: year, label: 연도, widget: number, value_type: int }
-      - { name: file, label: 첨부파일(PDF), widget: file, accept: 'application/pdf,.pdf' }
-      - { name: body, label: 본문내용(선택), widget: markdown, required: false, hint: '연도별 상세 설명이 있으면 적으세요. 비워두면 목록·다운로드만 표시됩니다.' }
 
   - name: gallery
     label: 메인갤러리
