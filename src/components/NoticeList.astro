@@ -38,8 +38,10 @@ const items = notices.map((notice) => ({
               : <img class="notice-card-photo-fallback" src="/images/logo-mark.png" alt="" loading="lazy" />}
           </span>
           <span class="notice-card-body">
-            <time datetime={iso(item.date)} class="notice-card-date">{iso(item.date)}</time>{' '}
-            {item.pinned && <span class="pinned-label"><span aria-hidden="true">📌</span> 상단 고정</span>}{' '}
+            <span class="notice-card-meta">
+              <time datetime={iso(item.date)} class="notice-card-date">{iso(item.date)}</time>
+              {item.pinned && <span class="pinned-label"><span aria-hidden="true">📌</span> 고정됨</span>}
+            </span>
             <h3>{item.title}</h3>
             {item.summary && <span class="notice-card-summary">{item.summary}</span>}
           </span>
@@ -60,7 +62,7 @@ const items = notices.map((notice) => ({
 <style>
   .notice-empty { font: 400 1.13em/1.75 Pretendard, system-ui, sans-serif; color: var(--muted); }
   .pinned-label {
-    display: inline-block; border-radius: 999px; font: 700 0.84em/1.4 Pretendard, system-ui, sans-serif; padding: 3px 10px;
+    display: inline-block; border-radius: 999px; font: 700 0.72em/1.3 Pretendard, system-ui, sans-serif; padding: 0 8px;
     background: #f9eedd; color: #664c27;
   }
 
@@ -72,7 +74,8 @@ const items = notices.map((notice) => ({
   .notice-card a { display: block; text-decoration: none; color: inherit; }
   .notice-card a:hover { background: #efe9ef; }
   .notice-card-body { display: block; padding: 24px 24px 28px; }
-  .notice-card-date { display: block; font: 700 0.94em/1 Pretendard, system-ui, sans-serif; color: #554458; margin-bottom: 10px; }
+  .notice-card-meta { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
+  .notice-card-date { display: block; font: 700 0.94em/1 Pretendard, system-ui, sans-serif; color: #554458; }
   .notice-card h3 { margin: 10px 0 0; font: 800 1.38em/1.5 NanumSquareRound, Pretendard, sans-serif; color: #403342; text-wrap: pretty; }
   .notice-card-summary {
     display: -webkit-box; margin: 10px 0 0; font: 400 1.06em/1.75 NanumSquareRound, Pretendard, sans-serif;
