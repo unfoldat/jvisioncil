@@ -1,7 +1,7 @@
 ---
 role: 센터장
 name: 정금종
-photo: /images/director-jeong.jpg
+photo: /uploads/director-jeong.jpg
 photoAlt: 정금종 센터장 -정장과 넥타이를 착용하고 검은색 안경을 쓴 센터장의 상반신 프로필 사진. 정면을 바라보며 옅게 미소 짓고 있다.
 bio:
   - 대한장애인한궁연맹 중앙부회장

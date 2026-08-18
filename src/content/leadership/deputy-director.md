@@ -1,7 +1,7 @@
 ---
 role: 부센터장
 name: 김기현
-photo: /images/director-kim.jpg
+photo: /uploads/director-kim.jpg
 photoAlt: 김기현 부센터장 사진-흰색 장식이 있는 짙은색 재킷을 입고 있다. 머리를 뒤로 묶고 팔짱을 낀 채 정면을 바라보며 밝게 미소 짓고 있다.
 bio:
   - Ph.D. Rehabilitation Counselor Education
