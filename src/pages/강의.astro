@@ -44,18 +44,24 @@ const extraCourses = [
   <section aria-labelledby="lc-kinds" class="tint">
     <div class="wrap">
       <h2 id="lc-kinds">강의 종류</h2>
+      <p class="lecture-note">기관 요청에 따라 교육 시간과 세부 구성을 조정할 수 있습니다.</p>
       <ul class="lecture-grid">
         {lectures.map((l) => (
           <li class="lecture-card">
             <span class="lecture-target">대상: {l.target}</span>{' '}
-            {l.mandatory && <span class="lecture-badge">법정의무교육</span>}{' '}
+            <span class:list={['lecture-badge', { 'lecture-badge-hidden': !l.mandatory }]} aria-hidden={l.mandatory ? undefined : 'true'}>
+              <svg aria-hidden="true" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"></path>
+                <path d="m9 12 2 2 4-4"></path>
+              </svg>
+              법정의무교육
+            </span>{' '}
             <h3>{l.title}</h3>{' '}
             <span class="lecture-desc">{l.desc}</span>{' '}
             <span class="lecture-meta">교육시간: {l.meta}</span>
           </li>
         ))}
       </ul>
-      <p class="lecture-note">교육 문의 및 세부 구성은 기관 요청에 따라 협의 가능합니다.</p>
     </div>
   </section>
 
@@ -108,15 +114,21 @@ const extraCourses = [
   .lead-lg { margin: 22px 0 0; font: 400 1.32em/1.8 Pretendard, system-ui, sans-serif; color: var(--muted); max-width: 35em; text-wrap: pretty; }
   section[aria-labelledby='lc-title'] .btn { margin-top: 28px; font: 800 1.38em/1 Pretendard, system-ui, sans-serif !important; padding: 20px 36px; }
 
-  #lc-kinds, #lc-extra, #lc-tutors { margin: 0 0 24px; font: 800 1.88em/1.4 Pretendard, system-ui, sans-serif; color: #5a3737; }
+  #lc-extra, #lc-tutors { margin: 0 0 24px; font: 800 1.88em/1.4 Pretendard, system-ui, sans-serif; color: #5a3737; }
+  #lc-kinds { margin: 0 0 10px; font: 800 1.88em/1.4 Pretendard, system-ui, sans-serif; color: #5a3737; }
+  .lecture-note { margin: 0 0 32px; font: 400 0.92em/1.6 Pretendard, system-ui, sans-serif; color: #784949; }
   .lecture-grid { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
   .lecture-card { padding: 28px 26px; border: 1px solid #e5bfbf; border-radius: 16px; background: #faf2f2; display: flex; flex-direction: column; }
   .lecture-target { display: block; font: 700 0.88em/1 Pretendard, system-ui, sans-serif; color: #784949; margin-bottom: 10px; }
-  .lecture-badge { display: inline-block; border-radius: 999px; font: 700 0.84em/1.4 Pretendard, system-ui, sans-serif; padding: 3px 10px; background: #f9eedd; color: #664c27; margin-bottom: 10px; }
+  .lecture-badge {
+    display: inline-flex; align-items: center; gap: 5px; width: fit-content; border-radius: 999px;
+    font: 700 0.84em/1.4 Pretendard, system-ui, sans-serif; padding: 3px 10px; background: #f4d9dc; color: #7a3b41; margin-bottom: 10px;
+  }
+  .lecture-badge svg { flex-shrink: 0; }
+  .lecture-badge-hidden { visibility: hidden; }
   .lecture-card h3 { margin: 0 0 10px; font: 800 1.44em/1.4 Pretendard, system-ui, sans-serif; color: #5a3737; text-wrap: pretty; }
   .lecture-desc { display: block; font: 400 1.06em/1.75 Pretendard, system-ui, sans-serif; color: var(--muted); margin-bottom: 14px; text-wrap: pretty; }
   .lecture-meta { display: block; margin-top: auto; font: 600 0.94em/1.5 Pretendard, system-ui, sans-serif; color: var(--muted); }
-  .lecture-note { margin: 22px 0 0; font: 400 0.88em/1.7 Pretendard, system-ui, sans-serif; color: var(--muted); }
 
   .extra-grid { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
   .extra-card { display: flex; flex-direction: column; gap: 10px; padding: 28px 26px; border: 1px solid #e5bfbf; border-radius: 16px; background: #fff; }
