@@ -178,8 +178,14 @@ const path = decodeURIComponent(Astro.url.pathname);
           const main = document.getElementById('main-content');
           if (!main) return;
           e.preventDefault();
+          // 2026-08-20(본문 진입점 실험, opt-in) — [data-body-start]가 있는 페이지
+          // (소식 상세)는 그 컨테이너의 첫 실제 콘텐츠 요소로 착지한다. 목록에서
+          // 이미 제목을 듣고 Enter한 사용자가 상세에서 h1을 또 듣고 Tab으로 본문을
+          // 건너뛰는 문제를 줄이기 위함. 이 마커가 없는 페이지는 아래 heading 로직
+          // 그대로 — 동작 변화 없음.
+          const bodyStart = main.querySelector('[data-body-start]');
           const heading = main.querySelector('h1, h2, h3, h4, h5, h6');
-          const target = heading || main;
+          const target = (bodyStart && bodyStart.firstElementChild) || heading || main;
           if (target.getAttribute('tabindex') === null) target.setAttribute('tabindex', '-1');
           target.focus();
           window.scrollTo(0, target.getBoundingClientRect().top + window.scrollY - 8);
