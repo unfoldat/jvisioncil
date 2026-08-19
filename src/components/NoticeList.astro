@@ -2,7 +2,9 @@
 // 2026-08-17 디자인 목업 반영 — 소식 목록/태그 페이지의 카드 그리드.
 // 2026-08-19 작업지시서(오후) — 카드 썸네일은 편집자가 직접 넣는 thumbnail 필드를
 // 쓴다(본문 첫 이미지 자동 재사용은 카드·본문 중복 문제로 폐지). 없으면 로고 폴백.
-// 카드가 이미 h3 제목으로 글을 식별하므로 썸네일은 alt=""(장식용)로 처리한다.
+// 2026-08-19 접근성 감사 — 썸네일이 정보성 사진이면 alt=""로 고정하면 안 되므로
+// thumbnailAlt를 그대로 alt에 쓴다. 편집자가 안 채웠으면 alt=""(장식용) — 카드가
+// 이미 h3 제목으로 글을 식별하므로 이 경우엔 빈 alt가 정보 손실이 아니다.
 import type { CollectionEntry } from 'astro:content';
 import { noticeHref } from '../lib/notices';
 
@@ -22,6 +24,7 @@ const items = notices.map((notice) => ({
   date: notice.data.date,
   pinned: notice.data.pinned,
   thumbnail: notice.data.thumbnail,
+  thumbnailAlt: notice.data.thumbnailAlt,
   summary: notice.data.summary,
 }));
 ---
@@ -35,7 +38,7 @@ const items = notices.map((notice) => ({
         <a href={item.href}>
           <span class="notice-card-photo">
             {item.thumbnail
-              ? <img class="notice-card-photo-img" src={item.thumbnail} alt="" loading="lazy" />
+              ? <img class="notice-card-photo-img" src={item.thumbnail} alt={item.thumbnailAlt ?? ''} loading="lazy" />
               : <img class="notice-card-photo-fallback" src="/images/logo-mark.png" alt="" loading="lazy" />}
           </span>
           <span class="notice-card-body">
