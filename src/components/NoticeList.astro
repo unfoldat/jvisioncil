@@ -1,10 +1,10 @@
 ---
 // 2026-08-17 디자인 목업 반영 — 소식 목록/태그 페이지의 카드 그리드.
-// 2026-08-19 작업지시서 — 별도 대표 사진 필드 폐지. 본문(body)의 첫 번째 마크다운
-// 이미지를 카드 썸네일로 재사용(src/lib/noticeImage.ts). 없으면 로고 폴백 그대로.
+// 2026-08-19 작업지시서(오후) — 카드 썸네일은 편집자가 직접 넣는 thumbnail 필드를
+// 쓴다(본문 첫 이미지 자동 재사용은 카드·본문 중복 문제로 폐지). 없으면 로고 폴백.
+// 카드가 이미 h3 제목으로 글을 식별하므로 썸네일은 alt=""(장식용)로 처리한다.
 import type { CollectionEntry } from 'astro:content';
 import { noticeHref } from '../lib/notices';
-import { firstBodyImage } from '../lib/noticeImage';
 
 interface Props {
   notices: CollectionEntry<'notices'>[];
@@ -21,7 +21,7 @@ const items = notices.map((notice) => ({
   title: notice.data.title,
   date: notice.data.date,
   pinned: notice.data.pinned,
-  image: firstBodyImage(notice.body),
+  thumbnail: notice.data.thumbnail,
   summary: notice.data.summary,
 }));
 ---
@@ -34,8 +34,8 @@ const items = notices.map((notice) => ({
       <li class="notice-card">
         <a href={item.href}>
           <span class="notice-card-photo">
-            {item.image
-              ? <img class="notice-card-photo-img" src={item.image.src} alt={item.image.alt} loading="lazy" />
+            {item.thumbnail
+              ? <img class="notice-card-photo-img" src={item.thumbnail} alt="" loading="lazy" />
               : <img class="notice-card-photo-fallback" src="/images/logo-mark.png" alt="" loading="lazy" />}
           </span>
           <span class="notice-card-body">

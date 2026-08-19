@@ -1,24 +1,9 @@
 import { isPortraitImage } from './imageOrientation';
 
-// 소식 = 별도 대표 이미지 필드 없이, 본문(body)에 삽입한 첫 번째 마크다운 이미지를
-// 카드 목록 썸네일로 재사용한다(작업지시서 2026-08-19). 상세페이지 상단 배너는 없음 —
-// 본문(rendered.html)을 그대로 보여준다(스트립하지 않음).
-
-export interface NoticeImage {
-  src: string;
-  alt: string;
-}
-
-const MD_IMAGE_RE = /!\[([^\]]*)\]\(([^)\s]+)(?:\s+"[^"]*")?\)/;
-
-// 본문(원본 마크다운)에서 첫 번째 이미지의 경로·대체텍스트만 뽑는다 — 카드 썸네일용.
-// 없으면 null(호출부는 이 경우 로고 폴백을 쓴다).
-export function firstBodyImage(body: string | undefined): NoticeImage | null {
-  if (!body) return null;
-  const match = body.match(MD_IMAGE_RE);
-  if (!match) return null;
-  return { alt: match[1], src: match[2] };
-}
+// 소식 카드 썸네일은 편집자가 직접 넣는 별도 thumbnail 필드를 쓴다(작업지시서
+// 2026-08-19 오후) — 본문 첫 이미지 자동 재사용은 카드·본문에 사진이 중복으로 뜨는
+// 문제가 있어 폐지. 본문(rendered.html)은 스트립 없이 그대로 보여준다(사진 몇 장이든
+// 전부 본문 흐름 안에 남는다).
 
 // 세로(포스터형) 사진에 표시 폭을 좁히는 클래스를 붙인다 — 빌드 타임 실측 기반,
 // JS 없음(작업지시서). 판별 실패 시 isPortraitImage가 안전하게 false를 반환한다.
