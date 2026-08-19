@@ -34,7 +34,7 @@ const { pageNotices, currentPage, totalPages: pages, gallery } = Astro.props;
 const galleryLoop = gallery.concat(gallery);
 ---
 
-<BaseLayout pageName={`소식 - ${currentPage}페이지`} bg="#EDE8EE">
+<BaseLayout pageName={`소식 - ${currentPage}페이지`} bg="#EDE8EE" skipHref="#notice-list">
   <section aria-labelledby="nw-title" class="intro">
     <div class="wrap">
       <p class="eyebrow"><span class="pill">소식</span></p>

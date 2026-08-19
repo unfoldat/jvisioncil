@@ -29,7 +29,7 @@ const items = notices.map((notice) => ({
 {items.length === 0 ? (
   <p class="notice-empty">{empty}</p>
 ) : (
-  <ul class="notice-board">
+  <ul class="notice-board" id="notice-list">
     {items.map((item) => (
       <li class="notice-card">
         <a href={item.href}>
