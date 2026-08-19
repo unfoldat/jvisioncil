@@ -17,13 +17,8 @@ interface Props {
   // <main class="wrap">이 이 wrapper 역할까지 겸하면서 1200px로 콘텐츠 폭에 갇혀 있었다
   // (모든 메뉴 페이지에서 배경색이 좌우 끝까지 안 퍼지고, 흐르는 갤러리도 잘리는 원인).
   bg?: string;
-  // 본문 바로가기 링크의 목적지 — 기본은 <main>(모든 페이지 공통). 소식 목록처럼
-  // <main> 바로 다음에 히어로 문구·흐르는 사진 갤러리가 먼저 나와 "본문 바로가기"를
-  // 눌러도 실제 목록까지 한 번 더 Tab을 눌러야 했던 페이지는, 목록 컨테이너의 id를
-  // 넘겨 그 첫 글로 바로 이동하게 한다(포커스 위임은 BaseLayout 스크립트가 처리).
-  skipHref?: string;
 }
-const { pageName, searchable = true, bg = 'var(--bg)', skipHref = '#main-content' } = Astro.props;
+const { pageName, searchable = true, bg = 'var(--bg)' } = Astro.props;
 
 const title = `${pageName} – ${SITE_NAME}`;
 const canonical = new URL(Astro.url.pathname, Astro.site);
@@ -53,7 +48,7 @@ const path = decodeURIComponent(Astro.url.pathname);
     <meta property="og:type" content="website" />
   </head>
   <body>
-    <a href={skipHref} class="skip">본문으로 바로가기</a>
+    <a href="#main-content" class="skip">본문으로 바로가기</a>
 
     <header class="site-header">
       <div class="head wrap">
@@ -173,19 +168,13 @@ const path = decodeURIComponent(Astro.url.pathname);
         applyHc(localStorage.getItem('goodvision-hc') === '1');
         hcToggle.addEventListener('click', () => applyHc(!root.classList.contains('hc')));
 
-        // 스킵 링크 — 클릭 시 목적지(기본은 main 요소, 페이지가 skipHref로 다른 곳을
-        // 지정했으면 그곳)에 초점까지 옮긴다. 목적지 자체가 포커스 불가능한 컨테이너
-        // (예: 소식 목록 ul)면 그 안의 첫 포커스 가능한 자손(첫 글 링크)으로 위임한다.
+        // 스킵 링크 — 클릭 시 본문에 초점까지 옮긴다.
         document.querySelector('.skip')?.addEventListener('click', (e) => {
-          const href = e.currentTarget.getAttribute('href');
-          const container = (href && document.querySelector(href)) || document.getElementById('main-content');
-          if (!container) return;
+          const t = document.getElementById('main-content');
+          if (!t) return;
           e.preventDefault();
-          const focusTarget = container.matches('a[href],button,[tabindex]')
-            ? container
-            : container.querySelector('a[href],button,[tabindex]') || container;
-          focusTarget.focus();
-          window.scrollTo(0, focusTarget.getBoundingClientRect().top + window.scrollY - 8);
+          t.focus();
+          window.scrollTo(0, t.getBoundingClientRect().top + window.scrollY - 8);
         });
 
         // 다른 페이지의 #앵커로 이동(푸터 "오시는 길"·"부설연구소")할 때 — 일반 다중 페이지
