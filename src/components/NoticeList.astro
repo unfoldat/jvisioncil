@@ -1,8 +1,10 @@
 ---
 // 2026-08-17 디자인 목업 반영 — 소식 목록/태그 페이지의 카드 그리드.
-// 2026-08-18 대표 사진(image) 필드 추가 — 비어있으면 로고를 기본 이미지로 표시.
+// 2026-08-19 작업지시서 — 별도 대표 사진 필드 폐지. 본문(body)의 첫 번째 마크다운
+// 이미지를 카드 썸네일로 재사용(src/lib/noticeImage.ts). 없으면 로고 폴백 그대로.
 import type { CollectionEntry } from 'astro:content';
 import { noticeHref } from '../lib/notices';
+import { firstBodyImage } from '../lib/noticeImage';
 
 interface Props {
   notices: CollectionEntry<'notices'>[];
@@ -19,8 +21,7 @@ const items = notices.map((notice) => ({
   title: notice.data.title,
   date: notice.data.date,
   pinned: notice.data.pinned,
-  image: notice.data.image,
-  imageAlt: notice.data.imageAlt,
+  image: firstBodyImage(notice.body),
   summary: notice.data.summary,
 }));
 ---
@@ -34,7 +35,7 @@ const items = notices.map((notice) => ({
         <a href={item.href}>
           <span class="notice-card-photo">
             {item.image
-              ? <img class="notice-card-photo-img" src={item.image} alt={item.imageAlt ?? ''} loading="lazy" />
+              ? <img class="notice-card-photo-img" src={item.image.src} alt={item.image.alt} loading="lazy" />
               : <img class="notice-card-photo-fallback" src="/images/logo-mark.png" alt="" loading="lazy" />}
           </span>
           <span class="notice-card-body">
@@ -68,7 +69,9 @@ const items = notices.map((notice) => ({
 
   .notice-board { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, 1fr); gap: 26px; }
   .notice-card { border: 1px solid #d0c3d2; border-radius: 16px; background: #f6f4f6; overflow: hidden; }
-  .notice-card-photo { display: flex; align-items: center; justify-content: center; height: 12.5em; border-bottom: 1px solid #d0c3d2; background: #fff; }
+  /* 2026-08-19 작업지시서 — 카드 썸네일은 "식별용"이라 크롭 허용, 고정 3:2 프레임으로
+     통일(세로 포스터가 와도 이 프레임 안에서는 가운데 기준으로 잘려 보임). */
+  .notice-card-photo { display: flex; align-items: center; justify-content: center; aspect-ratio: 3 / 2; border-bottom: 1px solid #d0c3d2; background: #fff; }
   .notice-card-photo-img { width: 100%; height: 100%; object-fit: cover; display: block; }
   .notice-card-photo-fallback { height: 22%; width: auto; object-fit: contain; display: block; }
   .notice-card a { display: block; text-decoration: none; color: inherit; }
