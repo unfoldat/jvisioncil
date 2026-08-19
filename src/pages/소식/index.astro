@@ -26,7 +26,8 @@ const galleryLoop = PHOTOS.concat(PHOTOS);
     </div>
   </section>
 
-  <section aria-label="활동 사진" class="gallery-band">
+  <section aria-labelledby="nw-gallery" class="gallery-band">
+    <h2 id="nw-gallery" class="wrap">활동 사진</h2>
     <div class="marquee">
       <div class="marquee-track">
         {galleryLoop.map((photo, i) => (
@@ -51,7 +52,11 @@ const galleryLoop = PHOTOS.concat(PHOTOS);
   .tint { background: #f6f4f6; border-top: 1px solid #d0c3d2; padding: 58px 0 66px; }
   #nw-board { margin: 0 0 26px; font: 800 1.88em/1.4 NanumSquareRound, Pretendard, sans-serif; color: #403342; }
 
-  .gallery-band { padding: 0 0 42px; background: #ede8ee; }
+  .gallery-band { padding: 34px 0 42px; background: #ede8ee; }
+  /* h2 자체가 .wrap(마퀴는 화면 끝까지 퍼져야 해서 h2만 wrap) — margin shorthand로
+     top/bottom만 정하면 안 된다(3값이 left/right도 0으로 덮어써 .wrap의 margin:auto
+     가운데 정렬이 깨짐, index.astro의 #home-gallery와 동일 이유). */
+  #nw-gallery { margin-top: 0; margin-bottom: 22px; font: 800 1.7em/1.4 NanumSquareRound, Pretendard, sans-serif; color: #403342; }
   .marquee { overflow: hidden; }
   .marquee-track { display: flex; gap: 16px; width: max-content; animation: marquee 120s linear infinite; }
   .marquee:hover .marquee-track, .marquee:focus-within .marquee-track { animation-play-state: paused; }
