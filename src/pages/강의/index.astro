@@ -64,13 +64,15 @@ const extraPages = extraTotalPages(allExtraCourses.length);
         <ul class="tutor-grid">
           {instructors.map((t) => (
             <li class="tutor-card">
-              <img class="tutor-photo" src={t.data.photo} alt={t.data.photoAlt ?? ''} style={`object-position:${t.data.photoPos || 'center 20%'}`} />
-              <div class="tutor-body">
-                <h3>{t.data.name}</h3>{' '}
-                <span class="tutor-role">{t.data.role}</span>{' '}
-                <ul class="tutor-bio" role="list" aria-label={`${t.data.name} 약력`}>
-                  {t.data.bio.map((item) => <li>{item}</li>)}
-                </ul>
+              <div class="tutor-profile">
+                <img class="tutor-photo" src={t.data.photo} alt={t.data.photoAlt ?? ''} style={`object-position:${t.data.photoPos || 'center 20%'}`} />
+                <div class="tutor-info">
+                  <h3>{t.data.name}</h3>{' '}
+                  <span class="tutor-role">{t.data.role}</span>{' '}
+                  <ul class="tutor-bio" role="list" aria-label={`${t.data.name} 약력`}>
+                    {t.data.bio.map((item) => <li>{item}</li>)}
+                  </ul>
+                </div>
               </div>
             </li>
           ))}
@@ -93,16 +95,27 @@ const extraPages = extraTotalPages(allExtraCourses.length);
   .lecture-note { margin: 0 0 32px; font: 400 0.92em/1.6 Pretendard, system-ui, sans-serif; color: #784949; }
 
   .lead-sm { margin: 0 0 24px; font: 400 1.06em/1.7 Pretendard, system-ui, sans-serif; color: var(--muted); }
-  .tutor-grid { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
-  .tutor-card { border: 1px solid #e5bfbf; border-radius: 16px; background: #faf2f2; overflow: hidden; }
-  .tutor-photo { width: 100%; height: 12.5em; border-bottom: 1px solid #e5bfbf; object-fit: contain; background: #faf2f2; display: block; }
-  .tutor-body { padding: 24px 26px 28px; }
-  .tutor-body h3 { margin: 0 0 6px; font: 800 1.38em/1.3 Pretendard, system-ui, sans-serif; color: #5a3737; }
+  /* 2026-08-19 작업지시서 — 센터장·부센터장 프로필(기관소개.astro의 .leader-*)과 동일한
+     가로형(사진 왼쪽·텍스트 오른쪽) 구조로 전환. 강사는 폴더형(가변 개수)이라 센터장의
+     고정 2열 대신 2열 그리드로 자연스럽게 줄어들게 둔다 — 카드가 1장이면 한 칸만 차지하고
+     나머지 칸은 비워둔다(기존 3열 세로형 카드에서도 같던 원칙 그대로 유지). */
+  .tutor-grid { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
+  .tutor-card { border: 1px solid #e5bfbf; border-radius: 16px; background: #faf2f2; padding: 24px; }
+  .tutor-profile { display: grid; grid-template-columns: minmax(150px, 190px) minmax(0, 1fr); gap: clamp(14px, 3vw, 18px); align-items: start; }
+  /* leader-photo와 동일하게 세로 3:4 프레임으로 크롭(object-fit:cover) — photoPos(사진
+     위치 조정)는 이 크롭 프레임 안에서 어느 부분을 보여줄지 정하는 값이라 의미가 그대로
+     유지된다(기본값 'center 20%'도 leader-photo와 동일하게 그대로 둠). */
+  .tutor-photo { width: 100%; max-width: 190px; aspect-ratio: 3/4; object-fit: cover; border-radius: 12px; display: block; }
+  .tutor-info { min-width: 0; }
+  .tutor-info h3 { margin: 0 0 6px; font: 800 1.38em/1.3 Pretendard, system-ui, sans-serif; color: #5a3737; }
   .tutor-role { display: block; font: 700 1em/1.4 Pretendard, system-ui, sans-serif; color: #784949; margin-bottom: 12px; }
   .tutor-bio { list-style: none; margin: 0; padding-left: 1.1em; display: grid; gap: 8px; }
   .tutor-bio li { position: relative; font: 400 1.06em/1.45 Pretendard, system-ui, sans-serif; color: var(--muted); text-wrap: pretty; }
   .tutor-bio li::before { content: ''; position: absolute; left: -1.1em; top: 0.62em; width: 5px; height: 5px; border-radius: 50%; background: #c87a7a; }
 
-  @media (max-width: 860px) { .tutor-grid { grid-template-columns: repeat(2, 1fr); } }
-  @media (max-width: 640px) { .tutor-grid { grid-template-columns: minmax(0, 1fr); } }
+  @media (max-width: 860px) { .tutor-grid { grid-template-columns: minmax(0, 1fr); } }
+  @media (max-width: 760px) {
+    .tutor-profile { grid-template-columns: minmax(0, 1fr); }
+    .tutor-photo { max-width: 200px; margin: 0 auto; }
+  }
 </style>

@@ -125,7 +125,7 @@ collections:
     fields:
       - { name: name, label: 이름, widget: string }
       - { name: role, label: 전문 분야/직함, widget: string, hint: '예: "장애인식개선 교육 강사"' }
-      - { name: photo, label: 사진, widget: image, hint: '카드에 사진 전체가 잘리지 않고 축소되어 표시됩니다. 얼굴이 작게 나오지 않으려면 정사각형~가로형 사진을 올려주세요. 예: 가로 2:1 비율이면 최소 800×400px, 정사각형이면 최소 600×600px 이상. 세로로 긴 증명사진형은 피해주세요.' }
+      - { name: photo, label: 사진, widget: image, hint: '카드에서 세로 3:4 비율로 잘려서 표시됩니다(가운데 기준). 얼굴이 잘리지 않으려면 세로형(3:4 비율 권장) 사진을 올려주세요. 예: 최소 450×600px 이상. 잘리는 위치가 마음에 안 들면 아래 "사진 위치 조정"으로 조정할 수 있습니다.' }
       - { name: photoAlt, label: 사진 설명(대체텍스트), widget: string, required: false, hint: '비워두면 장식용으로 처리됩니다 — 되도록 채워주세요.' }
       - { name: bio, label: 약력 소개, widget: list, field: { name: item, label: 약력 항목, widget: string } }
       - { name: photoPos, label: 사진 위치 조정(고급, 선택), widget: string, required: false, hint: '얼굴이 잘리면 조정하세요. 예: "center 20%". 비워두면 기본값 사용.' }
