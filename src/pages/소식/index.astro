@@ -23,6 +23,15 @@ const galleryLoop = PHOTOS.concat(PHOTOS);
     <div class="wrap">
       <p class="eyebrow"><span class="pill">소식</span></p>
       <h1 id="nw-title">좋은비전의 활동을 전합니다</h1>
+      <!-- 2026-08-19(음성 탐색 검증) — 페이지 내 목차. 사이트 전체 메뉴가 아니라 이
+           페이지 안의 두 구역(활동 사진/전체 소식) 중 원하는 곳으로 바로 이동하는
+           보조 경로 — 평소엔 숨겨져 있다가 Tab으로 포커스가 오면 나타난다(.sr-only-focusable,
+           BaseLayout 공용). 실제 이동은 이미 있는 jumpToHash(해시 이동 시 tabindex
+           동적 부여 + focus)가 그대로 처리 — 새 JS 없음. -->
+      <nav aria-label="페이지 내용 바로가기" class="page-toc">
+        <a href="#nw-gallery" class="sr-only sr-only-focusable">활동 사진으로 이동</a>
+        <a href="#nw-board" class="sr-only sr-only-focusable">전체 소식으로 이동</a>
+      </nav>
     </div>
   </section>
 
@@ -35,6 +44,7 @@ const galleryLoop = PHOTOS.concat(PHOTOS);
         ))}
       </div>
     </div>
+    <a href="#nw-board" class="sr-only sr-only-focusable">활동 사진 건너뛰고 전체 소식으로 이동</a>
   </section>
 
   <section aria-labelledby="nw-board" class="tint">
