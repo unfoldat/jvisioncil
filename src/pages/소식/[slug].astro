@@ -2,13 +2,17 @@
 // 소식 = 좋은비전 단독 게시판(확정 결정) — 전부 내부 상세. 2026-08-17 디자인 목업 반영.
 // 2026-08-19 작업지시서 — 별도 "대표 이미지"(상단 가로 배너) 개념 자체를 없앤다. 본문에
 // 첨부한 사진은 본문 흐름 안에서만 보여준다(균일한 크기 규칙은 유지, 아래 CSS 참고).
+// 2026-08-19(음성 탐색 검증) — 본문 이미지를 <a target="_blank">로 감싸 "원본 크기로
+// 보기"를 제공하던 기능을 제거했다. 실기에서 이 링크가 이미지 alt를 덮어써 스크린리더가
+// 사진 설명을 제대로 못 읽는 정황이 있었고(원인 미확정), 새 탭 이동도 현재 탐색 맥락을
+// 깨뜨렸다 — 지금은 필요하지 않은 기능이라 <img>만 그대로 둔다.
 // entry.rendered.html은 Astro 콘텐츠 레이어가 astro.config.mjs의 markdown 파이프라인
 // (rehype-sanitize 포함)으로 이미 컴파일·새니타이즈해 둔 HTML이라 — render()/<Content/>를
 // 쓰지 않고 이 문자열을 그대로 가져와 이미지 태그만 문자열 단위로 보강한다(세로 사진
-// 표시폭 제한 클래스 부여 + 클릭 시 원본 보기 링크 감싸기 — 마크다운을 재파싱하지 않음).
+// 표시폭 제한 클래스 부여만 — 마크다운을 재파싱하지 않음).
 import { getCollection } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import { tagPortraitImages, linkifyImages } from '../../lib/noticeImage';
+import { tagPortraitImages, stripImageTitle } from '../../lib/noticeImage';
 
 export async function getStaticPaths() {
   const notices = await getCollection('notices');
@@ -17,7 +21,7 @@ export async function getStaticPaths() {
 
 const { notice } = Astro.props;
 const isoDate = notice.data.date.toISOString().slice(0, 10);
-const bodyHtml = linkifyImages(tagPortraitImages(notice.rendered?.html ?? ''));
+const bodyHtml = tagPortraitImages(stripImageTitle(notice.rendered?.html ?? ''));
 ---
 
 <BaseLayout pageName={notice.data.title} bg="#EDE8EE">
@@ -25,7 +29,7 @@ const bodyHtml = linkifyImages(tagPortraitImages(notice.rendered?.html ?? ''));
     <section class="post-head">
       <div class="wrap">
         <h1>{notice.data.title}</h1>
-        <p class="post-meta"><time datetime={isoDate} data-pagefind-meta="date[datetime]">{isoDate}</time></p>
+        <p class="post-meta"><time datetime={isoDate} data-pagefind-meta="date[datetime]"><span class="sr-only">작성일 </span>{isoDate}</time></p>
       </div>
     </section>
     <section class="post-body">
@@ -58,5 +62,4 @@ const bodyHtml = linkifyImages(tagPortraitImages(notice.rendered?.html ?? ''));
      좁은 화면(예: 375px 모바일)에서 컨테이너 폭을 무시하고 가로 스크롤이 생긴다
      (실측으로 발견 — 488px 세로 사진이 375px 화면에서 그대로 넘침). */
   .post-body :global(img.post-img-portrait) { max-width: min(600px, 100%); }
-  .post-body :global(a.post-img-link) { display: block; }
 </style>

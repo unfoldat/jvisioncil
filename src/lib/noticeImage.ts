@@ -17,14 +17,11 @@ export function tagPortraitImages(html: string | undefined): string {
   });
 }
 
-// 본문 사진을 클릭하면 원본이 새 탭에서 열리도록 <a>로 감싼다(작업지시서 — 새 JS
-// 라이브러리 없이 <a target="_blank"> 최소 구현).
-export function linkifyImages(html: string | undefined): string {
+// title 속성을 지운다 — CMS의 "제목" 필드가 마크다운 `![alt](src "title")` 문법을 통해
+// title로 렌더링되는데, 실측(접근성 트리)에서 title이 alt보다 우선해서 읽히는 정황이
+// 나왔다(작업지시서 2026-08-19, 원인 미확정이나 위험 방지 차원에서 렌더링 단계에서
+// 제거). alt는 그대로 두고 title만 지워서 대체텍스트가 항상 alt 하나로만 계산되게 한다.
+export function stripImageTitle(html: string | undefined): string {
   if (!html) return '';
-  return html.replace(/<img\b[^>]*>/g, (tag) => {
-    const srcMatch = tag.match(/src="([^"]*)"/);
-    const src = srcMatch ? srcMatch[1] : '';
-    if (!src) return tag;
-    return `<a class="post-img-link" href="${src}" target="_blank" rel="noopener"><span class="sr-only">원본 크기로 보기</span>${tag}</a>`;
-  });
+  return html.replace(/<img\b([^>]*)>/g, (tag, attrs) => `<img${attrs.replace(/\s+title="[^"]*"/, '')}>`);
 }

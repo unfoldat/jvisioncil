@@ -43,7 +43,7 @@ const items = notices.map((notice) => ({
           </span>
           <span class="notice-card-body">
             <span class="notice-card-meta">
-              <time datetime={iso(item.date)} class="notice-card-date">{iso(item.date)}</time>
+              <time datetime={iso(item.date)} class="notice-card-date"><span class="sr-only">작성일 </span>{iso(item.date)}</time>
               {item.pinned && <span class="pinned-label"><span aria-hidden="true">📌</span> 고정됨</span>}
             </span>
             <h3>{item.title}</h3>
