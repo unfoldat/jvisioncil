@@ -158,8 +158,8 @@ const busStops = [
             new daum.roughmap.Lander({
               timestamp: '1785386858595',
               key: 'rptu8kud37r',
-              mapWidth: '520',
-              mapHeight: '293',
+              mapWidth: '640',
+              mapHeight: '360',
             }).render();
             // 지도와 조작 버튼만 남기고, 위젯 자체 주소·전화 표시는 숨긴다(옆 카드와 중복).
             setTimeout(() => {
@@ -255,7 +255,20 @@ const busStops = [
   .way-card { background: #fff; border: 1px solid #f1d4ab; border-radius: 16px; padding: 22px 22px 24px; }
   .way-label { display: flex; align-items: center; gap: 8px; font: 700 0.88em/1 Pretendard, system-ui, sans-serif; color: var(--green); margin: 0 0 8px; }
   .way-address { margin: 0 0 14px; font: 800 1.4em/1.55 Pretendard, system-ui, sans-serif; color: #664c27; letter-spacing: -0.01em; }
-  .way-map-wrap { max-width: 100%; overflow-x: auto; border-radius: 12px; border: 1px solid #f9eedd; }
+  /* 2026-08-19 — mapWidth/mapHeight를 520/293으로 줄였더니 줌아웃·초기화 버튼이 깨져
+     보인다는 제보(사용자 실사용 스크린샷). 목업(design-mockup .../plan3#/about)은 이
+     위젯을 640×360(원래 값) 그대로 쓰고 있어 정상 렌더링되는 걸 코드로 확인했다 —
+     이 위젯이 임의 크기를 잘 지원 안 할 가능성이 높다고 보고, 위젯 자체는 640×360
+     그대로 두고 카드 폭에 맞추는 건 transform: scale로 시각적으로만 축소하는 방식으로
+     바꿨다. 카카오맵 스크립트가 이 샌드박스에서 로드가 막혀(t1.kakaocdn.net DNS 실패)
+     버튼이 실제로 정상 렌더링되는지는 직접 재현·확인은 못 했다 — 배포 후 눈으로 재확인 필요. */
+  .way-map-wrap {
+    max-width: 100%; overflow-x: auto; overflow-y: hidden; border-radius: 12px; border: 1px solid #f9eedd;
+    width: 520px; height: 293px;
+  }
+  :global(#daumRoughmapContainer1785386858595) {
+    width: 640px; height: 360px; transform: scale(0.8125); transform-origin: top left;
+  }
   /* 목업 원본과 동일 — 지도 위젯이 자체적으로 그리는 주소·전화 캡션(.cont)은 옆 카드와
      내용이 겹친다. JS 정리(900ms 지연)만 두면 그 사이 잠깐 보였다 사라지는 깜빡임이
      생기므로, 렌더 즉시 CSS로 숨긴다(!important — 위젯이 자체 인라인 스타일로 보이려 함).
