@@ -21,15 +21,15 @@ const isoDate = notice.data.date.toISOString().slice(0, 10);
         <p class="post-meta"><time datetime={isoDate} data-pagefind-meta="date[datetime]">{isoDate}</time></p>
       </div>
     </section>
-    <section class="post-photo">
-      <div class="wrap">
-        <span class="post-photo-box">
-          {notice.data.image
-            ? <img class="post-photo-img" src={notice.data.image} alt={notice.data.imageAlt ?? ''} />
-            : <img class="post-photo-fallback" src="/images/logo-mark.png" alt="" />}
-        </span>
-      </div>
-    </section>
+    {notice.data.image && (
+      <section class="post-photo">
+        <div class="wrap">
+          <span class="post-photo-box">
+            <img class="post-photo-img" src={notice.data.image} alt={notice.data.imageAlt ?? ''} />
+          </span>
+        </div>
+      </section>
+    )}
     <section class="post-body">
       <div class="wrap">
         <Content />
@@ -46,7 +46,9 @@ const isoDate = notice.data.date.toISOString().slice(0, 10);
   .post-photo { padding: 34px 0 0; }
   .post-photo-box { display: flex; align-items: center; justify-content: center; height: 22em; border: 1px solid #d0c3d2; border-radius: 16px; background: #fff; overflow: hidden; }
   .post-photo-img { width: 100%; height: 100%; object-fit: cover; display: block; }
-  .post-photo-fallback { height: 22%; width: auto; object-fit: contain; display: block; }
   .post-body { padding: 44px 0 66px; }
   .post-body :global(p) { max-width: 44em; font: 400 1.13em/1.85 Pretendard, system-ui, sans-serif; color: var(--muted); }
+  /* 본문(마크다운) 삽입 사진 — 가로 사진뿐 아니라 포스터 같은 세로 사진도 다뤄야 해서
+     object-fit으로 자르지 않고 원본 비율 그대로, 폭만 본문 컬럼(44em)에 맞춰 축소한다. */
+  .post-body :global(img) { display: block; max-width: 44em; width: 100%; height: auto; margin: 24px 0; border-radius: 12px; }
 </style>
