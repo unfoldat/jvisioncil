@@ -49,6 +49,10 @@ const isoDate = notice.data.date.toISOString().slice(0, 10);
   .post-body { padding: 44px 0 66px; }
   .post-body :global(p) { max-width: 44em; font: 400 1.13em/1.85 Pretendard, system-ui, sans-serif; color: var(--muted); }
   /* 본문(마크다운) 삽입 사진 — 가로 사진뿐 아니라 포스터 같은 세로 사진도 다뤄야 해서
-     object-fit으로 자르지 않고 원본 비율 그대로, 폭만 본문 컬럼(44em)에 맞춰 축소한다. */
-  .post-body :global(img) { display: block; max-width: 44em; width: 100%; height: auto; margin: 24px 0; border-radius: 12px; }
+     object-fit으로 자르지 않고 원본 비율 그대로 둔다. width:100%를 쓰면 원본이 본문
+     컬럼(.post-body :global(p)의 max-width:44em)보다 작을 때도 억지로 늘어나므로
+     width:auto로 실제 크기를 우선하고, max-width만으로 큰 사진을 줄인다(p 태그 안에
+     감싸져 렌더링되므로 max-width:100%가 이미 그 p의 44em 컬럼 폭 안에서 계산된다 —
+     44em을 여기 다시 안 적어도 됨). margin: auto로 가운데 정렬. */
+  .post-body :global(img) { display: block; max-width: 100%; width: auto; height: auto; margin: 24px auto; border-radius: 12px; }
 </style>
