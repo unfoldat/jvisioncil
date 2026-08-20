@@ -108,7 +108,7 @@ const path = decodeURIComponent(Astro.url.pathname);
       </div>
     </div>
 
-    <main id="main-content" class="main" tabindex="-1" data-pagefind-body={searchable || undefined} data-pagefind-ignore={!searchable || undefined}>
+    <main id="main-content" class="main" data-pagefind-body={searchable || undefined} data-pagefind-ignore={!searchable || undefined}>
       <div class="page-bg" style={`background:${bg}`}>
         <slot />
       </div>
@@ -168,21 +168,11 @@ const path = decodeURIComponent(Astro.url.pathname);
         applyHc(localStorage.getItem('goodvision-hc') === '1');
         hcToggle.addEventListener('click', () => applyHc(!root.classList.contains('hc')));
 
-        // 스킵 링크(공통 Skip to Main Content 패턴, 2026-08-20 재정의) — href="#main-content"와
-        // 실제 focus 대상을 항상 일치시킨다: main#main-content 자신(이미 정적 tabindex="-1")으로
-        // 보낸다. 페이지 안의 h1이나 본문 첫 요소로 리다이렉트하지 않는다 — 그렇게 하면 href와
-        // focus 대상이 어긋나 스크린리더의 자체 fragment 휴리스틱과 충돌할 수 있고(소식 상세의
-        // 옛 firstElementChild 특례에서 실기로 확인), 5/7 페이지 유형에서 h1 앞에 있는
-        // eyebrow 라벨 같은 DOM 콘텐츠를 건너뛰게 된다. 순수 fragment navigation만으로는
-        // 브라우저마다 focus 이동이 보장되지 않을 수 있어(다른 #앵커 이동에 쓰는 jumpToHash와
-        // 같은 이유) 최소 안전망으로 focus()만 호출한다. 페이지별 예외 없음 — 모든 페이지 공통.
-        document.querySelector('.skip')?.addEventListener('click', (e) => {
-          const main = document.getElementById('main-content');
-          if (!main) return;
-          e.preventDefault();
-          main.focus();
-          window.scrollTo(0, main.getBoundingClientRect().top + window.scrollY - 8);
-        });
+        // 2026-08-20(test/skip-no-focus 실험 브랜치 전용) — 한/영 전환 안 되는 문제를
+        // 격리 조사하기 위해 스킵링크의 programmatic focus(main.focus())를 완전히 제거.
+        // reference(a11y.xvtech.com)의 skip target처럼 순수 네이티브 anchor로만 동작 —
+        // main#main-content의 tabindex="-1"도 아래에서 제거해 정적 콘텐츠에 실제 키보드
+        // 포커스가 전혀 안 가게 만든다. 이 브랜치는 main에 병합하지 않는다.
 
         // 다른 페이지의 #앵커로 이동(푸터 "오시는 길"·"부설연구소")할 때 — 일반 다중 페이지
         // 이동은 브라우저가 포커스를 새로 초기화해 스크린리더가 새 <title>을 읽지만,
