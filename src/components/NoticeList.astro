@@ -5,14 +5,13 @@
 // 2026-08-19 접근성 감사 — 썸네일이 정보성 사진이면 alt=""로 고정하면 안 되므로
 // thumbnailAlt를 그대로 alt에 쓴다. 편집자가 안 채웠으면 alt=""(장식용) — 카드가
 // 이미 h3 제목으로 글을 식별하므로 이 경우엔 빈 alt가 정보 손실이 아니다.
-// 2026-08-19(음성 탐색 검증) — 카드 링크의 Tab 이동 시 이름(accessible name)과
-// 화살표 탐색 순서를 분리했다. 화살표는 여전히 DOM 순서 그대로(사진→날짜→제목→요약)
-// 읽지만, Tab/링크 목록 탐색에서 들리는 "이름"은 aria-labelledby로 제목을 맨 앞에
-// 오게 재조합한다(제목 → "소식 상세보기" 행동 목적 → 작성일 → 요약) — aria-label로
-// 통째로 덮지 않고 이미 있는 실제 텍스트(h3, time)의 id를 참조만 하므로 새 텍스트를
-// 만드는 건 "소식 상세보기" sr-only 한 조각뿐. 이 조각은 화살표 탐색에서도 만나게
-// 되므로(카드 맨 끝, 홈 서비스카드의 "~보기 →" CTA와 같은 위치) 중복처럼 들릴 위험이
-// 있다 — 실기 확인 전까지는 가설로 남겨둔다.
+// 2026-08-20(목업 DOM 매핑 결과 반영) — 카드 aria-labelledby 재조합(제목→"소식
+// 상세보기"→작성일)을 폐지했다. design-mockup.jvisioncil.pages.dev/plan3#/news
+// 실기 라이브 DOM을 직접 확인한 결과, 카드 <a>에는 커스텀 ARIA가 전혀 없고
+// Tab 이름은 순수 DOM 순서(사진 aria-hidden 제외→작성일→제목→요약)로만 계산되는
+// 구조였다 — 이게 실제로 잘 작동한 패턴이었다. "소식 상세보기" 같은 sr-only 문구도
+// 목업엔 없다(실제 a href만으로 링크 role이 네이티브로 전달됨). 원하는 낭독 문장을
+// ARIA로 조립하지 않고, semantic HTML과 DOM 순서에 그대로 맡긴다.
 import type { CollectionEntry } from 'astro:content';
 import { noticeHref } from '../lib/notices';
 
@@ -43,7 +42,7 @@ const items = notices.map((notice) => ({
   <ul class="notice-board">
     {items.map((item, i) => (
       <li class="notice-card">
-        <a href={item.href} aria-labelledby={`notice-title-${i} notice-action-${i} notice-date-${i}`}>
+        <a href={item.href}>
           <span class="notice-card-photo">
             {item.thumbnail
               ? <img class="notice-card-photo-img" src={item.thumbnail} alt={item.thumbnailAlt ?? ''} loading="lazy" />
@@ -51,12 +50,11 @@ const items = notices.map((notice) => ({
           </span>
           <span class="notice-card-body">
             <span class="notice-card-meta">
-              <time datetime={iso(item.date)} class="notice-card-date" id={`notice-date-${i}`}><span class="sr-only">작성일 </span>{iso(item.date)}</time>
+              <time datetime={iso(item.date)} class="notice-card-date"><span class="sr-only">작성일 </span>{iso(item.date)}</time>
               {item.pinned && <span class="pinned-label"><span aria-hidden="true">📌</span> 고정됨</span>}
             </span>
-            <h3 id={`notice-title-${i}`}>{item.title}</h3>
+            <h3>{item.title}</h3>
             {item.summary && <span class="notice-card-summary">{item.summary}</span>}
-            <span id={`notice-action-${i}`} class="sr-only">소식 상세보기</span>
           </span>
         </a>
       </li>
