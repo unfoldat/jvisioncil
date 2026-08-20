@@ -127,7 +127,13 @@ const galleryLoop = PHOTOS.concat(PHOTOS);
   /* margin shorthand로 top/bottom만 정하면 안 된다 — 3값 shorthand는 left/right도 0으로
      같이 지정해버려서 .wrap의 margin:auto 가운데 정렬을 ID 우선순위로 덮어쓰고, 결과적으로
      제목이 화면 왼쪽 끝에 붙어버린다(실측으로 발견). top/bottom만 따로 지정해 좌우는 안 건드린다. */
-  #home-gallery { margin-top: 0; margin-bottom: 22px; font: 800 1.7em/1.4 NanumSquareRound, Pretendard, sans-serif; color: #332e1e; }
+  /* #home-gallery(h2)와 .marquee 둘 다 폭 정렬을 위해 .wrap 클래스를 쓰는데, 이 페이지
+     위쪽의 범용 규칙(section[aria-labelledby] > .wrap)이 둘 다 직계 자식으로 잡아버려서
+     section.band 자체 패딩(46/58)에 더해 h2·marquee 각각에도 같은 패딩이 또 붙어
+     총 3중으로 겹쳤다(실측으로 발견 — h2 박스 높이가 텍스트 한 줄인데 142px까지 부풀어
+     있었음). 여기서만 0으로 되돌린다 — section.band의 패딩 한 번만 남기면 #home-cards와
+     동일한 상하 여백이 된다. */
+  #home-gallery { margin-top: 0; margin-bottom: 22px; padding: 0; font: 800 1.7em/1.4 NanumSquareRound, Pretendard, sans-serif; color: #332e1e; }
   /* 2026-08-20 — 마퀴가 보이는 창(.marquee)을 본문 폭(.wrap)에 가둔다. 움직이는
      트랙(.marquee-track)은 그대로 폭 제한 없이 흘러가고, overflow:hidden이 창 밖으로
      나간 부분만 가린다. */
@@ -173,7 +179,7 @@ const galleryLoop = PHOTOS.concat(PHOTOS);
   .donate-cta p { margin: 0 0 30px; font: 400 1.32em/1.7 NanumSquareRound, Pretendard, sans-serif; color: var(--muted); }
   .btn-lg { padding: 20px 40px; font: 800 1.44em/1 NanumSquareRound, Pretendard, sans-serif !important; min-height: 0; }
 
-  .marquee { overflow: hidden; }
+  .marquee { overflow: hidden; padding: 0 !important; }
   .marquee-track { display: flex; gap: 18px; width: max-content; animation: marquee 120s linear infinite; }
   .marquee:hover .marquee-track, .marquee:focus-within .marquee-track { animation-play-state: paused; }
   @media (prefers-reduced-motion: reduce) { .marquee-track { animation: none; } }
