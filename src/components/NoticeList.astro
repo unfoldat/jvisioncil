@@ -12,6 +12,14 @@
 // 구조였다 — 이게 실제로 잘 작동한 패턴이었다. "소식 상세보기" 같은 sr-only 문구도
 // 목업엔 없다(실제 a href만으로 링크 role이 네이티브로 전달됨). 원하는 낭독 문장을
 // ARIA로 조립하지 않고, semantic HTML과 DOM 순서에 그대로 맡긴다.
+// 2026-08-20(카드 전체 <a> → <h3><a> 구조 전환) — 위 변경 후 실제 SenseReader
+// 실기에서 카드 전체를 감싸던 <a> 안에 <h3>가 중첩된 구조 때문에, Tab 낭독이
+// 제목을 건너뛰는 문제가 확인됐다(docs/accessibility-decision-log.md 참고).
+// DOM·accname 스펙·Chrome accessibility tree는 전부 제목을 포함시키는데
+// SenseReader의 Tab(focus mode)만 빠뜨렸다 — 화살표 모드는 정상 인식. 원인을
+// ARIA로 덮지 않고 구조로 해결: 이제 실제 Tab 정지점(=실제 <a>)은 <h3> 안의
+// 제목 링크 하나뿐이다. 카드 전체 클릭 UX는 CSS stretched-link(.notice-card-link
+// ::after)로 시각적으로만 복원 — 새 JS/role/tabindex 없음.
 import type { CollectionEntry } from 'astro:content';
 import { noticeHref } from '../lib/notices';
 
@@ -42,7 +50,7 @@ const items = notices.map((notice) => ({
   <ul class="notice-board">
     {items.map((item, i) => (
       <li class="notice-card">
-        <a href={item.href}>
+        <article>
           <span class="notice-card-photo">
             {item.thumbnail
               ? <img class="notice-card-photo-img" src={item.thumbnail} alt={item.thumbnailAlt ?? ''} loading="lazy" />
@@ -53,10 +61,10 @@ const items = notices.map((notice) => ({
               <time datetime={iso(item.date)} class="notice-card-date"><span class="sr-only">작성일 </span>{iso(item.date)}</time>
               {item.pinned && <span class="pinned-label"><span aria-hidden="true">📌</span> 고정됨</span>}
             </span>
-            <h3>{item.title}</h3>
-            {item.summary && <span class="notice-card-summary">{item.summary}</span>}
+            <h3><a class="notice-card-link" href={item.href}>{item.title}</a></h3>
+            {item.summary && <p class="notice-card-summary">{item.summary}</p>}
           </span>
-        </a>
+        </article>
       </li>
     ))}
   </ul>
@@ -78,18 +86,27 @@ const items = notices.map((notice) => ({
   }
 
   .notice-board { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, 1fr); gap: 26px; }
-  .notice-card { border: 1px solid #d0c3d2; border-radius: 16px; background: #f6f4f6; overflow: hidden; }
+  .notice-card { position: relative; border: 1px solid #d0c3d2; border-radius: 16px; background: #f6f4f6; overflow: hidden; }
   /* 2026-08-19 작업지시서 — 카드 썸네일은 "식별용"이라 크롭 허용, 고정 3:2 프레임으로
      통일(세로 포스터가 와도 이 프레임 안에서는 가운데 기준으로 잘려 보임). */
   .notice-card-photo { display: flex; align-items: center; justify-content: center; aspect-ratio: 3 / 2; border-bottom: 1px solid #d0c3d2; background: #fff; }
   .notice-card-photo-img { width: 100%; height: 100%; object-fit: cover; display: block; }
   .notice-card-photo-fallback { height: 22%; width: auto; object-fit: contain; display: block; }
-  .notice-card a { display: block; text-decoration: none; color: inherit; }
-  .notice-card a:hover { background: #efe9ef; }
   .notice-card-body { display: block; padding: 24px 24px 28px; }
   .notice-card-meta { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
   .notice-card-date { display: block; font: 700 0.94em/1 Pretendard, system-ui, sans-serif; color: #554458; }
   .notice-card h3 { margin: 10px 0 0; font: 800 1.38em/1.5 NanumSquareRound, Pretendard, sans-serif; color: #403342; text-wrap: pretty; }
+  /* 2026-08-20 — 카드 전체 클릭 UX를 CSS만으로 복원(stretched-link). 실제 Tab
+     정지점/accessible name은 이 <a>(제목) 하나뿐 — ::after가 카드 전체를 덮어
+     마우스/터치로는 어디를 눌러도 이 링크가 눌린다. */
+  .notice-card-link { text-decoration: none; color: inherit; }
+  .notice-card-link::after { content: ''; position: absolute; inset: 0; }
+  .notice-card:hover { background: #efe9ef; }
+  /* ::after가 카드 전체를 덮어 시각 포커스 링이 제목 글자에만 좁게 그려지므로,
+     제목 링크가 포커스일 때 카드 테두리 전체에도 같은 포커스 스타일을 겹쳐 그려
+     "카드 전체가 선택됐다"는 걸 알 수 있게 한다(BaseLayout 전역 :focus-visible과
+     같은 색/굵기 재사용 — 새 색상 추가 없음). */
+  .notice-card:has(.notice-card-link:focus-visible) { outline: 3px solid #1a1512; outline-offset: 2px; }
   .notice-card-summary {
     display: -webkit-box; margin: 10px 0 0; font: 400 1.06em/1.75 NanumSquareRound, Pretendard, sans-serif;
     color: var(--muted); text-wrap: pretty; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;

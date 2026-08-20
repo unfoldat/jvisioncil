@@ -67,7 +67,7 @@ DOM·accname 스펙·브라우저 Accessibility Tree 세 레이어 모두 제목
 - 링크 목적을 사용자가 판단할 수 있어야 함
 - SenseReader 실기를 최종 검증으로 사용
 
-### 현재 답 (제안 — 아직 미구현)
+### 현재 답 (구현 완료, 실기 검증 대기)
 
 **heading이 링크를 감싸는 구조(`<h3><a>제목</a></h3>`)로 뒤집는다.**
 지금처럼 "링크가 heading을 포함"하는 게 아니라 "heading이 링크를
@@ -89,7 +89,27 @@ DOM·accname 스펙·브라우저 Accessibility Tree 세 레이어 모두 제목
 제목만 링크로 잡힌다.
 
 ### 채택한 HTML 패턴
-미결정.
+
+```html
+<li class="notice-card">
+  <article>
+    <span class="notice-card-photo"><img alt="..."></span>
+    <span class="notice-card-body">
+      <span class="notice-card-meta"><time datetime="...">...</time></span>
+      <h3><a class="notice-card-link" href="...">제목</a></h3>
+      <p class="notice-card-summary">요약</p>
+    </span>
+  </article>
+</li>
+```
+
+카드 전체를 감싸던 `<a>`를 없애고, 실제 Tab 정지점/링크는 `<h3>` 안의
+제목 `<a>` 하나뿐이다. 카드 전체 클릭 UX는 새 JS·role·tabindex 없이
+CSS만으로 복원(`.notice-card-link::after { position:absolute; inset:0 }`
++ `.notice-card { position:relative }`). 포커스 시 카드 전체에 시각
+피드백을 주기 위해 `.notice-card:has(.notice-card-link:focus-visible)`로
+전역 `:focus-visible` 색/굵기를 카드 테두리에도 겹쳐 그린다(새 색상
+추가 없음, 기존 스타일 재사용).
 
 ### 근거
 - HTML/WCAG: 인터랙티브 요소(`<a>`) 안에 자기 고유 role을 가진 구조적
@@ -97,12 +117,28 @@ DOM·accname 스펙·브라우저 Accessibility Tree 세 레이어 모두 제목
   heading이 링크를 감싸는 구조로" 만드는 게 여러 접근성 가이드에서
   권장되는 표준 카드 패턴이다.
 - WCAG 2.5.8(포인터 타겟 최소 크기)·프로젝트 CLAUDE.md 28번(클릭
-  영역 44×44px 권장)은 stretched-link 병행 검토의 근거.
-- SenseReader 실기(2026-08-20): 위 표 참고. 이 부분만 관찰값이고
-  나머지(accname 스펙, Chrome AX tree)는 코드/도구로 확인한 값.
+  영역 44×44px 권장)은 stretched-link 병행 채택의 근거.
+- SenseReader 실기(2026-08-20, 문제 발견 시점): 위 표 참고. 이 부분만
+  관찰값이고 나머지(accname 스펙, Chrome AX tree)는 코드/도구로 확인한
+  값.
+- 구현 후 로컬 검증(코드/도구 확인, SenseReader 아님):
+  - 빌드 dist HTML — `<h3><a class="notice-card-link">제목</a></h3>`
+    구조, 카드당 실제 `<a href>` 1개, aria-label/aria-labelledby/
+    "소식 상세보기" 전부 0건.
+  - Chrome Accessibility Tree(로컬 프리뷰) — `heading "제목"` 안에
+    `link "제목"`(이름=제목 텍스트만), thumbnailAlt 있으면 `image
+    "alt텍스트"`가 별도 노드로, 없으면 이미지 자체가 트리에서 제외.
+  - 실제 키보드 Tab(claude-in-chrome computer 도구, JS `.focus()`
+    아님) — 카드1 제목 링크 → Tab 1회 → 카드2 제목 링크로 정확히
+    이동(중간 정지점 없음), `document.activeElement.matches(':focus-visible')
+    === true`, 상위 `.notice-card`의 computed `outline`이
+    `rgb(26,21,18) solid 3px`로 실제 적용됨(카드 전체 focus 표시 확인).
+  - `elementFromPoint`로 사진 영역(링크 밖 시각 영역) 클릭 시뮬레이션
+    — 실제로 `.notice-card-link` 엘리먼트가 히트됨(stretched-link
+    정상 작동, 카드 어디를 눌러도 제목 링크가 눌림).
 
 ### 상태
-**OPEN.** 이번 턴에서는 원인 조사와 후보안 제시까지만 하고 구현하지
-않았다. 다음 단계에서 stretched-link 구조를 실제로 적용하고, 빌드 +
-Accessibility Tree 확인 후 SenseReader로 "Tab에서 제목이 들리는가"를
-재실기하면 DECIDED → VERIFIED로 올린다.
+**DECIDED — SenseReader 실기 검증 대기.** 코드/빌드/Accessibility
+Tree/실제 키보드 Tab 레벨은 전부 확인됐다. SenseReader로 "Tab에서
+제목이 들리는가"(예: "좋은비전 홈페이지가 개설되었습니다, 링크" /
+"테스트1번글, 링크" 계열)를 재실기해 확인되면 VERIFIED로 올린다.
