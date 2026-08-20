@@ -34,6 +34,14 @@ const bodyHtml = tagPortraitImages(stripImageTitle(notice.rendered?.html ?? ''))
     </section>
     <section class="post-body">
       <div class="wrap">
+        <!-- 2026-08-20(헤딩 지도 최소 보강) — 글이 짧아 글쓴이가 소제목(##)을 안 썼어도
+             H 탐색으로 "본문 시작"까지는 반드시 도달하게 하는 sr-only 헤딩. 시각 디자인
+             변화 없음(.sr-only 재사용, 새 CSS 없음). 화살표 탐색에서도 "본문" 한 단어만
+             추가로 지나가는 정도라 장황한 안내문이 아님 — 원칙(가짜 헤딩 금지)과 구분:
+             이 구역은 실제로 헤딩이 필요한 콘텐츠 전환점(제목 구역 → 본문 구역)이라
+             "가짜"가 아니라 정당한 헤딩이다. 글쓴이가 본문에 ## 소제목을 쓰면 이 H2
+             다음에 이어서 H2/H3로 잡힌다(마크다운 헤딩 변환은 별도로 실측 확인됨). -->
+        <h2 class="sr-only">본문</h2>
         <Fragment set:html={bodyHtml} />
         <p><a href="/소식/">소식 목록으로 돌아가기</a></p>
       </div>
