@@ -59,7 +59,7 @@ const galleryLoop = PHOTOS.concat(PHOTOS);
 
   <section aria-labelledby="dn-gallery" class="band">
     <h2 id="dn-gallery" class="wrap">후원으로 이어진 활동</h2>
-    <div class="marquee">
+    <div class="marquee wrap">
       <div class="marquee-track">
         {galleryLoop.map((photo, i) => (
           <img class="marquee-item" src={photo.src} alt={i >= PHOTOS.length ? '' : photo.alt} aria-hidden={i >= PHOTOS.length ? 'true' : undefined} loading="lazy" />
@@ -108,6 +108,9 @@ const galleryLoop = PHOTOS.concat(PHOTOS);
 
   .band { background: #f2f6f6; border-top: 1px solid #bdd2d2; padding: 54px 0 62px; }
   #dn-gallery { margin-top: 0; margin-bottom: 22px; font: 800 1.7em/1.4 NanumSquareRound, Pretendard, sans-serif; color: #332e1e; }
+  /* 2026-08-20 — 마퀴가 보이는 창(.marquee)을 본문 폭(.wrap)에 가둔다. 움직이는
+     트랙(.marquee-track)은 그대로 폭 제한 없이 흘러가고, overflow:hidden이 창 밖으로
+     나간 부분만 가린다. */
   .marquee { overflow: hidden; }
   .marquee-track { display: flex; gap: 16px; width: max-content; animation: marquee 120s linear infinite; }
   .marquee:hover .marquee-track, .marquee:focus-within .marquee-track { animation-play-state: paused; }
