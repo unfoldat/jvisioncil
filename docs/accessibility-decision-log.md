@@ -137,8 +137,16 @@ CSS만으로 복원(`.notice-card-link::after { position:absolute; inset:0 }`
     — 실제로 `.notice-card-link` 엘리먼트가 히트됨(stretched-link
     정상 작동, 카드 어디를 눌러도 제목 링크가 눌림).
 
+### 최종 SenseReader 실기 (2026-08-20)
+
+- 좋은비전 카드 Tab → "좋은비전홈페이지가개설되었습니다 헤딩3 링크"
+- 다음 Tab, 테스트1번글 → "테스트1번글 헤딩3 링크"
+- 테스트1번글 화살표 탐색 → 카드 내부 제목/요약 등 세부 콘텐츠 접근 확인
+
+Tab에서 제목이 링크의 핵심 식별자로 정확히 전달됨을 확인. 이전
+whole-card `<a>` 구조에서 Tab 낭독 시 제목이 누락되던 문제가
+`<h3><a>` 구조로 해결됨을 실기로 검증.
+
 ### 상태
-**DECIDED — SenseReader 실기 검증 대기.** 코드/빌드/Accessibility
-Tree/실제 키보드 Tab 레벨은 전부 확인됐다. SenseReader로 "Tab에서
-제목이 들리는가"(예: "좋은비전 홈페이지가 개설되었습니다, 링크" /
-"테스트1번글, 링크" 계열)를 재실기해 확인되면 VERIFIED로 올린다.
+**VERIFIED (2026-08-20).** 코드/빌드/Accessibility Tree/실제 키보드
+Tab/SenseReader 실기 전부 확인 완료. 카드 접근성 작업 종료.
