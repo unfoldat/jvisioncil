@@ -39,11 +39,6 @@ const galleryLoop = gallery.concat(gallery);
     <div class="wrap">
       <p class="eyebrow"><span class="pill">소식</span></p>
       <h1 id="nw-title">좋은비전의 활동을 전합니다</h1>
-      <!-- 2026-08-19(음성 탐색 검증) — 페이지 내 목차. index.astro와 동일한 이유·구조. -->
-      <nav aria-label="페이지 내용 바로가기" class="page-toc">
-        <a href="#nw-gallery" class="sr-only sr-only-focusable">활동 사진으로 이동</a>
-        <a href="#nw-board" class="sr-only sr-only-focusable">전체 소식으로 이동</a>
-      </nav>
     </div>
   </section>
 
@@ -56,7 +51,6 @@ const galleryLoop = gallery.concat(gallery);
         ))}
       </div>
     </div>
-    <a href="#nw-board" class="sr-only sr-only-focusable">활동 사진 건너뛰고 전체 소식으로 이동</a>
   </section>
 
   <section aria-labelledby="nw-board" class="tint">
