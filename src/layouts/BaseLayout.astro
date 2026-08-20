@@ -168,27 +168,20 @@ const path = decodeURIComponent(Astro.url.pathname);
         applyHc(localStorage.getItem('goodvision-hc') === '1');
         hcToggle.addEventListener('click', () => applyHc(!root.classList.contains('hc')));
 
-        // 스킵 링크 — 클릭 시 main 요소가 아니라 그 안의 실제 제목(h1, 없으면 h2~h6)으로
-        // 초점을 옮긴다. main 자신에 초점을 두면 accessible name이 없는 랜드마크라
-        // 스크린리더가 "메인"류의 랜드마크 이름만 읽고 실제 페이지 콘텐츠(제목 텍스트)는
-        // 안 읽는 문제가 실측(진짜 Tab 키 입력 + 접근 가능한 이름 계산 규칙)으로 확인됐다.
-        // 헤딩은 기본적으로 포커스 불가능하므로 jumpToHash와 같은 방식으로 tabindex가
-        // 없으면 동적으로 부여한다. 헤딩이 없으면(거의 없음) main으로 폴백.
+        // 스킵 링크(공통 Skip to Main Content 패턴, 2026-08-20 재정의) — href="#main-content"와
+        // 실제 focus 대상을 항상 일치시킨다: main#main-content 자신(이미 정적 tabindex="-1")으로
+        // 보낸다. 페이지 안의 h1이나 본문 첫 요소로 리다이렉트하지 않는다 — 그렇게 하면 href와
+        // focus 대상이 어긋나 스크린리더의 자체 fragment 휴리스틱과 충돌할 수 있고(소식 상세의
+        // 옛 firstElementChild 특례에서 실기로 확인), 5/7 페이지 유형에서 h1 앞에 있는
+        // eyebrow 라벨 같은 DOM 콘텐츠를 건너뛰게 된다. 순수 fragment navigation만으로는
+        // 브라우저마다 focus 이동이 보장되지 않을 수 있어(다른 #앵커 이동에 쓰는 jumpToHash와
+        // 같은 이유) 최소 안전망으로 focus()만 호출한다. 페이지별 예외 없음 — 모든 페이지 공통.
         document.querySelector('.skip')?.addEventListener('click', (e) => {
           const main = document.getElementById('main-content');
           if (!main) return;
           e.preventDefault();
-          // 2026-08-20(본문 진입점 실험, opt-in) — [data-body-start]가 있는 페이지
-          // (소식 상세)는 그 컨테이너의 첫 실제 콘텐츠 요소로 착지한다. 목록에서
-          // 이미 제목을 듣고 Enter한 사용자가 상세에서 h1을 또 듣고 Tab으로 본문을
-          // 건너뛰는 문제를 줄이기 위함. 이 마커가 없는 페이지는 아래 heading 로직
-          // 그대로 — 동작 변화 없음.
-          const bodyStart = main.querySelector('[data-body-start]');
-          const heading = main.querySelector('h1, h2, h3, h4, h5, h6');
-          const target = (bodyStart && bodyStart.firstElementChild) || heading || main;
-          if (target.getAttribute('tabindex') === null) target.setAttribute('tabindex', '-1');
-          target.focus();
-          window.scrollTo(0, target.getBoundingClientRect().top + window.scrollY - 8);
+          main.focus();
+          window.scrollTo(0, main.getBoundingClientRect().top + window.scrollY - 8);
         });
 
         // 다른 페이지의 #앵커로 이동(푸터 "오시는 길"·"부설연구소")할 때 — 일반 다중 페이지

@@ -150,3 +150,85 @@ whole-card `<a>` 구조에서 Tab 낭독 시 제목이 누락되던 문제가
 ### 상태
 **VERIFIED (2026-08-20).** 코드/빌드/Accessibility Tree/실제 키보드
 Tab/SenseReader 실기 전부 확인 완료. 카드 접근성 작업 종료.
+
+---
+
+## 사이트 공통 "본문으로 바로가기"는 어디로 보내야 하는가?
+
+### 개발 질문
+반복되는 header/GNB를 건너뛰는 사이트 공통 Skip to Main Content
+링크는, 페이지마다 다른 "실제 본문 콘텐츠"로 이동시켜야 하는가,
+아니면 main 랜드마크 자체로 보내야 하는가?
+
+### 배경
+소식 상세 페이지에만 `data-body-start` + `firstElementChild` 특례를
+추가해 h1이 아니라 본문 첫 콘텐츠로 착지시키려 했으나, 실기에서 href
+(`#main-content`)와 실제 focus 대상(무id 요소)이 어긋나며 AT가 h1
+쪽으로 스스로 보정하는 것으로 보이는 현상이 발견됨. 이를 계기로
+"이 링크는 article 본문 이동 기능이 아니라 사이트 공통 Skip to Main
+패턴"이라는 재정의가 나왔다.
+
+### 비교한 두 후보
+- A안: main 내부 첫 h1으로 focus (기존 구현)
+- B안: main#main-content 자신으로 focus (라이브 목업
+  design-mockup.jvisioncil.pages.dev/plan3#/lecture 실측 패턴)
+
+### 조사 결과 (현재 HEAD 빌드 dist 기준, 추측 아님)
+7개 페이지 유형 중 **5개(센터소개·전문상담·강의 안내·소식 목록·후원)에서
+h1 직전에 `<p class="eyebrow"><span class="pill">카테고리명</span></p>`
+콘텐츠가 실존**하며, A안(h1 직행)은 이를 매번 건너뛴다. 홈·소식상세
+2유형만 h1 앞에 실질 콘텐츠가 없다. 라이브 목업에서 skip-link 활성화
+후 `document.activeElement === main#main-content`(`tabindex="-1"`)로
+확인됨 — B안이 이미 검증된 기준선.
+
+### 설계 원칙
+- href 목적지와 실제 focus 목적지를 일치시킨다
+- 페이지별 예외를 만들지 않는다
+- 기존 DOM 순서(eyebrow → h1 → 본문)를 보존한다
+- 페이지 로드 시 자동 focus는 하지 않는다(첫 Tab이 스킵 링크에
+  자연스럽게 닿아야 함 — 목업의 "H1 자동 focus"는 이 흐름을 방해해
+  채택하지 않음)
+
+### 현재 답 — 채택한 패턴 (구현 완료, SenseReader 실기 대기)
+
+```js
+document.querySelector('.skip')?.addEventListener('click', (e) => {
+  const main = document.getElementById('main-content');
+  if (!main) return;
+  e.preventDefault();
+  main.focus();
+  window.scrollTo(0, main.getBoundingClientRect().top + window.scrollY - 8);
+});
+```
+
+`<main id="main-content" tabindex="-1">`는 모든 페이지에 이미 정적으로
+존재 — 새 tabindex 부여 로직 불필요. `data-body-start`/`firstElementChild`/
+첫 heading 탐색/동적 tabindex 부여를 전부 제거했다. 소식 상세의
+`.post-content` wrapper도 스타일링에 쓰이지 않아 함께 제거(스타일은
+`.post-body :global(p/img)` 자손 선택자라 wrapper 유무와 무관).
+
+### 근거
+- WCAG: A/B 둘 다 2.4.1(Bypass Blocks) 위반 아님 — 표준 문제가 아니라
+  UX/IA 선택 문제.
+- href/focus target 일치: B만 일치. A는 소식상세 특례와 같은 종류의
+  구조적 불일치가 내재돼 있었음(이번에 제거).
+- 코드 단순성: B는 새 tabindex 부여·heading 탐색 로직이 전부 불필요.
+- 구현 후 로컬 검증(코드/도구 확인, SenseReader 아님):
+  - dist HTML — `data-body-start`, `.post-content` 전부 0건 확인
+  - synthetic click dispatch(claude-in-chrome) — 센터소개·소식상세
+    양쪽에서 `document.activeElement === main#main-content`,
+    `tabindex === "-1"` 확인
+  - Chrome Accessibility Tree — 센터소개: `region > generic "센터소개"
+    → heading "보는 방법은..." → 소개 문단들` 순서 보존 확인.
+    소식상세: `article > region(heading "테스트1번글" → 작성일) >
+    region(본문 → 이미지 → "소식 목록으로 돌아가기")` 순서 보존 확인
+  - 실제 키보드 Return 키로는 이 자동화 환경에서 클릭이 트리거되지
+    않는 현상이 있었음(이전에도 확인된 자동화 도구 자체의 한계로
+    추정) — 그래서 synthetic click dispatch로 핸들러 로직만 별도 검증,
+    실제 사용자 키보드 동작은 SenseReader 실기로 확인 필요
+
+### 상태
+**DECIDED — SenseReader 실기 대기.** 코드/빌드/dist/Accessibility Tree
+레벨은 전부 확인됐다. 센터소개(eyebrow 있는 페이지)와 소식 상세에서
+실기(Tab→Enter→main 진입→화살표 2~3회로 eyebrow/제목→본문 순서가
+자연스러운지)로 확인되면 VERIFIED로 올린다.
