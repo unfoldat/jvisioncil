@@ -201,8 +201,11 @@ const path = decodeURIComponent(Astro.url.pathname);
         if (location.hash) requestAnimationFrame(jumpToHash);
         window.addEventListener('hashchange', jumpToHash);
 
-        // 읽기 위치 표시 — 스크린리더 가상 커서(화살표 이동)는 DOM 포커스를 옮기지 않아
-        // :focus-visible이 안 걸린다. selectionchange로 가상 커서 위치를 따라간다.
+        // 2026-08-20(test/reading-cursor-off 실험 브랜치 전용) — 아래 읽기 위치 표시
+        // 기능(selectionchange 기반) 전체를 비활성화한 상태. SenseReader 가상커서
+        // 문서 탐색 BLOCKER 조사를 위해 reference(a11y.xvtech.com)에는 없는 이
+        // site-only 기능을 격리해서 비교하는 용도 — 이 브랜치는 main에 병합하지 않는다.
+        /*
         let readingEl = null;
         let pointerDown = false;
         let pointerAt = 0;
@@ -225,6 +228,7 @@ const path = decodeURIComponent(Astro.url.pathname);
           const s = document.getSelection();
           if (s && s.anchorNode) markReading(s.anchorNode);
         });
+        */
 
         // 검색 — /search-index.json을 받아 클라이언트에서 필터링, 페이지 이동 없이 결과를 보여준다.
         const form = document.getElementById('site-search-form');
