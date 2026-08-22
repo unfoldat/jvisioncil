@@ -189,6 +189,11 @@ const path = decodeURIComponent(Astro.url.pathname);
         // #해시가 붙은 이동은 브라우저가 스크롤만 하고 포커스는 안 옮기는 경우가 많다
         // (표준 동작이 아니라 브라우저마다 다름). 목업의 performJump()처럼 해시 대상
         // 제목으로 직접 초점을 옮겨 시각적 위치와 읽기 위치를 일치시킨다.
+        // 2026-08-21(Q&A 고정 탭 메뉴 가림 수정) — 오프셋을 하드코딩된 값으로 고정하지
+        // 않고 대상 요소 자신의 scroll-margin-top(CSS) 계산값을 그대로 쓴다. 이걸 설정
+        // 안 한 페이지(대부분)는 computed 값이 0이라 || 24로 기존과 동일한 기본 여백을
+        // 유지하고, Q&A처럼 위에 sticky 메뉴가 있는 곳은 그 페이지 CSS가 실측한
+        // scroll-margin-top만 정의하면 이 함수 수정 없이 자동으로 반영된다.
         const jumpToHash = () => {
           const id = decodeURIComponent(location.hash.slice(1));
           if (!id) return;
@@ -196,7 +201,8 @@ const path = decodeURIComponent(Astro.url.pathname);
           if (!target) return;
           if (target.getAttribute('tabindex') === null) target.setAttribute('tabindex', '-1');
           target.focus({ preventScroll: true });
-          window.scrollTo(0, target.getBoundingClientRect().top + window.scrollY - 24);
+          const offset = parseFloat(getComputedStyle(target).scrollMarginTop) || 24;
+          window.scrollTo(0, target.getBoundingClientRect().top + window.scrollY - offset);
         };
         if (location.hash) requestAnimationFrame(jumpToHash);
         window.addEventListener('hashchange', jumpToHash);

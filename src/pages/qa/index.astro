@@ -69,6 +69,24 @@ const sections = await Promise.all(
 </BaseLayout>
 
 <script>
+  // 2026-08-21(고정 탭 메뉴 가림 수정) — sticky 탭 메뉴의 실제 렌더링 높이를 측정해
+  // CSS 변수로 내보낸다. 임의 픽셀 값을 박아두지 않고, 반응형으로 pill이 줄바꿈되어
+  // 메뉴가 높아지는 경우까지 항상 실측값을 쓴다. BaseLayout의 jumpToHash가 각 h2의
+  // scroll-margin-top(computed) 값을 그대로 읽어 스크롤 오프셋으로 쓰므로, 여기서
+  // 변수만 정확히 채우면 나머지는 자동으로 맞는다.
+  const qaJumpnav = document.querySelector('.qa-jumpnav');
+  if (qaJumpnav) {
+    // window resize 이벤트만 쓰면 pill 줄바꿈으로 인한 높이 변화(폭은 안 바뀌었는데
+    // 내용만 반영되는 경우)나 리사이즈 도중의 중간 프레임 값을 놓칠 수 있어, 요소
+    // 자신의 실제 렌더 박스를 직접 관찰하는 ResizeObserver를 쓴다 — 항상 최종 정착된
+    // 실제 높이만 반영된다.
+    const setNavHeightVar = () => {
+      document.documentElement.style.setProperty('--qa-nav-height', `${qaJumpnav.getBoundingClientRect().height}px`);
+    };
+    setNavHeightVar();
+    new ResizeObserver(setNavHeightVar).observe(qaJumpnav);
+  }
+
   // 목업의 nav aria-current 패턴 재사용 — 뷰포트에 들어온 섹션의 pill에 aria-current를 켠다.
   const pills = Array.from(document.querySelectorAll('[data-qa-pill]'));
   const targets = pills
@@ -116,7 +134,14 @@ const sections = await Promise.all(
 
   .qa-section { padding: 46px 0; }
   .qa-section.tint { background: #fbf8f0; }
-  .qa-section h2 { margin: 0 0 22px; font: 800 1.62em/1.4 Pretendard, system-ui, sans-serif; color: #332e1e; scroll-margin-top: 145px; }
+  /* scroll-margin-top — .qa-jumpnav가 sticky인 동안(640px 초과)에만 그 실제 높이
+     (--qa-nav-height, JS로 실측해 채움) + 20px 여유를 준다. 640px 이하에서는
+     .qa-jumpnav가 position:static으로 바뀌어 더는 콘텐츠를 가리지 않으므로, 다른
+     페이지의 앵커 이동과 동일한 기본 여백(24px)만 남긴다. */
+  .qa-section h2 { margin: 0 0 22px; font: 800 1.62em/1.4 Pretendard, system-ui, sans-serif; color: #332e1e; scroll-margin-top: 24px; }
+  @media (min-width: 641px) {
+    .qa-section h2 { scroll-margin-top: calc(var(--qa-nav-height, 125px) + 20px); }
+  }
 
   .qa-list { display: grid; gap: 12px; }
   .qa-item { border: 1px solid var(--line); border-radius: 12px; background: #fff; padding: 4px 22px; }
