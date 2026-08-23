@@ -180,6 +180,15 @@ const busStops = [
             // mapHeight=360 기준으로 wrapper 높이를 293px로 assumed 계산했을 때 컨트롤 줄이
             // 그 아래 32px 지점에 있어 잘려나갔던 것이지, scale 자체의 결함이 아니었다.
             let roughmapLastWidth = -1;
+            // 2026-08-23 — 위젯(카카오 스크립트)이 아직 자기 내부 렌더를 안 끝낸 시점에
+            // fitRoughmap이 먼저 실행되면 .way-map-wrap의 폭이 일시적으로 몇 px(레이아웃
+            // 확정 전 과도 상태)로 잡히고, 그 비정상적인 값이 roughmapLastWidth에 그대로
+            // 고정돼 버린다 — 이후 실제 폭(카드 기준 약 537px)으로 정상화돼도 "<1px 변화면
+            // 재계산 안 함" 가드 때문에 영원히 그 비정상 scale에 갇힌다(실측: scale이
+            // 0.003까지 떨어져 지도와 확대/축소 버튼이 전부 알아볼 수 없는 크기로 눌림).
+            // 카드 폭이 이 값 밑으로 실제로 내려갈 일이 없는 안전한 하한선을 두어, 아직
+            // 자리 잡지 못한 과도 상태의 측정값은 아예 반영하지 않는다.
+            const MIN_SANE_WRAP_WIDTH = 100;
             function fitRoughmap(observedWidth) {
               const wrap = document.querySelector('.way-map-wrap');
               const widget = document.getElementById('daumRoughmapContainer1785386858595');
@@ -187,7 +196,7 @@ const busStops = [
               const NATIVE_W = 640;
               const NATIVE_H = 392; // 실측값(컨트롤 줄 포함 위젯 전체 높이) — 360이 아님
               const wrapWidth = observedWidth || wrap.getBoundingClientRect().width;
-              if (!wrapWidth) return;
+              if (!wrapWidth || wrapWidth < MIN_SANE_WRAP_WIDTH) return;
               // wrap.style.height를 여기서 바꾸는데, 그 wrap 자체를 ResizeObserver로 관찰하면
               // 높이 변경이 다시 resize를 유발해 무한 루프가 된다(실측으로 확인 — 화면이
               // 계속 흔들리고 렌더러가 버벅였음) — 폭이 실제로 달라졌을 때만 다시 계산한다.
@@ -198,7 +207,11 @@ const busStops = [
               widget.style.transformOrigin = 'top left';
               wrap.style.height = (NATIVE_H * scale) + 'px';
             }
-            setTimeout(() => fitRoughmap(), 950);
+            // 위젯 내부 스크립트(document.write로 끼워진 카카오 자체 렌더)가 언제 끝날지
+            // 확정할 수 없어 단발성 호출 하나로는 타이밍을 못 믿는다 — 여러 시점에 다시
+            // 시도한다. 이미 정상 값을 잡았으면 위 가드가 즉시 no-op으로 반환하므로
+            // 여러 번 불러도 안전하다.
+            [300, 950, 1800, 3000].forEach((delay) => setTimeout(() => fitRoughmap(), delay));
             // window 'resize'만 쓰면 창 크기는 그대로인데 레이아웃만 바뀌는 경우(글자 크기
             // 조절 버튼 등)를 못 잡는다 — 컨테이너 크기 변화를 직접 관찰하는 ResizeObserver로.
             const roughmapWrap = document.querySelector('.way-map-wrap');
