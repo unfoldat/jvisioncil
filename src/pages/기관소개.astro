@@ -214,6 +214,45 @@ const busStops = [
               widget.style.transform = '';
               widget.style.zoom = String(scale);
               wrap.style.height = (NATIVE_H * scale) + 'px';
+              // 2026-08-24 — zoom으로 바꾼 뒤에도 실기에서 "-"/초기화 아이콘이 여전히 흐리게
+              // 보인다는 재확인이 있었다. zoom(비정수 배율, 예 0.839063)이 위젯 전체를 그
+              // 배율로 다시 그리긴 하지만, 스프라이트 이미지가 정수 픽셀 경계에 안 맞게
+              // 리샘플링되면서 가는 선 아이콘만 흐려지는 현상은 zoom에서도 남는다 — 확대/
+              // 축소 버튼 묶음(.wrap_btn_zoom)만 별도로 correctZoomButtonIcons()에서 보정한다.
+              correctZoomButtonIcons(scale);
+            }
+            // .wrap_btn_zoom(확대/축소/초기화 버튼 3개)만 부모(widget)의 zoom을 상쇄하는
+            // 자기 zoom을 걸어 항상 배율 1(원본 픽셀)로 그리게 하고, 그 결과 커진 박스를
+            // translate로 원래 있던 화면 위치로 되돌린다 — zoom은 조상→자손으로 곱해져
+            // 적용되므로(자손 zoom을 1/scale로 주면 최종 배율이 정확히 1이 된다, 실측 확인:
+            // .wrap_btn_zoom rect가 34×104 네이티브 크기로 돌아옴) 지도 자체는 계속 축소된
+            // 채로, 이 버튼 묶음만 항상 정수 배율(1)로 그려져 스프라이트가 흐려지지 않는다.
+            function correctZoomButtonIcons(scale) {
+              const zw = document.querySelector('.wrap_btn_zoom');
+              if (!zw) return;
+              // 매 재계산마다 이전 보정을 먼저 지우고 다시 측정한다 — 안 그러면 이미 보정된
+              // rect를 기준으로 또 보정을 얹어 위치가 호출할 때마다 계속 어긋난다.
+              zw.style.zoom = '';
+              zw.style.transform = '';
+              const children = zw.children;
+              const structureOk = children.length === 3 &&
+                Array.prototype.every.call(children, (c) => /btn_zoom/.test(c.className));
+              if (!structureOk) {
+                // 카카오 쪽 마크업이 바뀌어 구조가 달라진 경우 — 조용히 원상태(보정 없음)로
+                // 두고, 콘솔에만 남겨서 나중에 이 보정이 더 이상 안 맞다는 걸 알아챌 수 있게.
+                if (zw.__iconFixWarned !== children.length) {
+                  console.warn('[오시는 길 지도] 확대/축소 버튼 구조가 예상과 달라 아이콘 보정을 건너뜁니다:', children.length + '개', Array.prototype.map.call(children, (c) => c.className));
+                  zw.__iconFixWarned = children.length;
+                }
+                return;
+              }
+              if (!(scale > 0) || scale >= 1) return; // 축소가 없으면 흐려질 것도 없다
+              const before = zw.getBoundingClientRect();
+              zw.style.zoom = String(1 / scale);
+              const after = zw.getBoundingClientRect();
+              const dx = before.right - after.right;
+              const dy = before.top - after.top;
+              zw.style.transform = `translate(${dx.toFixed(2)}px, ${dy.toFixed(2)}px)`;
             }
             // 위젯 내부 스크립트(document.write로 끼워진 카카오 자체 렌더)가 언제 끝날지
             // 확정할 수 없어 단발성 호출 하나로는 타이밍을 못 믿는다 — 여러 시점에 다시
