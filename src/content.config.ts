@@ -110,21 +110,47 @@ const gallery = defineCollection({
 });
 
 // 확정 스키마 결정(2026-08-17) — 강사 프로필은 폴더형(가변 개수). 강사를 추가/삭제하면
-// 강의 안내 페이지 카드가 그만큼 자동으로 늘고 준다. bio는 리더의 약력 리스트(bio[])와
-// 달리 목업에서 한 문단짜리 소개 텍스트였으므로 문자열 하나로 둔다.
+// 강의 안내 페이지 카드가 그만큼 자동으로 늘고 준다.
+// 2026-08-23 — 실제 강사 프로필 PDF(경력증명서 형식) 원본 구조로 스키마 확장. 기존
+// bio(문자열 배열, 약력 한 줄씩)는 이 구조로 완전히 대체되어 제거 — 소개/학력/활동실적/
+// 자격을 각각 별도 필드로 분리한다(src/skills의 content-structure-a11y 판단: 학력은
+// 레코드 배열+열 비교 대상이라 table, 활동실적은 레코드 배열이지만 카드처럼 한 줄씩
+// 완결 소비하니 list, 활동지역/요일은 반복 없는 라벨-값 1세트라 dl). 연락처·이메일은
+// 개인정보라 스키마에 아예 안 만든다(사이트에 노출할 필드가 없어야 실수로도 안 들어감).
 const instructors = defineCollection({
   loader: glob({ pattern: '**/*.md', base: './src/content/instructors' }),
   schema: z.object({
     name: z.string(),
-    role: z.string(),
+    role: z.string(), // 소속/직함 한 줄 (예: "명지대학교 / 서울한영대학교 객원교수")
     photo: z.string(),
     // 2026-08-18 필수→선택 전환(작업지시서) — leadership.photoAlt와 동일 이유·처리.
     photoAlt: z.string().optional(),
-    // 리더 프로필과 동일 패턴(항목별 리스트) — 이전엔 문자열 하나에 "-"를 직접 입력해
-    // 리스트처럼 보이게 했으나 실제로는 줄바꿈 없이 이어지는 문단으로 렌더링됐다.
-    bio: z.array(z.string()).min(1),
     // object-position 값. 비우면 페이지 쪽에서 기본값 적용(리더 프로필과 동일 패턴).
     photoPos: z.string().optional(),
+    intro: z.string().optional(), // 강사 소개 문단(스칼라 서술형 → <p>)
+    region: z.string().optional(), // 활동지역
+    // 항목이 적고(6개 이하) 상호작용이 없는 나열이라 배열로 안 쪼갠다(스킬 원칙 6번) —
+    // "월, 화, 수, 목, 금, 토 가능"처럼 자유 텍스트 한 줄 그대로.
+    availableDays: z.string().optional(),
+    // 레코드 배열 + 열 비교(학위 ↔ 학교) 소비 패턴이라 table로 렌더링된다.
+    education: z
+      .array(
+        z.object({
+          degree: z.string(),
+          school: z.string(),
+        }),
+      )
+      .optional(),
+    // 레코드 배열이지만 카드처럼 한 줄씩 완결 소비(열 비교 없음) → list, label은 강조 표시.
+    career: z
+      .array(
+        z.object({
+          label: z.string(),
+          detail: z.string(),
+        }),
+      )
+      .optional(),
+    certifications: z.array(z.string()).optional(), // 독립 항목 배열 → list(알약형 태그)
   }),
 });
 
