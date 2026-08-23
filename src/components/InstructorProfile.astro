@@ -61,7 +61,9 @@ const { instructors } = Astro.props;
           {t.data.intro && t.data.intro.length > 0 && (
             <section aria-labelledby={introId} class="tutor-section">
               <h4 id={introId}>강사 소개</h4>
-              {t.data.intro.map((para) => <p class="tutor-intro">{para}</p>)}
+              <div class="tutor-intro">
+                {t.data.intro.map((para) => <p>{para}</p>)}
+              </div>
             </section>
           )}
 
@@ -146,6 +148,8 @@ const { instructors } = Astro.props;
   }
   .tutor-intro { margin: 0; padding: 18px 20px; border-radius: 10px; background: #fff; border: 1px solid #e5bfbf;
     font: 400 1.06em/1.8 Pretendard, system-ui, sans-serif; color: var(--muted); text-wrap: pretty; }
+  .tutor-intro p { margin: 0; }
+  .tutor-intro p + p { margin-top: 1em; }
 
   /* 학력 사항 — 다른 소제목과 동일한 section+h4 구조(접기 없음). H 탐색이 이미
      "관심 없으면 건너뛰기"를 제공하므로 별도 접기 상호작용은 불필요하다고 판단. */
