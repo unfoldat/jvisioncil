@@ -17,13 +17,18 @@ const pages = Array.from({ length: totalPages }, (_, i) => i + 1);
 ---
 
 <ol class="extra-grid">
-  {courses.map((c, i) => (
-    <li class="extra-card">
-      <span aria-hidden="true" class="extra-no">{String(startIndex + i + 1).padStart(2, '0')}</span>{' '}
-      <h3>{c.data.title}</h3>{' '}
-      <span>{c.data.desc}</span>
-    </li>
-  ))}
+  {courses.map((c, i) => {
+    const titleId = `extra-course-${i}-title`;
+    return (
+      <li class="extra-card">
+        <article aria-labelledby={titleId}>
+          <span aria-hidden="true" class="extra-no">{String(startIndex + i + 1).padStart(2, '0')}</span>{' '}
+          <h3 id={titleId}>{c.data.title}</h3>{' '}
+          <span>{c.data.desc}</span>
+        </article>
+      </li>
+    );
+  })}
 </ol>
 
 {totalPages > 1 && (
@@ -36,7 +41,8 @@ const pages = Array.from({ length: totalPages }, (_, i) => i + 1);
 
 <style>
   .extra-grid { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
-  .extra-card { display: flex; flex-direction: column; gap: 10px; padding: 28px 26px; border: 1px solid #e5bfbf; border-radius: 16px; background: #fff; }
+  /* LectureGrid와 동일한 이유로 카드 상자 스타일을 li가 아니라 article에 건다. */
+  .extra-card > article { height: 100%; display: flex; flex-direction: column; gap: 10px; padding: 28px 26px; border: 1px solid #e5bfbf; border-radius: 16px; background: #fff; }
   .extra-no { font: 700 0.94em/1 Pretendard, system-ui, sans-serif; color: #c87a7a; }
   .extra-card h3 { margin: 0; font: 800 1.25em/1.4 Pretendard, system-ui, sans-serif; color: #5a3737; text-wrap: pretty; }
   .extra-card span:not(.extra-no) { font: 400 1.06em/1.75 Pretendard, system-ui, sans-serif; color: var(--muted); text-wrap: pretty; }
