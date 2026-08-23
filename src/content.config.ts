@@ -127,7 +127,7 @@ const instructors = defineCollection({
     photoAlt: z.string().optional(),
     // object-position 값. 비우면 페이지 쪽에서 기본값 적용(리더 프로필과 동일 패턴).
     photoPos: z.string().optional(),
-    intro: z.string().optional(), // 강사 소개 문단(스칼라 서술형 → <p>)
+    intro: z.array(z.string()).optional(), // 강사 소개 — 문단마다 별도 <p>로 렌더링
     region: z.string().optional(), // 활동지역
     // 항목이 적고(6개 이하) 상호작용이 없는 나열이라 배열로 안 쪼갠다(스킬 원칙 6번) —
     // "월, 화, 수, 목, 금, 토 가능"처럼 자유 텍스트 한 줄 그대로.

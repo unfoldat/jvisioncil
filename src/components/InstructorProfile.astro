@@ -58,10 +58,10 @@ const { instructors } = Astro.props;
             </div>
           </header>
 
-          {t.data.intro && (
+          {t.data.intro && t.data.intro.length > 0 && (
             <section aria-labelledby={introId} class="tutor-section">
               <h4 id={introId}>강사 소개</h4>
-              <p class="tutor-intro">{t.data.intro}</p>
+              {t.data.intro.map((para) => <p class="tutor-intro">{para}</p>)}
             </section>
           )}
 
@@ -95,7 +95,12 @@ const { instructors } = Astro.props;
               <h4 id={careerId}>주요 활동 및 강연 실적</h4>
               <ul class="tutor-career-list">
                 {t.data.career.map((c) => (
-                  <li><strong>{c.label}:</strong> {c.detail}</li>
+                  <li>
+                    <strong>{c.label}:</strong>{' '}
+                    {c.detail.split('\n').map((line, i) => (
+                      <>{i > 0 && <br />}{line}</>
+                    ))}
+                  </li>
                 ))}
               </ul>
             </section>
