@@ -28,8 +28,14 @@ interface Props {
   empty: string;
   currentPage?: number;
   totalPages?: number;
+  // 2026-08-25 홈 "최근 소식" 미리보기용 — 사진 영역(aspect-ratio 3/2·object-fit
+  // cover, 실기로 검증된 부분)은 그대로 두고 본문 타이포·패딩만 줄여서 카드 전체
+  // 크기를 홈의 다른 카드(주요 서비스)와 비슷하게 맞춘다. 요약문은 공간을 많이
+  // 차지해 미리보기에서는 생략(시각·스크린리더 둘 다 — 보충 정보라 생략해도
+  // 본문 파악에 지장 없음).
+  compact?: boolean;
 }
-const { notices, empty, currentPage = 1, totalPages = 1 } = Astro.props;
+const { notices, empty, currentPage = 1, totalPages = 1, compact = false } = Astro.props;
 const pageHref = (n: number) => (n === 1 ? '/소식/' : `/소식/페이지/${n}/`);
 const pages = Array.from({ length: totalPages }, (_, i) => i + 1);
 const iso = (d: Date) => d.toISOString().slice(0, 10);
@@ -47,7 +53,7 @@ const items = notices.map((notice) => ({
 {items.length === 0 ? (
   <p class="notice-empty">{empty}</p>
 ) : (
-  <ul class="notice-board">
+  <ul class:list={['notice-board', { compact }]}>
     {items.map((item, i) => (
       <li class="notice-card">
         <article>
@@ -62,7 +68,7 @@ const items = notices.map((notice) => ({
               {item.pinned && <span class="pinned-label"><span aria-hidden="true">📌</span> 고정됨</span>}
             </span>
             <h3><a class="notice-card-link" href={item.href}>{item.title}</a></h3>
-            {item.summary && <p class="notice-card-summary">{item.summary}</p>}
+            {!compact && item.summary && <p class="notice-card-summary">{item.summary}</p>}
           </span>
         </article>
       </li>
@@ -124,4 +130,16 @@ const items = notices.map((notice) => ({
 
   @media (max-width: 860px) { .notice-board { grid-template-columns: repeat(2, 1fr); } }
   @media (max-width: 640px) { .notice-board { grid-template-columns: minmax(0, 1fr); } }
+
+  /* 2026-08-25 compact(홈 미리보기) — 사진 영역(.notice-card-photo·-img, aspect-ratio
+     3/2 + object-fit:cover)은 실기로 검증된 부분이라 손대지 않는다. 본문 패딩·
+     제목 크기만 줄여 카드 전체 높이를 낮춘다. */
+  .notice-board.compact { gap: 18px; }
+  /* 사진 매커니즘(aspect-ratio + object-fit:cover)은 그대로 재사용 — 비율 숫자만
+     3:2→5:2로 낮춰 카드 전체 높이를 "주요 서비스" 카드(254.5px)에 맞춘다. */
+  .notice-board.compact .notice-card-photo { aspect-ratio: 5 / 2; }
+  .notice-board.compact .notice-card-body { padding: 14px 18px 18px; }
+  .notice-board.compact .notice-card-meta { margin-bottom: 6px; }
+  .notice-board.compact .notice-card-date { font-size: 0.88em; }
+  .notice-board.compact .notice-card h3 { margin-top: 6px; font: 800 1.13em/1.35 NanumSquareRound, Pretendard, sans-serif; }
 </style>
