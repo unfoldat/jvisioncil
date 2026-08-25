@@ -96,14 +96,20 @@ const { instructors } = Astro.props;
             <section aria-labelledby={careerId} class="tutor-section">
               <h4 id={careerId}>주요 활동 및 강연 실적</h4>
               <ul class="tutor-career-list">
-                {t.data.career.map((c) => (
-                  <li>
-                    <strong>{c.label}:</strong>{' '}
-                    {c.detail.split('\n').map((line, i) => (
-                      <>{i > 0 && <br />}{line}</>
-                    ))}
-                  </li>
-                ))}
+                {t.data.career.map((c) => {
+                  // "(2017~현재)"처럼 연도 범위가 붙은 라벨(강의 실적/전문 교육/자문 활동/
+                  // 공공 강사)만 라벨 다음 줄바꿈 — 기관 직책/대학 출강/방송 및 저서처럼
+                  // 연도 범위가 없는 항목은 기존대로 한 줄에 이어 쓴다.
+                  const breakAfterLabel = /\(\d{4}~현재\)$/.test(c.label);
+                  return (
+                    <li>
+                      <strong>{c.label}:</strong>{breakAfterLabel ? <br /> : ' '}
+                      {c.detail.split('\n').map((line, i) => (
+                        <>{i > 0 && <br />}{line}</>
+                      ))}
+                    </li>
+                  );
+                })}
               </ul>
             </section>
           )}
