@@ -22,15 +22,19 @@ const pages = Array.from({ length: totalPages }, (_, i) => i + 1);
         <article aria-labelledby={titleId}>
           <h3 id={titleId}>{l.data.title}</h3>
           <p class="lecture-desc">{l.data.desc}</p>
-          <span class:list={['lecture-badge', { 'lecture-badge-hidden': !l.data.mandatory }]} aria-hidden={l.data.mandatory ? undefined : 'true'}>
-            <span class="lecture-badge-icon" aria-hidden="true">🛡</span>
-            법정의무교육
-          </span>
-          <p class="lecture-meta">
-            <strong>대상</strong> {l.data.target}
-            <span class="sep" aria-hidden="true">|</span>
-            <strong>시간</strong> {l.data.meta}
-          </p>
+          <div class="lecture-meta-group">
+            {l.data.mandatory && (
+              <span class="lecture-badge">
+                <span class="lecture-badge-icon" aria-hidden="true">🛡</span>
+                법정의무교육
+              </span>
+            )}
+            <p class="lecture-meta">
+              <strong>대상</strong> {l.data.target}
+              <span class="sep" aria-hidden="true">|</span>
+              <strong>시간</strong> {l.data.meta}
+            </p>
+          </div>
         </article>
       </li>
     );
@@ -53,20 +57,22 @@ const pages = Array.from({ length: totalPages }, (_, i) => i + 1);
   .lecture-card > article { height: 100%; padding: 28px 26px; border: 1px solid #e5bfbf; border-radius: 16px; background: #faf2f2; display: flex; flex-direction: column; }
   .lecture-card h3 { margin: 0 0 10px; font: 800 1.44em/1.4 Pretendard, system-ui, sans-serif; color: #5a3737; text-wrap: pretty; }
   .lecture-desc { margin: 0 0 14px; font: 400 1.06em/1.75 Pretendard, system-ui, sans-serif; color: var(--muted); text-wrap: pretty; }
+  /* 배지·대상·시간은 전부 "카드를 요약하는 메타정보"라는 같은 범주라 하나의 그룹으로
+     묶는다(게슈탈트 근접성) — 설명문과는 margin-top:auto로 여백을 두어 분리하고,
+     그룹 내부(배지↔대상/시간)는 gap을 좁게 유지해 한 덩어리로 보이게 한다. */
+  .lecture-meta-group { margin-top: auto; display: flex; flex-direction: column; gap: 8px; }
   /* 시안 B — 진한 로즈 배경 + 흰 글씨 pill(대비 12.1:1, WCAG AAA도 통과). 방패 이모지는
      장식용이라 aria-hidden, 실제 낭독은 "법정의무교육" 텍스트만. */
   .lecture-badge {
     display: inline-flex; align-items: center; gap: 5px; width: fit-content; border-radius: 999px;
-    font: 700 0.84em/1.4 Pretendard, system-ui, sans-serif; padding: 4px 12px; background: #7a3b41; color: #fff; margin-bottom: 14px;
+    font: 700 0.84em/1.4 Pretendard, system-ui, sans-serif; padding: 4px 12px; background: #7a3b41; color: #fff;
   }
   .lecture-badge-icon { font-size: 0.95em; }
-  .lecture-badge-hidden { visibility: hidden; }
   /* 대상/시간 — 배지처럼 배경 없는 담백한 텍스트, 값(<strong> 아님)과 라벨(<strong>)이
      같은 굵기 계열로 보이게 하되(동급), 라벨-값 관계는 마크업(strong)으로 코드에 남긴다
-     (SC 1.3.1). 라벨 색은 흰 배경 대비 4.5:1 미달(#a97878→3.72:1)이라 이 페이지에서
-     이미 쓰는 #784949(대비 7.37:1)로 교체 — 실측: base/판정-보안기준.md 아님, 여기 코드
-     주석에 직접 기록. */
-  .lecture-meta { display: block; margin-top: auto; font: 400 0.94em/1.5 Pretendard, system-ui, sans-serif; color: var(--muted); }
+     (SC 1.3.1). 라벨 색은 카드 배경(#faf2f2) 대비 4.5:1 미달(#a97878→3.72:1)이라 이
+     페이지에서 이미 쓰는 #784949(대비 6.69:1)로 교체 — 실측치는 커밋 메시지에 기록. */
+  .lecture-meta { margin: 0; font: 400 0.94em/1.5 Pretendard, system-ui, sans-serif; color: var(--muted); }
   .lecture-meta strong { font-weight: 700; color: #784949; }
   .lecture-meta .sep { margin: 0 0.6em; color: #e5bfbf; }
 
