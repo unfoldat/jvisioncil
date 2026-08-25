@@ -16,6 +16,9 @@ const notices = defineCollection({
     date: z.coerce.date(),
     // 목록 최상단 고정 + [공지] 표시. 날짜 정렬 자체는 안 바꾼다(이전글/다음글은 pinned 무관하게 날짜순).
     pinned: z.boolean().default(false),
+    // 2026-08-25 홈 소식 미리보기 — pinned와 완전히 독립된 별개 필드(상단고정은 소식
+    // 목록 안에서의 정렬, showOnHome은 홈페이지 노출 여부로 서로 다른 목적).
+    showOnHome: z.boolean().default(false),
     // 2026-08-19 작업지시서(오후) — "본문 첫 이미지를 카드 썸네일로 자동 재사용" 방식을
     // 폐지 — 본문에 이미지가 있으면 그 이미지가 카드와 본문에 중복으로 뜨는 문제가 있었다
     // (예: "변환테스트" 글). 대신 편집자가 직접 넣는 전용 thumbnail 필드를 둔다 — 카드
