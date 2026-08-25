@@ -26,8 +26,7 @@ const pages = Array.from({ length: totalPages }, (_, i) => i + 1);
             {l.data.mandatory && (
               <span class="lecture-badge">
                 <svg class="lecture-badge-icon" aria-hidden="true" viewBox="0 0 24 24" width="14" height="14">
-                  <path fill="currentColor" d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"></path>
-                  <path fill="none" stroke="#7a3b41" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="m9 12 2 2 4-4"></path>
+                  <path fill="currentColor" fill-rule="evenodd" clip-rule="evenodd" d="M12.516 2.17a.75.75 0 0 0-1.032 0 11.209 11.209 0 0 1-7.877 3.08.75.75 0 0 0-.722.515A12.74 12.74 0 0 0 2.25 9.75c0 5.942 4.064 10.933 9.563 12.348a.75.75 0 0 0 .374 0c5.499-1.415 9.563-6.406 9.563-12.348 0-1.39-.223-2.73-.635-3.985a.75.75 0 0 0-.722-.516l-.143.001c-2.996 0-5.717-1.17-7.734-3.08Zm3.094 8.016a.75.75 0 1 0-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 0 0-1.06 1.06l2.25 2.25a.75.75 0 0 0 1.14-.094l3.75-5.25Z"></path>
                 </svg>
                 법정의무교육
               </span>
@@ -65,11 +64,11 @@ const pages = Array.from({ length: totalPages }, (_, i) => i + 1);
      그룹 내부(배지↔대상/시간)는 gap을 좁게 유지해 한 덩어리로 보이게 한다. */
   .lecture-meta-group { margin-top: auto; display: flex; flex-direction: column; gap: 8px; }
   /* 시안 B — 진한 로즈 배경 + 흰 글씨(대비 12.1:1, WCAG AAA도 통과). 방패 이모지가
-     플랫폼마다 모양이 애매하게 렌더링돼(사용자 지적) SVG 실루엣으로 교체, 이후 참고
-     이미지(체크마크 있는 방패)에 맞춰 흰색 방패 내부에 배지 배경색(#7a3b41)으로
-     체크마크를 "찍어낸" 형태로 보강 — 14px 크기에서는 이중 테두리까지 넣으면 뭉개져
-     단순한 실루엣+체크로 유지. 장식용이라 aria-hidden, 실제 낭독은 "법정의무교육"
-     텍스트만. 알약(pill) 모양은
+     플랫폼마다 모양이 애매하게 렌더링돼(사용자 지적) SVG로 교체 — 참고 이미지의 세
+     방패 스타일 중 세 번째(Heroicons shield-check 실루엣)로 최종 선택. 체크마크는
+     별도 색 지정 없이 fill-rule="evenodd"로 방패 안을 "구멍" 내는 방식이라 배지
+     배경색이 자동으로 비쳐 보인다(하드코딩된 색 없음 — 배지 배경이 바뀌어도 안 깨짐).
+     장식용이라 aria-hidden, 실제 낭독은 "법정의무교육" 텍스트만. 알약(pill) 모양은
      둥근 왼쪽 끝이 카드의 다른 요소(h3/설명/대상)와 공유하는 세로 정렬선에서 혼자
      벗어나 보여 네모(둥근 사각형)로 변경 — 왼쪽 padding만큼 당기는 보정 없이도
      사각형 박스의 왼쪽 모서리가 자연스럽게 그 정렬선에 맞는다. */
