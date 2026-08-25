@@ -66,6 +66,9 @@ const pages = Array.from({ length: totalPages }, (_, i) => i + 1);
   .lecture-badge {
     display: inline-flex; align-items: center; gap: 5px; width: fit-content; border-radius: 999px;
     font: 700 0.84em/1.4 Pretendard, system-ui, sans-serif; padding: 4px 12px; background: #7a3b41; color: #fff;
+    /* 알약 배경의 왼쪽 padding(12px)만큼 당겨서, 방패 아이콘이 아래 "대상" 텍스트와
+       같은 x축 시작점에 오도록 맞춘다(알약 모양 자체는 유지). */
+    margin-left: -12px;
   }
   .lecture-badge-icon { font-size: 0.95em; }
   /* 대상/시간 — 배지처럼 배경 없는 담백한 텍스트, 값(<strong> 아님)과 라벨(<strong>)이
