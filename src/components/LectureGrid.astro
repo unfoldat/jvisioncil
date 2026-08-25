@@ -25,7 +25,9 @@ const pages = Array.from({ length: totalPages }, (_, i) => i + 1);
           <div class="lecture-meta-group">
             {l.data.mandatory && (
               <span class="lecture-badge">
-                <span class="lecture-badge-icon" aria-hidden="true">🛡</span>
+                <svg class="lecture-badge-icon" aria-hidden="true" viewBox="0 0 24 24" width="14" height="14" fill="currentColor">
+                  <path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"></path>
+                </svg>
                 법정의무교육
               </span>
             )}
@@ -61,8 +63,9 @@ const pages = Array.from({ length: totalPages }, (_, i) => i + 1);
      묶는다(게슈탈트 근접성) — 설명문과는 margin-top:auto로 여백을 두어 분리하고,
      그룹 내부(배지↔대상/시간)는 gap을 좁게 유지해 한 덩어리로 보이게 한다. */
   .lecture-meta-group { margin-top: auto; display: flex; flex-direction: column; gap: 8px; }
-  /* 시안 B — 진한 로즈 배경 + 흰 글씨(대비 12.1:1, WCAG AAA도 통과). 방패 이모지는
-     장식용이라 aria-hidden, 실제 낭독은 "법정의무교육" 텍스트만. 알약(pill) 모양은
+  /* 시안 B — 진한 로즈 배경 + 흰 글씨(대비 12.1:1, WCAG AAA도 통과). 방패 이모지가
+     플랫폼마다 모양이 애매하게 렌더링돼(사용자 지적) SVG 실루엣으로 교체 — 장식용이라
+     aria-hidden, 실제 낭독은 "법정의무교육" 텍스트만. 알약(pill) 모양은
      둥근 왼쪽 끝이 카드의 다른 요소(h3/설명/대상)와 공유하는 세로 정렬선에서 혼자
      벗어나 보여 네모(둥근 사각형)로 변경 — 왼쪽 padding만큼 당기는 보정 없이도
      사각형 박스의 왼쪽 모서리가 자연스럽게 그 정렬선에 맞는다. */
@@ -70,7 +73,7 @@ const pages = Array.from({ length: totalPages }, (_, i) => i + 1);
     display: inline-flex; align-items: center; gap: 5px; width: fit-content; border-radius: 6px;
     font: 700 0.84em/1.4 Pretendard, system-ui, sans-serif; padding: 4px 10px; background: #7a3b41; color: #fff;
   }
-  .lecture-badge-icon { font-size: 0.95em; }
+  .lecture-badge-icon { flex-shrink: 0; }
   /* 대상/시간 — 배지처럼 배경 없는 담백한 텍스트, 값(<strong> 아님)과 라벨(<strong>)이
      같은 굵기 계열로 보이게 하되(동급), 라벨-값 관계는 마크업(strong)으로 코드에 남긴다
      (SC 1.3.1). 라벨 색은 카드 배경(#faf2f2) 대비 4.5:1 미달(#a97878→3.72:1)이라 이
