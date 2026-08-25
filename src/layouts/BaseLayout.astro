@@ -307,6 +307,20 @@ const path = decodeURIComponent(Astro.url.pathname);
     --line: #e9e1cb;
     --green: #17694f;
     --green-dark: #0f5238;
+    /* 2026-08-25 — "섹션 안내문"(H2 바로 아래 붙는 한 줄 설명) 역할 토큰. 전 페이지
+       전수조사 결과 실제 이 역할에 해당하는 건 3곳뿐이었고, 그중 2곳(기관소개 특화사업,
+       강의안내 기타전문교육)이 이미 이 값(.lead-sm)을 쓰고 있어 다수결로 채택 — 16px
+       이상, line-height 1.5 이상 등 이 프로젝트 CLAUDE.md의 읽기 쉬운 본문 기준과도
+       맞는다. 강의안내 "강의 종류"(.lecture-note, 0.92em)만 유일하게 더 작았던 예외.
+       --section-note-to-content-gap(안내문→본문)과 --section-heading-to-note-gap
+       (H2→안내문)은 서로 다른 요소가 각각 하나씩만 책임진다(마진 상쇄 방지) — 후자는
+       안내문이 있는 H2에서만 margin-bottom으로 사용, 전자는 .section-note의
+       margin-bottom으로 사용. */
+    --section-note-size: 1.06em;
+    --section-note-line-height: 1.7;
+    --section-note-color: var(--muted);
+    --section-heading-to-note-gap: 24px;
+    --section-note-to-content-gap: 24px;
     font-size: calc(100% * var(--zoom));
     /* 목업 원본 주석(그대로 옮김): 움직임 최소화 설정을 존중한다(원칙 38). 글자 크기
        0.3초 전환은 본문 전체가 리플로우되며 커지는 큰 움직임이라 어지럼증·전정기관
@@ -396,6 +410,17 @@ const path = decodeURIComponent(Astro.url.pathname);
   .sr-only {
     position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
     overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0;
+  }
+  /* "섹션 안내문" 공통 시각 속성 — 각 페이지의 기존 클래스(.lecture-note, .lead-sm 등)와
+     병용한다(class="section-note lecture-note"). 레이아웃 고유 속성이 없는 한 기존
+     클래스 쪽 font/line-height/color/margin-bottom 선언은 제거해 이 규칙 하나로만
+     관리한다 — H2→안내문 간격은 여기 포함하지 않는다(해당 H2의 margin-bottom이 별도
+     책임, 마진 상쇄 방지). */
+  .section-note {
+    font-size: var(--section-note-size);
+    line-height: var(--section-note-line-height);
+    color: var(--section-note-color);
+    margin: 0 0 var(--section-note-to-content-gap);
   }
   /* 헤더 */
   .site-header { background: #fff; border-bottom: 1px solid var(--line); }

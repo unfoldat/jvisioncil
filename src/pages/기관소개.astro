@@ -99,7 +99,7 @@ const busStops = [
   <section aria-labelledby="about-special" class="tint">
     <div class="wrap">
       <h2 id="about-special">특화 사업</h2>
-      <p class="lead-sm">후원 기관과 함께 진행하는 사업입니다.</p>
+      <p class="section-note lead-sm">후원 기관과 함께 진행하는 사업입니다.</p>
       <div class="table-scroll">
         <table class="special-table">
           <caption>사업 내용과 후원 기관</caption>
@@ -313,7 +313,12 @@ const busStops = [
   .tint { background: #f9eedd; border-top: 1px solid #f1d4ab; padding: 58px 0; }
   .panel h2, .tint h2 { margin: 0 0 10px; font: 800 1.88em/1.4 Pretendard, system-ui, sans-serif; color: #664c27; }
   section[aria-labelledby='about-main'] h2 { margin-bottom: 26px; }
-  .lead-sm { margin: 0 0 24px; font: 400 1.06em/1.7 Pretendard, system-ui, sans-serif; color: var(--muted); }
+  /* about-special만 h2 바로 아래 "섹션 안내문"(.section-note)이 붙는다 — 다른 h2들
+     (about-people/about-lab/about-way)의 공용 10px 간격(.panel h2, .tint h2)은
+     안 건드리고, 이 섹션만 --section-heading-to-note-gap으로 덮어써 사이트 전체
+     "H2→안내문" 간격 기준(24px)에 맞춘다(2026-08-25 전수조사·통일). */
+  section[aria-labelledby='about-special'] h2 { margin-bottom: var(--section-heading-to-note-gap); }
+  /* .lead-sm 시각 속성은 .section-note(BaseLayout 전역)로 이전. */
 
   .leader-grid { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
   .leader-card { border: 1px solid #f1d4ab; border-radius: 16px; background: #fcf6ee; padding: 24px; }
