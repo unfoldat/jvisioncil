@@ -27,39 +27,6 @@ collections:
         widget: markdown
         hint: '이미지·링크는 마크다운 문법으로 넣으면 됩니다. 넣은 사진은 전부 본문에 그대로 보입니다.'
 
-  - name: donation-reports
-    label: 기부금 공시
-    description: 기부금 공시 게시판(/기부금-공시/)에 표시됩니다.
-    label_singular: 기부금 공시 작성
-    folder: src/content/donation-reports
-    create: true
-    identifier_field: title
-    summary: '{{year}}년 · {{title}}'
-    slug: '{{year}}'
-    fields:
-      - { name: year, label: 연도, widget: number, value_type: string, hint: '연도 4자리만 입력하세요. 예: 2026' }
-      - { name: title, label: 제목, widget: string }
-      - { name: file, label: 첨부파일(PDF), widget: file, accept: 'application/pdf,.pdf' }
-      - { name: body, label: 본문내용(선택), widget: markdown, required: false, hint: '연도별 상세 설명이 있으면 적으세요. 비워두면 목록·다운로드만 표시됩니다.' }
-
-  - name: network-orgs
-    label: 함께하는 기관
-    description: 홈 하단과 센터소개 페이지의 함께하는 기관 배너에 표시됩니다.
-    folder: src/content/network-orgs
-    create: true
-    fields:
-      - { name: name, label: 기관명, widget: string }
-      - { name: url, label: 기관 홈페이지, widget: string, required: false }
-
-  - name: sponsors
-    label: 후원기관
-    description: 후원 안내 페이지의 후원기관 영역에 표시됩니다.
-    folder: src/content/sponsors
-    create: true
-    fields:
-      - { name: name, label: 기관명, widget: string }
-      - { name: url, label: 기관 홈페이지, widget: string, required: false }
-
   - name: gallery
     label: 메인갤러리
     description: 홈 "활동 사진", 소식 상단, 후원 하단의 흐르는 사진 갤러리에 표시됩니다. 소식 게시글 사진과는 별개입니다 — 여기 등록해야만 갤러리에 노출됩니다.
@@ -75,7 +42,7 @@ collections:
       # public/images/gallery → public/uploads로 실제 이동, photo: 값도 갱신 완료 —
       # 이제 CMS 미리보기·재선택 둘 다 정상 작동한다.
       - { name: photo, label: 사진, widget: image }
-      - { name: alt, label: 사진 설명(대체텍스트), widget: string, required: false, hint: '사진 속 상황을 구체적으로 설명하세요. 비워두면 장식용으로 처리됩니다 — 되도록 채워주세요.' }
+      - { name: alt, label: 사진 설명(대체텍스트), widget: string, required: false, hint: '되도록 채워주세요.' }
       - name: showOn
         label: 노출 위치
         widget: select
@@ -86,6 +53,36 @@ collections:
           - { label: '후원 (후원으로 이어진 활동)', value: donate }
         default: [home, news, donate]
         hint: '이 사진을 노출할 위치를 고르세요. 기본값은 세 곳 모두입니다.'
+
+  - name: donation-reports
+    label: 기부금 공시
+    description: 기부금 공시 게시판(/기부금-공시/)에 표시됩니다.
+    label_singular: 기부금 공시 작성
+    folder: src/content/donation-reports
+    create: true
+    identifier_field: title
+    summary: '{{year}}년 · {{title}}'
+    slug: '{{year}}'
+    fields:
+      - { name: year, label: 연도, widget: number, value_type: string, hint: '연도 4자리만 입력하세요. 예: 2026' }
+      - { name: title, label: 제목, widget: string }
+      - { name: file, label: 첨부파일(PDF), widget: file, accept: 'application/pdf,.pdf' }
+      - { name: body, label: 본문내용(선택), widget: markdown, required: false, hint: '연도별 상세 설명이 있으면 적으세요. 비워두면 목록·다운로드만 표시됩니다.' }
+
+  - name: instructors
+    label: 강사 프로필
+    description: 강의 안내 페이지의 강사 프로필 카드에 표시됩니다. 강사를 추가하거나 삭제하면 카드 개수가 그만큼 늘고 줍니다.
+    label_singular: 강사 프로필 작성
+    folder: src/content/instructors
+    create: true
+    identifier_field: name
+    fields:
+      - { name: name, label: 이름, widget: string }
+      - { name: role, label: 전문 분야/직함, widget: string, hint: '예: "장애인식개선 교육 강사"' }
+      - { name: photo, label: 사진, widget: image, hint: '카드에서 세로 3:4 비율로 잘려서 표시됩니다(가운데 기준). 얼굴이 잘리지 않으려면 세로형(3:4 비율 권장) 사진을 올려주세요. 예: 최소 450×600px 이상. 잘리는 위치가 마음에 안 들면 아래 "사진 위치 조정"으로 조정할 수 있습니다.' }
+      - { name: photoAlt, label: 사진 설명(대체텍스트), widget: string, required: false, hint: '비워두면 장식용으로 처리됩니다 — 되도록 채워주세요.' }
+      - { name: bio, label: 약력 소개, widget: list, field: { name: item, label: 약력 항목, widget: string } }
+      - { name: photoPos, label: 사진 위치 조정(고급, 선택), widget: string, required: false, hint: '얼굴이 잘리면 조정하세요. 예: "center 20%". 비워두면 기본값 사용.' }
 
   - name: lectures
     label: 강의 종류
@@ -116,21 +113,6 @@ collections:
       - { name: title, label: 제목, widget: string }
       - { name: desc, label: 설명, widget: text }
 
-  - name: instructors
-    label: 강사 프로필
-    description: 강의 안내 페이지의 강사 프로필 카드에 표시됩니다. 강사를 추가하거나 삭제하면 카드 개수가 그만큼 늘고 줍니다.
-    label_singular: 강사 프로필 작성
-    folder: src/content/instructors
-    create: true
-    identifier_field: name
-    fields:
-      - { name: name, label: 이름, widget: string }
-      - { name: role, label: 전문 분야/직함, widget: string, hint: '예: "장애인식개선 교육 강사"' }
-      - { name: photo, label: 사진, widget: image, hint: '카드에서 세로 3:4 비율로 잘려서 표시됩니다(가운데 기준). 얼굴이 잘리지 않으려면 세로형(3:4 비율 권장) 사진을 올려주세요. 예: 최소 450×600px 이상. 잘리는 위치가 마음에 안 들면 아래 "사진 위치 조정"으로 조정할 수 있습니다.' }
-      - { name: photoAlt, label: 사진 설명(대체텍스트), widget: string, required: false, hint: '비워두면 장식용으로 처리됩니다 — 되도록 채워주세요.' }
-      - { name: bio, label: 약력 소개, widget: list, field: { name: item, label: 약력 항목, widget: string } }
-      - { name: photoPos, label: 사진 위치 조정(고급, 선택), widget: string, required: false, hint: '얼굴이 잘리면 조정하세요. 예: "center 20%". 비워두면 기본값 사용.' }
-
   - name: qa
     label: Q&A
     description: 홈 "처음 오셨나요?" 배너에서 연결되는 Q&A 게시판(/qa/)에 표시됩니다. 같은 분류(section) 안에서는 순서(order)가 작은 것부터 보여줍니다.
@@ -156,9 +138,27 @@ collections:
       - { name: order, label: 분류 안 순서, widget: number, value_type: int, hint: '같은 분류 안에서 작은 숫자가 먼저 보입니다.' }
       - { name: body, label: 답변(A), widget: markdown, hint: '표·목록·굵게 등 마크다운 서식을 그대로 지원합니다.' }
 
+  - name: network-orgs
+    label: 함께하는 기관
+    description: 홈 하단과 센터소개 페이지의 함께하는 기관 배너에 표시됩니다.
+    folder: src/content/network-orgs
+    create: true
+    fields:
+      - { name: name, label: 기관명, widget: string }
+      - { name: url, label: 기관 홈페이지, widget: string, required: false }
+
+  - name: sponsors
+    label: 후원기관
+    description: 후원 안내 페이지의 후원기관 영역에 표시됩니다.
+    folder: src/content/sponsors
+    create: true
+    fields:
+      - { name: name, label: 기관명, widget: string }
+      - { name: url, label: 기관 홈페이지, widget: string, required: false }
+
   - name: leadership
     label: 센터장·부센터장
-    description: 센터소개 페이지의 센터장·부센터장 프로필에 표시됩니다. 정확히 두 명 고정이라 새 항목을 추가하거나 삭제할 수 없습니다 — 각 항목만 편집하세요.
+    description: 센터소개 페이지의 센터장·부센터장 프로필에 표시됩니다.
     files:
       - name: director
         label: 센터장
@@ -183,7 +183,7 @@ collections:
 
   - name: org-info
     label: 기관정보
-    description: 주소·대표전화는 사이트 전체(푸터), 후원 계좌는 후원 안내 페이지에 표시됩니다. 기관에 하나뿐인 값이라 새 항목을 추가하거나 삭제할 수 없습니다.
+    description: 주소·대표전화는 사이트 전체(푸터), 후원 계좌는 후원 안내 페이지에 표시됩니다.
     files:
       - name: info
         label: 기관정보
