@@ -20,17 +20,17 @@ const pages = Array.from({ length: totalPages }, (_, i) => i + 1);
     return (
       <li class="lecture-card">
         <article aria-labelledby={titleId}>
-          <span class="lecture-target">대상: {l.data.target}</span>{' '}
+          <h3 id={titleId}>{l.data.title}</h3>
+          <p class="lecture-desc">{l.data.desc}</p>
           <span class:list={['lecture-badge', { 'lecture-badge-hidden': !l.data.mandatory }]} aria-hidden={l.data.mandatory ? undefined : 'true'}>
-            <svg aria-hidden="true" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"></path>
-              <path d="m9 12 2 2 4-4"></path>
-            </svg>
+            <span class="lecture-badge-icon" aria-hidden="true">🛡</span>
             법정의무교육
-          </span>{' '}
-          <h3 id={titleId}>{l.data.title}</h3>{' '}
-          <span class="lecture-desc">{l.data.desc}</span>{' '}
-          <span class="lecture-meta">교육시간: {l.data.meta}</span>
+          </span>
+          <p class="lecture-meta">
+            <strong>대상</strong> {l.data.target}
+            <span class="sep" aria-hidden="true">|</span>
+            <strong>시간</strong> {l.data.meta}
+          </p>
         </article>
       </li>
     );
@@ -51,16 +51,24 @@ const pages = Array.from({ length: totalPages }, (_, i) => i + 1);
      accessible name(aria-labelledby)을 가진 실제 카드 단위다. li는 grid item으로 늘어난
      높이를 article에 그대로 넘겨야 하므로 height:100%. */
   .lecture-card > article { height: 100%; padding: 28px 26px; border: 1px solid #e5bfbf; border-radius: 16px; background: #faf2f2; display: flex; flex-direction: column; }
-  .lecture-target { display: block; font: 700 0.88em/1 Pretendard, system-ui, sans-serif; color: #784949; margin-bottom: 10px; }
+  .lecture-card h3 { margin: 0 0 10px; font: 800 1.44em/1.4 Pretendard, system-ui, sans-serif; color: #5a3737; text-wrap: pretty; }
+  .lecture-desc { margin: 0 0 14px; font: 400 1.06em/1.75 Pretendard, system-ui, sans-serif; color: var(--muted); text-wrap: pretty; }
+  /* 시안 B — 진한 로즈 배경 + 흰 글씨 pill(대비 12.1:1, WCAG AAA도 통과). 방패 이모지는
+     장식용이라 aria-hidden, 실제 낭독은 "법정의무교육" 텍스트만. */
   .lecture-badge {
     display: inline-flex; align-items: center; gap: 5px; width: fit-content; border-radius: 999px;
-    font: 700 0.84em/1.4 Pretendard, system-ui, sans-serif; padding: 3px 10px; background: #f4d9dc; color: #7a3b41; margin-bottom: 10px;
+    font: 700 0.84em/1.4 Pretendard, system-ui, sans-serif; padding: 4px 12px; background: #7a3b41; color: #fff; margin-bottom: 14px;
   }
-  .lecture-badge svg { flex-shrink: 0; }
+  .lecture-badge-icon { font-size: 0.95em; }
   .lecture-badge-hidden { visibility: hidden; }
-  .lecture-card h3 { margin: 0 0 10px; font: 800 1.44em/1.4 Pretendard, system-ui, sans-serif; color: #5a3737; text-wrap: pretty; }
-  .lecture-desc { display: block; font: 400 1.06em/1.75 Pretendard, system-ui, sans-serif; color: var(--muted); margin-bottom: 14px; text-wrap: pretty; }
-  .lecture-meta { display: block; margin-top: auto; font: 600 0.94em/1.5 Pretendard, system-ui, sans-serif; color: var(--muted); }
+  /* 대상/시간 — 배지처럼 배경 없는 담백한 텍스트, 값(<strong> 아님)과 라벨(<strong>)이
+     같은 굵기 계열로 보이게 하되(동급), 라벨-값 관계는 마크업(strong)으로 코드에 남긴다
+     (SC 1.3.1). 라벨 색은 흰 배경 대비 4.5:1 미달(#a97878→3.72:1)이라 이 페이지에서
+     이미 쓰는 #784949(대비 7.37:1)로 교체 — 실측: base/판정-보안기준.md 아님, 여기 코드
+     주석에 직접 기록. */
+  .lecture-meta { display: block; margin-top: auto; font: 400 0.94em/1.5 Pretendard, system-ui, sans-serif; color: var(--muted); }
+  .lecture-meta strong { font-weight: 700; color: #784949; }
+  .lecture-meta .sep { margin: 0 0.6em; color: #e5bfbf; }
 
   .lecture-pagination { display: flex; gap: 10px; justify-content: center; margin: 32px 0 0; }
   .lecture-pagination a {
