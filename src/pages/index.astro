@@ -85,11 +85,11 @@ const homeNotices = (await getCollection('notices'))
   {homeNotices.length > 0 && (
     <section aria-labelledby="home-news" class="band">
       <div class="wrap">
-        <div class="section-head">
-          <h2 id="home-news">최근 소식</h2>
-          <a href="/소식/" class="section-head-link">전체 소식 보기 →</a>
-        </div>
+        <h2 id="home-news">최근 소식</h2>
         <NoticeList notices={homeNotices} empty="" compact />
+        <div class="section-foot">
+          <a href="/소식/" class="section-foot-link">전체 소식 보기 →</a>
+        </div>
       </div>
     </section>
   )}
@@ -197,10 +197,13 @@ const homeNotices = (await getCollection('notices'))
      원인 — 실측으로 확인, 섹션 높이가 516px까지 부풀어 있었음). 안쪽 .wrap 패딩만
      0으로 되돌려 바깥 section.band 패딩 한 번만 남긴다. */
   section[aria-labelledby='home-news'] > .wrap { padding: 0; }
-  .section-head { display: flex; align-items: baseline; justify-content: space-between; gap: 1rem; margin-bottom: 22px; }
-  .section-head h2 { margin: 0; font: 800 1.7em/1.4 NanumSquareRound, Pretendard, sans-serif; color: #332e1e; }
-  .section-head-link { font: 700 1.06em/1 NanumSquareRound, Pretendard, sans-serif; color: #332e1e; text-decoration: none; white-space: nowrap; }
-  .section-head-link:hover, .section-head-link:focus-visible { text-decoration: underline; }
+  /* 2026-08-26 — "전체 소식 보기" 링크를 제목 옆(우측 상단)에서 카드 그리드 아래로
+     이동(DOM 순서도 함께 변경 — CSS 재배치가 아니라 실제 마크업 순서를 바꿔
+     화살표/Tab 순서와 시각 순서를 일치시킨다). 카드 3개를 다 본 뒤 자연스럽게
+     "더 보기"로 이어지도록 가운데 정렬. */
+  .section-foot { margin-top: 24px; text-align: center; }
+  .section-foot-link { display: inline-block; font: 700 1.06em/1 NanumSquareRound, Pretendard, sans-serif; color: #332e1e; text-decoration: none; }
+  .section-foot-link:hover, .section-foot-link:focus-visible { text-decoration: underline; }
 
   /* 최근 소식 미리보기 — 처음엔 홈 전용 CSS(.home-notice-card)를 새로 만들었는데
      원인 불명의 카드 크기 불일치가 발생했다(시크릿 창에서도 재현, 실측 도구로는
@@ -251,6 +254,5 @@ const homeNotices = (await getCollection('notices'))
   @media (max-width: 640px) {
     .card-grid-4 { grid-template-columns: minmax(0, 1fr); }
     .first-visit-banner { grid-template-columns: minmax(0, 1fr); }
-    .section-head { flex-direction: column; align-items: flex-start; gap: 6px; }
   }
 </style>
