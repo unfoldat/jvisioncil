@@ -61,14 +61,14 @@ const pages = Array.from({ length: totalPages }, (_, i) => i + 1);
      묶는다(게슈탈트 근접성) — 설명문과는 margin-top:auto로 여백을 두어 분리하고,
      그룹 내부(배지↔대상/시간)는 gap을 좁게 유지해 한 덩어리로 보이게 한다. */
   .lecture-meta-group { margin-top: auto; display: flex; flex-direction: column; gap: 8px; }
-  /* 시안 B — 진한 로즈 배경 + 흰 글씨 pill(대비 12.1:1, WCAG AAA도 통과). 방패 이모지는
-     장식용이라 aria-hidden, 실제 낭독은 "법정의무교육" 텍스트만. */
+  /* 시안 B — 진한 로즈 배경 + 흰 글씨(대비 12.1:1, WCAG AAA도 통과). 방패 이모지는
+     장식용이라 aria-hidden, 실제 낭독은 "법정의무교육" 텍스트만. 알약(pill) 모양은
+     둥근 왼쪽 끝이 카드의 다른 요소(h3/설명/대상)와 공유하는 세로 정렬선에서 혼자
+     벗어나 보여 네모(둥근 사각형)로 변경 — 왼쪽 padding만큼 당기는 보정 없이도
+     사각형 박스의 왼쪽 모서리가 자연스럽게 그 정렬선에 맞는다. */
   .lecture-badge {
-    display: inline-flex; align-items: center; gap: 5px; width: fit-content; border-radius: 999px;
-    font: 700 0.84em/1.4 Pretendard, system-ui, sans-serif; padding: 4px 12px; background: #7a3b41; color: #fff;
-    /* 알약 배경의 왼쪽 padding(12px)만큼 당겨서, 방패 아이콘이 아래 "대상" 텍스트와
-       같은 x축 시작점에 오도록 맞춘다(알약 모양 자체는 유지). */
-    margin-left: -12px;
+    display: inline-flex; align-items: center; gap: 5px; width: fit-content; border-radius: 6px;
+    font: 700 0.84em/1.4 Pretendard, system-ui, sans-serif; padding: 4px 10px; background: #7a3b41; color: #fff;
   }
   .lecture-badge-icon { font-size: 0.95em; }
   /* 대상/시간 — 배지처럼 배경 없는 담백한 텍스트, 값(<strong> 아님)과 라벨(<strong>)이
