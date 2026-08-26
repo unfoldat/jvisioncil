@@ -134,12 +134,18 @@ const items = notices.map((notice) => ({
   /* 2026-08-25 compact(홈 미리보기) — 사진 영역(.notice-card-photo·-img, aspect-ratio
      3/2 + object-fit:cover)은 실기로 검증된 부분이라 손대지 않는다. 본문 패딩·
      제목 크기만 줄여 카드 전체 높이를 낮춘다. */
-  .notice-board.compact { gap: 18px; }
+  /* 2026-08-26 — 홈 "주요 서비스"(card-grid-4)와 같은 톤: 한 줄에 4개. 기본
+     .notice-board(3열, /소식/ 전용)와는 다른 값이라 .compact에서만 덮어쓴다. */
+  .notice-board.compact { gap: 18px; grid-template-columns: repeat(4, 1fr); }
   /* 사진 매커니즘(aspect-ratio + object-fit:cover)은 그대로 재사용 — 비율 숫자만
-     3:2→5:2로 낮춰 카드 전체 높이를 "주요 서비스" 카드(254.5px)에 맞춘다. */
-  .notice-board.compact .notice-card-photo { aspect-ratio: 5 / 2; }
+     3:2→15:8로 낮춰 카드 전체 높이를 "주요 서비스" 카드(254.5px)에 맞춘다(한 줄
+     4개 기준 — 열이 늘면서 카드 폭이 좁아져 5:2보다 조금 더 낮은 비율이 필요했다). */
+  .notice-board.compact .notice-card-photo { aspect-ratio: 15 / 8; }
   .notice-board.compact .notice-card-body { padding: 14px 18px 18px; }
   .notice-board.compact .notice-card-meta { margin-bottom: 6px; }
   .notice-board.compact .notice-card-date { font-size: 0.88em; }
   .notice-board.compact .notice-card h3 { margin-top: 6px; font: 800 1.13em/1.35 NanumSquareRound, Pretendard, sans-serif; }
+  /* 홈 페이지의 .card-grid-4(주요 서비스)와 같은 반응형 단계를 맞춘다. */
+  @media (max-width: 860px) { .notice-board.compact { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 640px) { .notice-board.compact { grid-template-columns: minmax(0, 1fr); } }
 </style>
