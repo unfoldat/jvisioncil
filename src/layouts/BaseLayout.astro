@@ -491,7 +491,9 @@ const path = decodeURIComponent(Astro.url.pathname);
      TODO: 기관 공식 이메일 계정 개설 전이라 값이 비어있다 — CMS(org-info)에
      값이 채워지기 전까지는 이 줄 자체가 렌더링되지 않는다(조건부). */
   .footer-email { margin: 4px 0 0; font: 400 1.06em/1.9 Pretendard, system-ui, sans-serif; color: #d6cbac; }
-  .footer-nav { margin: 20px 0 0; display: flex; gap: 18px; flex-wrap: wrap; font: 400 1em/1.6 Pretendard, system-ui, sans-serif; }
+  /* 2026-08-26 — 주소 바로 아래 링크와의 줄간격을 아래 "부설연구소" 라벨-링크
+     간격(4px)과 같게 맞춘다(기존 20px는 너무 벌어져 보인다는 지적). */
+  .footer-nav { margin: 4px 0 0; display: flex; gap: 18px; flex-wrap: wrap; font: 400 1em/1.6 Pretendard, system-ui, sans-serif; }
   .footer-nav a { color: #e5dcc0; }
   /* "부설 좋은비전재활상담연구소" 텍스트와 "부설연구소" 링크를 서로 인접시킨다
      (관계 있는 정보끼리 붙여 배치 — 45번 카드 원칙과 같은 이유). */
