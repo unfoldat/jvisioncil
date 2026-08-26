@@ -1,7 +1,11 @@
 backend:
   name: github
   repo: unfoldat/jvisioncil
-  branch: main
+  # 2026-08-26 (test/home-notice-4 전용, 임시) — CMS 저장이 이 브랜치로 격리되는지
+  # 실증하기 위해 main → test/home-notice-4로 임시 변경. merge 직전 반드시 main으로
+  # 되돌릴 것 — 이 값이 실수로 main에 들어가면 실제 CMS가 이 브랜치로 커밋을 시도해
+  # 서비스가 깨진다.
+  branch: test/home-notice-4
   # sveltia-cms-auth Cloudflare Worker (PAT 대신 OAuth).
   base_url: https://jvisioncil-cms-auth.dkdlvkt244.workers.dev
 
