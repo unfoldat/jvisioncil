@@ -140,7 +140,14 @@ const { instructors } = Astro.props;
 )}
 
 <style>
-  .tutor-list { display: grid; gap: 28px; }
+  /* 2026-08-26 — grid-template-columns 없이 display:grid만 쓰면 암묵적 트랙이
+     "auto"로 사이즈돼, 그리드 아이템의 기본 min-width:auto 때문에 카드 내용의
+     최소 폭(예: 표·알약 태그가 넓은 김기현 카드)이 컨테이너 밖으로 트랙을 밀어낸다
+     (실측: 모바일 375px에서 카드가 뷰포트보다 넓어져 가로 스크롤 발생, 카드 내용과
+     무관하게 같은 그리드 트랙을 공유하는 다른 카드까지 전부 같이 밀림). 명시적
+     minmax(0, 1fr)로 트랙을 컨테이너 폭에 고정 — 렌더링되는 내용/구조는 그대로,
+     폭 계산만 고쳐진다. */
+  .tutor-list { display: grid; grid-template-columns: minmax(0, 1fr); gap: 28px; }
   .tutor-profile { border: 1px solid #e5bfbf; border-radius: 16px; background: #faf2f2; padding: 28px 30px 32px; }
 
   .tutor-identity { display: grid; grid-template-columns: minmax(140px, 170px) minmax(0, 1fr); gap: clamp(16px, 3vw, 24px); align-items: start; }
