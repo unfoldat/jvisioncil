@@ -135,7 +135,16 @@ const path = decodeURIComponent(Astro.url.pathname);
             <span>{ORG_FULL_NAME}</span>
           </div>
           <p class="footer-contact-label">전문상담 · 대표전화</p>
-          <a href={telHref(orgInfo.data.phone)} aria-label={`전문상담 대표전화 ${orgInfo.data.phone}, 선택하면 전화가 연결됩니다`} class="footer-phone">{orgInfo.data.phone}</a>
+          {/* 2026-08-26 — 원래 aria-label에 "선택하면 전화가 연결됩니다"가 있었는데,
+              (1) tel: 링크는 스크린리더가 이미 "링크"로 자동 안내해 중복 설명이고
+              (2) 실제로는 전화 앱에 번호만 채워지고 사용자가 통화 버튼을 한 번 더
+              눌러야 연결돼 부정확한 표현이었다(오늘 전문상담 페이지에서 같은 이유로
+              "번호를 누르면 바로 전화가 걸립니다" 삭제한 것과 동일 원칙) — 그 부분만
+              제거. "전문상담 대표전화" 식별 문구는 남겨둔다 — 위 .footer-contact-label
+              <p>는 이 링크와 aria-describedby 등으로 프로그램적으로 연결돼 있지 않아,
+              이걸 마저 지우면 Tab만 쓰는 사용자는 이 번호가 무엇인지 모른 채
+              "02-732-0105, 링크"만 듣게 된다. */}
+          <a href={telHref(orgInfo.data.phone)} aria-label={`전문상담 대표전화 ${orgInfo.data.phone}`} class="footer-phone">{orgInfo.data.phone}</a>
           <p class="footer-hours">평일 09:00 – 18:00</p>
         </div>
       </div>
