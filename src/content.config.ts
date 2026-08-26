@@ -169,6 +169,10 @@ const orgInfo = defineCollection({
     bankName: z.string(),
     accountNumber: z.string(),
     accountHolder: z.string(),
+    // 2026-08-26 (test/home-notice-4) — 푸터에 하드코딩돼 있던 기관 이메일을
+    // CMS에서 직접 수정 가능하게 필드로 뺀다. mailto: 링크로 안 쓰고 평문
+    // 표시 전용이라 telHref 같은 파생 헬퍼가 필요 없다.
+    orgEmail: z.string().default('jvisioncil@gmail.com'),
   }),
 });
 

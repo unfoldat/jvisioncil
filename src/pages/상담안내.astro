@@ -35,7 +35,6 @@ const counselFlow = [
         <h2 id="cs-call">전화로 상담하기</h2>
         <p class="call-hours">평일 09:00 – 18:00 (점심 12:00 – 13:00)</p>
         <a href={telHref(orgInfo.data.phone)} class="call-number">{orgInfo.data.phone}</a>
-        <p class="call-note">번호를 누르면 바로 전화가 걸립니다.</p>
       </div>
       <div class="call-card call-card-form">
         <h2>신청서로 상담 접수하기</h2>
@@ -43,7 +42,6 @@ const counselFlow = [
         <a href="https://forms.gle/p3sVjeyvyS5cy1ni7" class="btn btn-lg">
           상담 신청하기 <span class="sr-only">, Google Forms로 이동</span>
         </a>
-        <p class="call-note">Google Forms로 이동합니다.</p>
       </div>
     </div>
   </section>
@@ -87,7 +85,6 @@ const counselFlow = [
   .call-card h2 { margin: 0 0 12px; font: 800 1.62em/1.3 NanumSquareRound, Pretendard, sans-serif; color: #623618; }
   .call-hours { margin: 0 0 20px; font: 400 1.13em/1.6 NanumSquareRound, Pretendard, sans-serif; color: var(--muted); }
   .call-number { display: inline-block; font: 800 2.75em/1.1 NanumSquareRound, Pretendard, sans-serif; color: #332e1e; text-decoration: none; letter-spacing: -0.02em; }
-  .call-note { margin: 16px 0 0; font: 400 1em/1.5 NanumSquareRound, Pretendard, sans-serif; color: var(--muted); }
   .call-card-form { display: flex; flex-direction: column; }
   .call-card-form p:first-of-type { margin: 0 0 24px; font: 400 1.13em/1.6 NanumSquareRound, Pretendard, sans-serif; color: var(--muted); }
   .call-card-form .btn { margin-top: auto; font: 800 1.5em/1 NanumSquareRound, Pretendard, sans-serif !important; padding: 22px 34px; }

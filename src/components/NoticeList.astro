@@ -20,12 +20,13 @@
 // ARIA로 덮지 않고 구조로 해결: 이제 실제 Tab 정지점(=실제 <a>)은 <h3> 안의
 // 제목 링크 하나뿐이다. 카드 전체 클릭 UX는 CSS stretched-link(.notice-card-link
 // ::after)로 시각적으로만 복원 — 새 JS/role/tabindex 없음.
-// 2026-08-26 — 제목 링크 안에 "사진 포함" sr-only 텍스트 추가. 위 2026-08-20 결정
-// ("소식 상세보기" 같은 낭독 문장을 ARIA로 조립하지 않는다)과는 다른 상황이다 —
-// 그때 거부한 건 "카드 전체를 하나의 이름으로 덮어써서 화살표 모드가 개별 정보
-// (사진 alt 등)를 놓치는" 패턴이었다. 이번엔 화살표 탐색은 그대로 두고(사진
-// <img>는 여전히 <a> 밖의 별개 요소라 alt가 그대로 따로 들림), Tab으로 제목
-// 링크에 도착했을 때만 "사진이 있다"는 존재 여부를 짧게 덧붙이는 것 — 사진의
+// 2026-08-26 — 제목 링크 안에 "위쪽 이미지" sr-only 텍스트 추가(최초엔 "사진
+// 포함"으로 시작했다가 문구 확정). 위 2026-08-20 결정("소식 상세보기" 같은
+// 낭독 문장을 ARIA로 조립하지 않는다)과는 다른 상황이다 — 그때 거부한 건
+// "카드 전체를 하나의 이름으로 덮어써서 화살표 모드가 개별 정보(사진 alt 등)를
+// 놓치는" 패턴이었다. 이번엔 화살표 탐색은 그대로 두고(사진 <img>는 여전히
+// <a> 밖의 별개 요소라 alt가 그대로 따로 들림), Tab으로 제목 링크에 도착했을
+// 때만 "사진이 있다"는 존재 여부와 위치(제목 위)를 짧게 덧붙이는 것 — 사진의
 // 실제 내용(alt)을 대신하거나 요약하지 않는다. thumbnail이 없는 카드(로고 폴백)는
 // 붙이지 않는다 — 로고는 장식용(alt="")이라 "사진"이라 부를 정보가 아니다.
 import type { CollectionEntry } from 'astro:content';
@@ -78,7 +79,7 @@ const items = notices.map((notice) => ({
             <h3>
               <a class="notice-card-link" href={item.href}>
                 {item.title}
-                {item.thumbnail && <span class="sr-only"> 사진 포함</span>}
+                {item.thumbnail && <span class="sr-only"> 위쪽 이미지</span>}
               </a>
             </h3>
             {!compact && item.summary && <p class="notice-card-summary">{item.summary}</p>}

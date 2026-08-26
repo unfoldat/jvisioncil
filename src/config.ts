@@ -23,8 +23,12 @@ export const MAIN_MENU = [
 export const FOOTER_MENU = [
   { label: '기부금 공시 내역', href: '/기부금-공시/' },
   { label: '오시는 길', href: '/기관소개/#about-way' },
-  { label: '부설연구소', href: '/기관소개/#about-lab' },
 ];
+
+// 2026-08-26 — "부설 좋은비전재활상담연구소" 텍스트 바로 아래 배치하는 전용 링크.
+// FOOTER_MENU와 분리한 이유: 관계 있는 정보(부설연구소 이름·링크)를 인접시키기
+// 위해 푸터에서 별도 위치에 렌더링해야 해서 같은 배열에 있으면 처리가 꼬인다.
+export const FOOTER_LAB_LINK = { label: '부설연구소', href: '/기관소개/#about-lab' };
 
 // 연습 배포 기간에만 true. 실도메인 전환 시 false로 바꾸는 커밋을 따로 낸다.
 export const NOINDEX = true;
