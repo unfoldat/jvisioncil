@@ -192,7 +192,7 @@ collections:
         fields:
           - { name: address, label: 주소, widget: string }
           - { name: phone, label: 대표전화, widget: string, hint: '예: "02-732-0105". 전화 걸기 링크(tel:)는 이 번호에서 자동으로 만들어집니다.' }
-          - { name: orgEmail, label: 기관 이메일, widget: string, default: jvisioncil@gmail.com, hint: '푸터에 평문으로 표시됩니다(클릭 가능한 메일 링크 아님).' }
+          - { name: orgEmail, label: 기관 이메일, widget: string, required: false, hint: '푸터에 "이메일: (값)"으로 평문 표시됩니다(클릭 가능한 메일 링크 아님). 비워두면 그 줄 자체가 안 보입니다.' }
           - { name: bankName, label: 후원 계좌 — 은행명, widget: string }
           - { name: accountNumber, label: 후원 계좌 — 계좌번호, widget: string }
           - { name: accountHolder, label: 후원 계좌 — 예금주, widget: string }
