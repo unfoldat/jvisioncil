@@ -200,9 +200,9 @@ const homeNotices = (await getCollection('notices'))
   section[aria-labelledby='home-news'] > .wrap { padding: 0; }
   /* 2026-08-26 — "전체 소식 보기" 링크를 제목 옆(우측 상단)에서 카드 그리드 아래로
      이동(DOM 순서도 함께 변경 — CSS 재배치가 아니라 실제 마크업 순서를 바꿔
-     화살표/Tab 순서와 시각 순서를 일치시킨다). 카드 3개를 다 본 뒤 자연스럽게
-     "더 보기"로 이어지도록 가운데 정렬. */
-  .section-foot { margin-top: 24px; text-align: center; }
+     화살표/Tab 순서와 시각 순서를 일치시킨다). 왼쪽 정렬 — 첫 번째 카드 바로
+     아래에서 시작하도록(가운데 정렬로 했다가 요청으로 되돌림). */
+  .section-foot { margin-top: 24px; text-align: left; }
   .section-foot-link { display: inline-block; font: 700 1.06em/1 NanumSquareRound, Pretendard, sans-serif; color: #332e1e; text-decoration: none; }
   .section-foot-link:hover, .section-foot-link:focus-visible { text-decoration: underline; }
 
