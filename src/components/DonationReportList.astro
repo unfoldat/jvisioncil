@@ -43,7 +43,14 @@ const pages = Array.from({ length: totalPages }, (_, i) => i + 1);
 )}
 
 <style>
-  .disclosure-list { list-style: none; margin: 0 0 28px; padding: 0; border-top: 2px solid var(--ink); background: #fff; }
+  /* 2026-08-26 — 목록 폭이 본문 전체(960px)를 다 쓰다 보니 제목과 다운로드 링크
+     사이 거리가 항목마다 들쭉날쭉하고 시선 이동이 커 보였다. max-width로 폭
+     자체를 줄이면(왼쪽 정렬 그대로, 오른쪽만 좁아짐) 그 안에서 justify-content
+     의 오른쪽 정렬 지점이 고정돼 다운로드 링크 위치가 항목마다 안정된다. 아래
+     "국세청 홈페이지" 안내문(전체 폭)보다 목록 박스가 짧아져 "공시자료" 덩어리가
+     시각적으로도 구분된다. 모바일에서는 이미 폭이 좁아 70%까지 줄이면 항목이
+     과도하게 좁아지므로 아래 미디어쿼리에서 원복한다. */
+  .disclosure-list { list-style: none; margin: 0 0 28px; padding: 0; border-top: 2px solid var(--ink); background: #fff; max-width: 70%; }
   .disclosure-list li { border-bottom: 1px solid var(--line); padding: 18px 22px; display: flex; align-items: baseline; justify-content: space-between; gap: 1rem; flex-wrap: wrap; }
   .disclosure-list h2 { margin: 0; font: 700 1.06em/1.6 NanumSquareRound, Pretendard, sans-serif; }
   .disclosure-list h2 a { color: #3a3626; }
@@ -57,5 +64,9 @@ const pages = Array.from({ length: totalPages }, (_, i) => i + 1);
   }
   .disclosure-pagination a[aria-current='page'] {
     font-weight: 800; background: var(--ink); color: #fff; border-color: var(--ink);
+  }
+
+  @media (max-width: 640px) {
+    .disclosure-list { max-width: none; }
   }
 </style>
