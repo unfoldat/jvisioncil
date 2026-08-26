@@ -4,6 +4,7 @@ import { getCollection } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import PartnerGrid from '../components/PartnerGrid.astro';
 import NoticeList from '../components/NoticeList.astro';
+import { byDateDesc } from '../lib/notices';
 
 // 활동 사진 — 확정 스키마 결정: 소식과 분리된 공유 gallery 컬렉션, "노출 위치"
 // 체크박스로 페이지별 필터링(지금은 3곳 다 같은 사진이라 필터 결과도 동일).
@@ -15,16 +16,14 @@ const galleryLoop = PHOTOS.concat(PHOTOS);
 
 // 2026-08-25 홈 소식 미리보기 — showOnHome 체크된 글 중 최신순 최대 4개.
 // (test/home-notice-4 브랜치 전용 — 3→4 카드 실험, main에는 반영 안 함)
-// pinned(목록 상단 고정)와는 완전히 독립된 필터라 그쪽 정렬 로직(sortForList)을
-// 재사용하지 않고 여기서 날짜만으로 직접 정렬한다.
-// 2026-08-26 — date는 시:분 없이 날짜만 저장해서(연/월/일) 같은 날짜인 글끼리는
-// 동점이 난다. 동점일 때 안정 정렬이 유지하는 "원래 순서"가 파일명 가나다 순이라
-// 실제 작성 순서와 어긋났었다(실측 발견) — id(=slug, {{year}}-{{month}}-{{day}}-
-// {{slug}} 형식이라 실제 생성일이 그대로 남아있음)를 내림차순 2차 기준으로 써서
-// 동점을 실제 생성 시점 순으로 깬다.
+// pinned(목록 상단 고정)와는 완전히 독립된 필터라 pinned 우선 로직까지 포함된
+// sortForList는 안 쓰고, 순수 날짜 정렬 부분(byDateDesc — 동점 시 id로 깨는
+// 로직까지 포함, src/lib/notices.ts 참고)만 재사용한다. 소식 목록 페이지와 이
+// 홈 미리보기가 서로 다른 순서로 보이는 걸 막기 위해 이 비교 함수 하나를
+// 공유한다.
 const homeNotices = (await getCollection('notices'))
   .filter((n) => n.data.showOnHome)
-  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf() || b.id.localeCompare(a.id))
+  .sort(byDateDesc)
   .slice(0, 4);
 ---
 
