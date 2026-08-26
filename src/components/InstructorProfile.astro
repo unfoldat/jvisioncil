@@ -8,6 +8,12 @@
 // 헤딩 구조: 페이지의 H2(강사 프로필) 다음, 각 강사가 H3(이름) → H4(강사 소개/학력 사항/
 // 주요 활동 및 강연 실적/보유 자격 사항). 필드가 비어 있으면(교체 강사가 정보를 덜 채운
 // 경우) 해당 구역 전체를 생략 — 빈 표/빈 목록을 만들지 않는다.
+//
+// 2026-08-26 — bio(약력 소개) 렌더링 복원. CMS 폼에는 intro/education/career/
+// certifications 필드가 아예 없다(김기현만 수작업으로 채운 특수 케이스) — CMS로
+// 만드는 강사는 전부 bio(단순 문자열 목록)만 쓴다. 이름/직함 바로 아래, 소제목 없이
+// 단순 목록으로만 표시(예전 심플 레이아웃과 동일) — 아래 구간(강사 소개/학력 사항 등,
+// h4+구분선 있는 .tutor-section들)과는 시각적으로 다른, 더 가벼운 처리다.
 import type { CollectionEntry } from 'astro:content';
 
 interface Props {
@@ -54,6 +60,11 @@ const { instructors } = Astro.props;
                     </div>
                   )}
                 </dl>
+              )}
+              {t.data.bio && t.data.bio.length > 0 && (
+                <ul class="tutor-bio-list">
+                  {t.data.bio.map((item) => <li>{item}</li>)}
+                </ul>
               )}
             </div>
           </header>
@@ -145,6 +156,14 @@ const { instructors } = Astro.props;
   .tutor-meta-row { display: flex; gap: 10px; font: 400 1em/1.6 Pretendard, system-ui, sans-serif; }
   .tutor-meta-row dt { flex: none; width: 5em; font-weight: 700; color: #5a3737; }
   .tutor-meta-row dd { margin: 0; color: var(--muted); }
+
+  /* 2026-08-26 — bio 심플 목록. 아래 .tutor-career-list와 같은 점 불릿 언어를
+     재사용하되, 소제목·구분선 없이 이름/직함 바로 아래 가볍게 붙는다. */
+  .tutor-bio-list { list-style: none; margin: 12px 0 0; padding: 0; display: grid; gap: 6px; }
+  .tutor-bio-list li {
+    position: relative; padding-left: 1.3em; font: 400 1.02em/1.6 Pretendard, system-ui, sans-serif; color: var(--muted); text-wrap: pretty;
+  }
+  .tutor-bio-list li::before { content: ''; position: absolute; left: 0.1em; top: 0.65em; width: 5px; height: 5px; border-radius: 50%; background: #c87a7a; }
 
   .tutor-section { margin-top: 26px; padding-top: 22px; border-top: 1px solid #e5bfbf; }
   /* PDF 원본의 "제목 왼쪽 세로 바 강조"를 페이지 배색(#c87a7a)으로 재현. */

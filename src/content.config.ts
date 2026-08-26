@@ -130,6 +130,14 @@ const instructors = defineCollection({
     photoAlt: z.string().optional(),
     // object-position 값. 비우면 페이지 쪽에서 기본값 적용(리더 프로필과 동일 패턴).
     photoPos: z.string().optional(),
+    // 2026-08-26 (test/home-notice-4) 복원 — 2026-08-23에 intro/education/career/
+    // certifications로 완전히 대체하며 스키마에서 제거했는데, CMS 폼(config.yml)에서는
+    // 이 필드를 못 지워서 계속 "약력 소개"로 입력받고 있었다. 실제로 CMS 폼에는 아래
+    // 4개 필드가 아예 노출돼 있지 않다(김기현 프로필만 수작업으로 채운 특수 케이스) —
+    // 즉 CMS로 만드는 강사는 전부 이 bio만 쓰게 된다. 스키마가 조용히 버려서 저장은
+    // 되는데 화면엔 안 나오는 상태였다(홍길동 강사로 실제 발견) — 필드를 되살리고
+    // InstructorProfile.astro에 렌더링 분기를 추가한다.
+    bio: z.array(z.string()).optional(),
     intro: z.array(z.string()).optional(), // 강사 소개 — 문단마다 별도 <p>로 렌더링
     region: z.string().optional(), // 활동지역
     // 항목이 적고(6개 이하) 상호작용이 없는 나열이라 배열로 안 쪼갠다(스킬 원칙 6번) —
