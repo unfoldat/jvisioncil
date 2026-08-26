@@ -130,6 +130,10 @@ const path = decodeURIComponent(Astro.url.pathname);
           <a href={FOOTER_LAB_LINK.href} class="footer-lab-link">{FOOTER_LAB_LINK.label}</a>
         </div>
         <div class="footer-contact">
+          <div class="footer-brand footer-brand-spacer" aria-hidden="true">
+            <img src="/images/logo-mark.png" alt="" class="footer-logo" />
+            <span>{ORG_FULL_NAME}</span>
+          </div>
           <p class="footer-contact-label">전문상담 · 대표전화</p>
           <a href={telHref(orgInfo.data.phone)} aria-label={`전문상담 대표전화 ${orgInfo.data.phone}, 선택하면 전화가 연결됩니다`} class="footer-phone">{orgInfo.data.phone}</a>
           <p class="footer-hours">평일 09:00 – 18:00</p>
@@ -500,6 +504,13 @@ const path = decodeURIComponent(Astro.url.pathname);
   .footer-lab-label { margin: 20px 0 0; font: 700 1.06em/1.6 Pretendard, system-ui, sans-serif; color: #d6cbac; }
   .footer-lab-link { display: inline-block; margin: 4px 0 0; color: #e5dcc0; font: 400 1.06em/1.9 Pretendard, system-ui, sans-serif; }
   .footer-contact { text-align: right; }
+  /* 2026-08-26 — "전문상담·대표전화" 라벨이 왼쪽 "기관명"과 같은 높이에 있어
+     "주소"와 어긋나 보인다는 지적. 왼쪽 .footer-brand와 완전히 같은 마크업을
+     visibility:hidden으로 재사용한 스페이서 — 글자 크기 확대(사이트 자체
+     100~200% 줌 기능)에도 실제 브랜드 블록과 항상 같은 높이로 늘어나 정렬이
+     안 깨진다(고정 px 여백이었다면 확대 시 어긋났을 것). aria-hidden도 같이
+     둬 스크린리더가 완전히 건너뛰게 한다 — DOM 순서·텍스트는 전혀 안 바뀜. */
+  .footer-brand-spacer { visibility: hidden; }
   .footer-contact-label { margin: 0 0 10px; font: 700 1.06em/1 Pretendard, system-ui, sans-serif; color: #b7ac8c; }
   .footer-phone { font: 800 2.6em/1.1 NanumSquareRound, Pretendard, sans-serif; color: #fff; text-decoration: none; letter-spacing: -0.02em; }
   .footer-hours { margin: 14px 0 0; font: 400 1em/1.7 Pretendard, system-ui, sans-serif; color: #b7ac8c; }
@@ -530,6 +541,9 @@ const path = decodeURIComponent(Astro.url.pathname);
     .zoom-steps { gap: 4px; }
     .footer-grid { grid-template-columns: minmax(0, 1fr); padding: 30px 16px; gap: 24px; }
     .footer-contact { text-align: left; }
+    /* 모바일은 두 칼럼이 세로로 쌓여 "주소 높이 맞춤" 자체가 의미 없다 —
+       스페이서가 그대로면 불필요한 빈 공간만 생기므로 여기서만 제거. */
+    .footer-brand-spacer { display: none; }
     .footer-phone { font-size: 2em; }
     .footer-bottom p { padding: 16px; }
     .wrap { width: calc(100% - 32px); }
