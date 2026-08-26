@@ -13,13 +13,14 @@ const PHOTOS = (await getCollection('gallery'))
   .map((entry) => ({ src: entry.data.photo, alt: entry.data.alt ?? '' }));
 const galleryLoop = PHOTOS.concat(PHOTOS);
 
-// 2026-08-25 홈 소식 미리보기 — showOnHome 체크된 글 중 최신순 최대 3개.
+// 2026-08-25 홈 소식 미리보기 — showOnHome 체크된 글 중 최신순 최대 4개.
+// (test/home-notice-4 브랜치 전용 — 3→4 카드 실험, main에는 반영 안 함)
 // pinned(목록 상단 고정)와는 완전히 독립된 필터라 그쪽 정렬 로직(sortForList)을
 // 재사용하지 않고 여기서 날짜만으로 직접 정렬한다.
 const homeNotices = (await getCollection('notices'))
   .filter((n) => n.data.showOnHome)
   .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
-  .slice(0, 3);
+  .slice(0, 4);
 ---
 
 <BaseLayout pageName="홈" bg="#F7F3E8">
