@@ -164,7 +164,10 @@ const { instructors } = Astro.props;
   /* 2026-08-26 — bio만 있는 심플 카드는 rich 카드보다 정보량이 훨씬 적어서,
      같은 큰 사진 박스(170px)를 쓰면 텍스트 3줄 옆에 사진만 휑하게 커 보인다
      (실측 지적). 사진·여백만 축소 — 텍스트 크기는 가독성 위해 그대로 둔다. */
-  .tutor-profile-simple { padding: 20px 22px 24px; }
+  /* 카드 자체 폭도 절반 정도로 — 그리드 아이템은 기본 justify-self:stretch라
+     max-width만 주면(명시적 크기가 생기는 순간 stretch가 start로 대체됨) 왼쪽
+     정렬된 채로 폭만 좁아진다(기부금 공시 목록에서 쓴 것과 같은 패턴). */
+  .tutor-profile-simple { max-width: 50%; padding: 20px 22px 24px; }
   .tutor-profile-simple .tutor-identity { grid-template-columns: minmax(90px, 110px) minmax(0, 1fr); }
   .tutor-profile-simple .tutor-photo { max-width: 110px; }
   .tutor-identity-text { min-width: 0; }
@@ -225,6 +228,7 @@ const { instructors } = Astro.props;
   @media (max-width: 640px) {
     .tutor-identity { grid-template-columns: minmax(0, 1fr); }
     .tutor-photo { max-width: 160px; margin: 0 auto; }
+    .tutor-profile-simple { max-width: none; }
     .tutor-profile-simple .tutor-photo { max-width: 110px; }
   }
 </style>
