@@ -9,6 +9,7 @@ import ExtraCourseGrid from '../../../../components/ExtraCourseGrid.astro';
 import InstructorProfile from '../../../../components/InstructorProfile.astro';
 import { sortForList as sortLectures, PAGE_SIZE as LECTURE_PAGE_SIZE, totalPages as lectureTotalPages } from '../../../../lib/lectures';
 import { sortForList as sortExtraCourses, PAGE_SIZE as EXTRA_PAGE_SIZE, totalPages as extraTotalPages } from '../../../../lib/extraCourses';
+import { sortForList as sortInstructors } from '../../../../lib/instructors';
 
 export async function getStaticPaths() {
   const allExtraCourses = sortExtraCourses(await getCollection('extra-courses'));
@@ -18,7 +19,7 @@ export async function getStaticPaths() {
   const pageLectures = allLectures.slice(0, LECTURE_PAGE_SIZE);
   const lecturePages = lectureTotalPages(allLectures.length);
 
-  const instructors = await getCollection('instructors');
+  const instructors = sortInstructors(await getCollection('instructors'));
 
   return Array.from({ length: Math.max(0, pages - 1) }, (_, i) => {
     const page = i + 2;

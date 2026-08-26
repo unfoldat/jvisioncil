@@ -12,12 +12,13 @@ import ExtraCourseGrid from '../../components/ExtraCourseGrid.astro';
 import InstructorProfile from '../../components/InstructorProfile.astro';
 import { sortForList as sortLectures, PAGE_SIZE as LECTURE_PAGE_SIZE, totalPages as lectureTotalPages } from '../../lib/lectures';
 import { sortForList as sortExtraCourses, PAGE_SIZE as EXTRA_PAGE_SIZE, totalPages as extraTotalPages } from '../../lib/extraCourses';
+import { sortForList as sortInstructors } from '../../lib/instructors';
 
 // 확정 스키마 결정 — 강사 프로필은 폴더형(가변 개수), 강의 목록·강사 프로필 카드 그리드에
 // 연결. 목업의 3명은 전부 "강사명 자리" placeholder였고 실제 강사 데이터가 아니었으므로
 // 그대로 옮기지 않는다(가짜 이름을 진짜 데이터처럼 CMS에 넣는 게 더 나쁘다고 판단) —
 // 대신 등록된 강사가 없을 때 그 사실을 알리는 안내문으로 대체한다.
-const instructors = await getCollection('instructors');
+const instructors = sortInstructors(await getCollection('instructors'));
 
 const allLectures = sortLectures(await getCollection('lectures'));
 const pageLectures = allLectures.slice(0, LECTURE_PAGE_SIZE);
