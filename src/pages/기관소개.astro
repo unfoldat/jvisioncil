@@ -170,6 +170,13 @@ const busStops = [
                 const keep = /wrap_map|wrap_controllers|map_border|border_map/.test(c) || child.querySelector('img[src*="map"], canvas, iframe');
                 if (!keep) child.style.display = 'none';
               });
+              // 2026-08-26 — "길찾기" 링크가 카카오 위젯 기본값(target="_blank")으로 항상 새 창을
+              // 연다. 44번 원칙(새 창으로 열어야 할 특별한 이유가 없으면 같은 창에서 연다)에 따라
+              // 이 창에서 그대로 이동하게 바꾼다 — 뒤로가기로 이 화면에 돌아올 수 있다. 클래스가
+              // 로드뷰·지도 크게 보기와 같아서(class="txt") 텍스트로 정확히 이 링크만 찾는다.
+              const findRoughmapLink = (text) => Array.prototype.find.call(root.querySelectorAll('a'), (a) => a.textContent.trim() === text);
+              const wayLink = findRoughmapLink('길찾기');
+              if (wayLink) wayLink.removeAttribute('target');
             }, 900);
             // 2026-08-19 — 위젯이 카드 폭(약 537px)보다 넓어(640px) 가로 스크롤이 생기던 문제.
             // 위젯 자체 크기(mapWidth/mapHeight)는 그대로 두고 — 실측 결과 위젯의 실제 전체
@@ -371,6 +378,14 @@ const busStops = [
      생기므로, 렌더 즉시 CSS로 숨긴다(!important — 위젯이 자체 인라인 스타일로 보이려 함).
      위젯이 런타임에 만드는 요소라 스코프 클래스가 안 붙어 :global() 필요. */
   :global(.root_daum_roughmap .cont) { display: none !important; }
+  /* 2026-08-26 — 사이트 전역 button 규칙(min-height:44px, 클릭 영역 확보용,
+     BaseLayout.astro)이 카카오 위젯의 확대/축소/초기화 버튼(<button> 3개)에도
+     그대로 적용돼, 원래 104px 컨테이너에 꼭 맞게 설계된 버튼들이 부풀어(3×44px+
+     패딩) 컨테이너 밖으로 넘쳤다 — Tab으로 이동하면 버튼이 잘리거나 겹쳐
+     보이던 원인(실측 확인: .wrap_btn_zoom 컨테이너 104px인데 버튼 3개 실제
+     차지 높이는 136px). 이 위젯 안의 버튼만 최소 크기 규칙을 원복해 카카오
+     원본 치수(correctZoomButtonIcons가 기준으로 삼는 34×104)로 되돌린다. */
+  :global(.root_daum_roughmap button) { min-height: 0; padding: 0; }
   .transit-card { margin: 0; background: #fff; border: 1px solid #f1d4ab; border-radius: 16px; overflow: hidden; }
   .transit-head { padding: 22px 30px 14px; border-bottom: 1px solid #f1d4ab; }
   .transit-head h3 { margin: 0; font: 700 1.13em/1.4 Pretendard, system-ui, sans-serif; color: #664c27; }
